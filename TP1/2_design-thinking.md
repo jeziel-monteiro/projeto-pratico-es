@@ -26,8 +26,85 @@ O Sistema Porto Certo, composto por uma plataforma Web e um Aplicativo Android. 
 
 # SWOT
 
+A elaboração do SWOT foi feito para mapear os cenários internos e externos do nosso sistema, aqui temos os seguintes pontos levantados pela ferramenta:
+
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/efc25f9d-c09f-465f-9864-1073606ef10e" />
+
+## Pontos Fortes
+
+<div align = "justify>
+
+- **UX/UI**: O público-alvo pode ter diferentes níveis de letramento digital. Se o aplicativo travar ou tiver um fluxo confuso, o passageiro desiste e volta a comprar no porto. O sistema precisa ser à prova de frustração;
+
+- **Segurança Transacional**: Para o sistema, isso significa que a integração com gateways de pagamento deve ser impecável, com tratamento de erros robusto e criptografia de ponta. Uma falha de pagamento destrói a reputação do app imediatamente;
+
+- **Arquitetura Escalável**: Importância técnica estrutural. O banco de dados e o backend precisam ser desenhados para aguentar o tráfego de centenas de embarcações e milhares de usuários simultâneos sem lentidão;
+
+- **Dados e Previsibilidade**: O sistema precisa ter painéis (dashboards) que processem os dados de venda em tempo real e de forma precisa. Se o relatório mostrar um barco vazio quando ele está cheio, o operador perde dinheiro e abandona a plataforma.
+
+</div>
+
+## Pontos fracos
+
+<div align = "justify>
+
+- **Dependência de Conectividade**: Este é o maior desafio técnico na nossa região amazônica. O sistema não pode ser 100% dependente da nuvem o tempo todo. Ele precisa de uma arquitetura que suporte modo offline (como cache local no celular) para que a validação de passagens via QR Code funcione mesmo no meio do rio, sem sinal;
+
+- **Custo de Aquisição**: O sistema deve ter fluxos de cadastro simples (como login via Google ou WhatsApp) que reduzam a barreira de entrada para o usuário novo;
+
+- **Dependência B2B**: O painel do dono do barco precisa ser extremamente atrativo e fácil de usar. Se o cadastro (onboarding) da frota for burocrático no sistema, eles não vão aderir;
+
+- **Limitações**: A interface precisa ser clara em relação ao que é permitido. Mensagens de erro e tooltips bem escritos evitam que o usuário tente comprar espaço para uma moto e fique frustrado por não encontrar a opção.
+
+</div>
+
+## Oportunidades
+
+<div align = "justify>
+
+- **Internet via Satélite**: Sabendo que a conexão vai melhorar, o sistema já pode ser desenhado para, no futuro, enviar notificações em tempo real (push notifications) sobre atrasos ou mudanças de rota com a embarcação em movimento;
+
+- Digitalização Forçada: Confirma que o foco de esforço da equipe deve estar na integração com o ecossistema do Banco Central, priorizando o PIX via Copia e Cola e QR Code Dinâmico, deixando métodos mais complexos de lado no MVP;
+
+- **Expansão para Encomendas**: Importância crucial para a modelagem de dados. A tabela de Viagens no banco de dados deve ser construída hoje com flexibilidade para que, em uma próxima sprint, a entidade Cargas seja acoplada facilmente à mesma viagem, sem quebrar a lógica dos passageiros.
+
+</div>
+
+## Ameaças 
+
+<div align = "justify">
+
+- **Boicote de Cambistas**: O sistema precisa de logs de auditoria pesados e validação rigorosa de usuários (ex: confirmação por SMS/E-mail). Isso evita que atores mal-intencionados criem contas falsas para "travar" reservas de passagens e prejudicar as vendas legítimas;
+
+
+- **Instabilidade Climática**: O sistema não pode tratar apenas o "caminho feliz" (a viagem que dá certo). Ele precisa obrigatoriamente de fluxos de cancelamento em massa, reagendamento simplificado e estorno automatizado (refund) para quando os rios secarem e as frotas pararem;
+
+- **Regras da Marinha/Capitania**: O código precisa ser modular. Se amanhã a Marinha exigir o número do CPF e o nome da mãe de todos os passageiros no bilhete, a equipe deve conseguir adicionar esses campos no formulário de compra rapidamente, sem quebrar o resto do app.
+
+</div>
+
+# Exploração do mercado
+
+## Identificação Visual de Soluções Existentes
+
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/ade0fed0-4221-4438-a389-55683650de48" />
+
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/93d628cb-01fb-4696-a44c-40bf45a317f1" />
+
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/6630da04-4d44-4089-b3e4-77a9a95b6dfb" />
+
+## Quadro Comparativo
+
+| **Critérios/ Soluções** | **Solução A** | **Solução B** | **Solução C** | **Nossa Solução** |
+| :---: | :---: | :---: | :---: | :---: |
+| **Tecnologia utilizada** | web | web | web | mobile |
+| **Público Alvo** | Jovens e Adultos | Jovens e Adultos | Jovens e adultos | Jovens e Adultos |
+| **Pontos Fortes**| Possibilidade de comprar pelo site/ Possibilidade de transportar veículos/ Parcelamento da compra | É possível comprar passagens, apresenta uma boa interface | POssibilidade de parcelamento na compra de passagens | Mais de uma modalidade de pagamento/ Possibilidade de Parcelmento/ Geolocalização dos barcos em tempo real | 
+| **Pontos Fracos/ Limitações** | Não tem geolocalização/ o sistema não informa se há espaço para veículos na embarcação e depende do dono da embarcação para haver um resposta | Não faz transporte de veículos/ mercadorias/ Não tem geolocalização dos barcos | Falta de informação dos barcos/ poucas imagens dos barcos | Transporte de veículos e mercadorias não vai ser realizado |
 
 # Personas
+O desenvolvimento das personas deram uma visão melhor do nosso público alvo, suas necessidades e suas dores reais.
+
 ## Persona 1 (Lucas, O Viajante):
 
 <img src= "https://github.com/user-attachments/assets/21fc9b22-6cc3-480f-9335-dba368942bbf"/>
