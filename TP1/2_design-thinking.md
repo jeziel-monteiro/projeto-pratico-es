@@ -7,8 +7,12 @@ A concepção do Porto Certo utiliza a metodologia Golden Circle para alinhar o 
 - **O Como (How)**: A arquitetura de inovação e os diferenciais tecnológicos do sistema;
 - **O Quê (What)**: A materialização do produto e suas funcionalidades entregues ao usuário.
 
+<div align = "center">
+
 <img width="1920" height="1080" alt="Golden-Circle" src="https://github.com/user-attachments/assets/456524e3-683e-4e33-9f66-b61d019770e8" />
-<br>
+
+</div>
+
 <br>
 <br>
 <br>
@@ -25,14 +29,17 @@ O Sistema Porto Certo, composto por uma plataforma Web e um Aplicativo Android. 
 </div>
 
 # SWOT
-
 A elaboração do SWOT foi feito para mapear os cenários internos e externos do nosso sistema, aqui temos os seguintes pontos levantados pela ferramenta:
+
+<div align = "center">
 
 <img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/efc25f9d-c09f-465f-9864-1073606ef10e" />
 
+</div>
+
 ## Pontos Fortes
 
-<div align = "justify>
+<div align = "justify">
 
 - **UX/UI**: O público-alvo pode ter diferentes níveis de letramento digital. Se o aplicativo travar ou tiver um fluxo confuso, o passageiro desiste e volta a comprar no porto. O sistema precisa ser à prova de frustração;
 
@@ -46,7 +53,7 @@ A elaboração do SWOT foi feito para mapear os cenários internos e externos do
 
 ## Pontos fracos
 
-<div align = "justify>
+<div align = "justify">
 
 - **Dependência de Conectividade**: Este é o maior desafio técnico na nossa região amazônica. O sistema não pode ser 100% dependente da nuvem o tempo todo. Ele precisa de uma arquitetura que suporte modo offline (como cache local no celular) para que a validação de passagens via QR Code funcione mesmo no meio do rio, sem sinal;
 
@@ -60,7 +67,7 @@ A elaboração do SWOT foi feito para mapear os cenários internos e externos do
 
 ## Oportunidades
 
-<div align = "justify>
+<div align = "justify">
 
 - **Internet via Satélite**: Sabendo que a conexão vai melhorar, o sistema já pode ser desenhado para, no futuro, enviar notificações em tempo real (push notifications) sobre atrasos ou mudanças de rota com a embarcação em movimento;
 
@@ -87,13 +94,24 @@ A elaboração do SWOT foi feito para mapear os cenários internos e externos do
 
 ## Identificação Visual de Soluções Existentes
 
+<div align = "justify">
+
+Para a exploração de mercado,a equipe realizou uma coleta buscando soluções que abordam o mesmo problema ou que se assemelham ao nosso sistema. o grupo identificou a seguintes soluções:
+
+</div>
+
+<div align="center">
+
 <img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/ade0fed0-4221-4438-a389-55683650de48" />
 
 <img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/93d628cb-01fb-4696-a44c-40bf45a317f1" />
 
 <img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/6630da04-4d44-4089-b3e4-77a9a95b6dfb" />
 
+</div>
+
 ## Quadro Comparativo
+Em seguida, com base nas soluções encontradas, elaboramos uma tabela para identificar e comparar seus diferentes aspectos: 
 
 | **Critérios/ Soluções** | **Solução A** | **Solução B** | **Solução C** | **Nossa Solução** |
 | :---: | :---: | :---: | :---: | :---: |
@@ -103,9 +121,15 @@ A elaboração do SWOT foi feito para mapear os cenários internos e externos do
 | **Pontos Fracos/ Limitações** | Não tem geolocalização/ o sistema não informa se há espaço para veículos na embarcação e depende do dono da embarcação para haver um resposta | Não faz transporte de veículos/ mercadorias/ Não tem geolocalização dos barcos | Falta de informação dos barcos/ poucas imagens dos barcos | Transporte de veículos e mercadorias não vai ser realizado |
 
 # Personas
-O desenvolvimento das personas deram uma visão melhor do nosso público alvo, suas necessidades e suas dores reais.
+
+<div align = "justify">
+
+Persona é a representação fictícia do cliente, sendo uma criação de suas histórias pessoais, motivações, objetivos, desafios e preocupações.
+A partir desse contexto, o desenvolvimento das personas do nosso sistema deram uma visão melhor do nosso público alvo, suas necessidades e suas dores reais.
 
 ## Persona 1 (Lucas, O Viajante):
+
+<div align = "center">
 
 <img src= "https://github.com/user-attachments/assets/21fc9b22-6cc3-480f-9335-dba368942bbf"/>
 
@@ -116,3 +140,15 @@ O desenvolvimento das personas deram uma visão melhor do nosso público alvo, s
 ## Persona 3 (Ana, Deficiência Visual):
 
 <img src= "https://github.com/user-attachments/assets/b66e6aa9-d4a4-4290-a20f-01ffa7c223f7"/>
+
+</div>
+
+# Ideação
+<div align="justify">
+Após compreendermos o problema, o mercado e as dores de nossos usuários, avançamos para a fase de geração de ideias. Cada integrante da equipe contribuiu com soluções iniciais baseadas nos estudos de inspiração, que foram posteriormente discutidas, combinadas e refinadas coletivamente para definir o escopo funcional do Porto Certo.
+</div>
+
+## Registro de Brainstorming
+Toda a documentação das ideias individuais, o processo de discussão e as propostas selecionadas pela equipe estão centralizados em nossa página no notion.
+
+> 🔗 [Acesse a Página de Ideação no Notion](https://www.notion.so/a5f7b50cb8ba82468c5181366d8a4503?v=d097b50cb8ba82be9197089457837923&pvs=10)

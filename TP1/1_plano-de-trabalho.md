@@ -15,6 +15,7 @@
 | Versão | Descrição | Autor | Data |
 | :--- | :--- | :--- | :--- |
 | 1.0 | ELaboração do trabalho | Jeziel Monteiro | 27/04/2026 |
+| 2.0 | Especificação de requisitos | Sérgio Augusto | 05/05/2026
 
 ## Sumário
 - [1 - 🌊 Introdução](#1---introdução)
@@ -43,19 +44,19 @@
 
 ## 1 - 🌊 Introdução
 
-<div style="text-align: justify;">
+<div align= "justify">
 Em muitas regiões, o transporte fluvial tem um papel importante para a lógistica e locomoção, como o tráfego de cargas e viagem de pessoas, no entanto, tem-se uma necessidade em unificar essas informações. Por isso, o sistema é estruturada para automatizar o processo de compra para os usuários e centralizar a administração comercial para os operadores de transporte.
 </div>
 
 ### 1.1 - 🎯 Objetivo
 
-<div style="text-align: justify;">
+<div align= "justify">
 O projeto consiste em desenvolver um sistema digital para a comercialização de passagens fluviais, possibilitando o cadastro de tripulantes e navegadores, gerenciamento de serviços de transporte e reserva de passagens online.
 </div>
 
 ### 1.2 - 💡 Motivação, Justificativa, e Oportunidade
 
-<div style="text-align: justify;">
+<div align= "justify">
 A falta de informações para saber quanto é uma passagem de um barco, a data do embarque e desembarque, o local são algumas das dificuldades de muitos, tendo que procurar informação de terceiros. O nosso sistema visa esclarecer os dados de uma viagem fluvial em um ambiente só, sendo possível a reserva de passagens e o suporte de gerenciamento de operadores de transporte.
 </div>
 
@@ -79,13 +80,19 @@ A falta de informações para saber quanto é uma passagem de um barco, a data d
 
 ### 2.1 - Escopo Geral
 
-<div style="text-align: justify;">
+<div align= "justify">
 O projeto visa desenvolver um aplicativo móvel para unificar informações de transporte fluviário, permitindo a compra de passagens online e gerenciamento de serviços de transporte.
 </div>
 
 #### 2.1.1 - Escopo Específico
+- Cadastro e login do cliente e proprietário
+- Sistema multi-perfil de acordo com a persona;
+- Dashboard admnistrativo para o proprietário;
+- Dashboard para compra e visualização para o cliente.
 
 #### 2.1.2 - Escopo negativo
+- Não será implementado funcionalidades para transporte de encomendas;
+- Não serão implementadas funcionalidades avançadas de inteligência artificial.
 
 ### 2.2 - 🛠️ Ambiente de Desenvolvimento
 
@@ -99,7 +106,7 @@ O projeto visa desenvolver um aplicativo móvel para unificar informações de t
 
 ### 2.3 - ✨ Características inovadoras
 
-<div style="text-align: justify;">
+<div align= "justify">
 <ul>
   <li><b>Centralização de Informações Fluviais:</b> o sistema unifica dados cruciais sobre preços, datas, horários e locais de embarque e desembarque em uma única plataforma;</li>
   <li><b>Reserva e Compra Online de Passagens:</b> Permite a aquisição de passagens de transporte fluvial de forma totalmente digital e automatizada, eliminando a necessidade de deslocamento físico e filas;</li>
@@ -110,7 +117,7 @@ O projeto visa desenvolver um aplicativo móvel para unificar informações de t
 
 ### 2.4 - 🏆 Resultados Esperados
 
-<div style="text-align: justify;">
+<div align= "justify">
 <ul>
   <li><b>Facilidade de Acesso à Informação:</b> Redução significativa do tempo e esforço necessários para que os passageiros encontrem informações confiáveis e atualizadas sobre viagens fluviais;</li>
   <li><b>Aumento nas Vendas e Ocupação:</b> Com a conveniência da compra e reserva online, espera-se um aumento na taxa de ocupação das embarcações e na previsibilidade de receita para os operadores;</li>
@@ -153,7 +160,7 @@ O desenvolvimento do projeto será dividido em cinco fases principais, seguindo 
 
 #### 4.1.1 Equipamentos e Programa de Computador
 
-<div style="text-align: justify;">
+<div align= "justify">
 Para o desenvolvimento do sistema Porto Certo, são previstos os seguintes equipamentos e programas de computador:
 </div>
 
@@ -169,7 +176,7 @@ Para o desenvolvimento do sistema Porto Certo, são previstos os seguintes equip
 
 #### 4.1.2 Materiais de Consumo
 
-<div style="text-align: justify;">
+<div align= "justify">
 Os materiais de consumo previstos para o desenvolvimento do projeto são os seguintes:
 </div>
 
@@ -183,13 +190,13 @@ Os materiais de consumo previstos para o desenvolvimento do projeto são os segu
 
 #### 4.1.3 Treinamento
 
-<div style="text-align: justify;">
+<div align= "justify">
 Treinamentos não serão necessários ao projeto, pois as habilidades da equipe já cobrem as tecnologias a serem utilizadas, e eventuais aprendizados serão realizados via documentação e recursos online gratuitos.
 </div>
 
 #### 4.1.4 Serviço Técnico de Terceiros
 
-<div style="text-align: justify;">
+<div align= "justify">
 Os serviços técnicos de terceiros necessários para o desenvolvimento do projeto são:
 </div>
 
@@ -203,7 +210,7 @@ Os serviços técnicos de terceiros necessários para o desenvolvimento do proje
 
 ### 4.2 Resumo Financeiro e Valor Total
 
-<div style="text-align: justify;">
+<div align= "justify">
 Segue o resumo financeiro dos itens anteriores com os valores totais e porcentagem do aporte ao projeto:
 </div>
 
