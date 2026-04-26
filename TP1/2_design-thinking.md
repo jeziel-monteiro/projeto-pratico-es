@@ -28,12 +28,14 @@ O Sistema Porto Certo, composto por uma plataforma Web e um Aplicativo Android. 
 
 </div>
 
+# Exploração do mercado
+
 # SWOT
 A elaboração do SWOT foi feito para mapear os cenários internos e externos do nosso sistema, aqui temos os seguintes pontos levantados pela ferramenta:
 
 <div align = "center">
 
-<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/efc25f9d-c09f-465f-9864-1073606ef10e" />
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/021ef623-1631-4dfa-b85c-524befeceb4c" />
 
 </div>
 
@@ -43,7 +45,7 @@ A elaboração do SWOT foi feito para mapear os cenários internos e externos do
 
 - **UX/UI**: O público-alvo pode ter diferentes níveis de letramento digital. Se o aplicativo travar ou tiver um fluxo confuso, o passageiro desiste e volta a comprar no porto. O sistema precisa ser à prova de frustração;
 
-- **Segurança Transacional**: Para o sistema, isso significa que a integração com gateways de pagamento deve ser impecável, com tratamento de erros robusto e criptografia de ponta. Uma falha de pagamento destrói a reputação do app imediatamente;
+- **Acessibilidade Nativa e Inclusão Digital**: Suporte total a leitores de tela (como o TalkBack) e navegação simplificada para usuários com deficiência visual ou baixo letramento digital.A maioria dos apps concorrentes ignora completamente a acessibilidade. Isso abre as portas para uma parcela significativa da população e gera um forte apelo social e de inclusão;
 
 - **Arquitetura Escalável**: Importância técnica estrutural. O banco de dados e o backend precisam ser desenhados para aguentar o tráfego de centenas de embarcações e milhares de usuários simultâneos sem lentidão;
 
@@ -69,11 +71,11 @@ A elaboração do SWOT foi feito para mapear os cenários internos e externos do
 
 <div align = "justify">
 
-- **Internet via Satélite**: Sabendo que a conexão vai melhorar, o sistema já pode ser desenhado para, no futuro, enviar notificações em tempo real (push notifications) sobre atrasos ou mudanças de rota com a embarcação em movimento;
+- **Precificação Dinâmica:** O app cria a oportunidade de os donos de barcos variarem o preço da passagem conforme a demanda e a antecedência da compra, mais barato dias antes, mais caro nas últimas horas ou quando o barco está lotando, maximizando a margem de lucro.;
 
-- Digitalização Forçada: Confirma que o foco de esforço da equipe deve estar na integração com o ecossistema do Banco Central, priorizando o PIX via Copia e Cola e QR Code Dinâmico, deixando métodos mais complexos de lado no MVP;
+- **Integração Intermodal:** A oportunidade de conectar o aplicativo com outros modais via API. O sistema pode se integrar com aplicativos de transporte urbano locais, cooperativas de táxi ou agências de turismo, permitindo vender a jornada completa do passageiro (ex: Aeroporto/Hotel -> Porto -> Destino Fluvial) em um único ecossistema.;
 
-- **Expansão para Encomendas**: Importância crucial para a modelagem de dados. A tabela de Viagens no banco de dados deve ser construída hoje com flexibilidade para que, em uma próxima sprint, a entidade Cargas seja acoplada facilmente à mesma viagem, sem quebrar a lógica dos passageiros.
+- **Expansão para Encomendas:** Importância crucial para a modelagem de dados. A tabela de Viagens no banco de dados deve ser construída hoje com flexibilidade para que, em uma próxima sprint, a entidade Cargas seja acoplada facilmente à mesma viagem, sem quebrar a lógica dos passageiros.
 
 </div>
 
@@ -88,9 +90,11 @@ A elaboração do SWOT foi feito para mapear os cenários internos e externos do
 
 - **Regras da Marinha/Capitania**: O código precisa ser modular. Se amanhã a Marinha exigir o número do CPF e o nome da mãe de todos os passageiros no bilhete, a equipe deve conseguir adicionar esses campos no formulário de compra rapidamente, sem quebrar o resto do app.
 
-</div>
+## 3. Matriz TOWS: Estratégias de Cenários
 
-# Exploração do mercado
+A tabela abaixo cruza os fatores internos (Forças e Fraquezas) com os fatores externos (Oportunidades e Ameaças) para formular planos de ação estratégicos para o aplicativo.
+
+</div>
 
 ## Identificação Visual de Soluções Existentes
 
