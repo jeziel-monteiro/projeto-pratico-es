@@ -8,7 +8,7 @@
 | **Status** | Iniciando projeto |
 | **Número de Controle SRBR-M** | XXXXX |
 | **Executor Principal** | Jeziel Monteiro Pessoa |
-| **Coordernador do Projeto** | Andrey Antonio de Oliveira Rodrigues|
+| **Coordenador do Projeto** | Andrey Antonio de Oliveira Rodrigues|
 
 ## 📜 Histórico de Versões
 
@@ -45,7 +45,7 @@
 ## 1 - 🌊 Introdução
 
 <div align= "justify">
-Em muitas regiões, o transporte fluvial tem um papel importante para a lógistica e locomoção, como o tráfego de cargas e viagem de pessoas, no entanto, tem-se uma necessidade em unificar essas informações. Por isso, o sistema é estruturada para automatizar o processo de compra para os usuários e centralizar a administração comercial para os operadores de transporte.
+Em muitas regiões, o transporte fluvial tem um papel importante para a logística e locomoção, como o tráfego de cargas e viagem de pessoas, no entanto, tem-se uma necessidade em unificar essas informações. Por isso, o sistema é estruturada para automatizar o processo de compra para os usuários e centralizar a administração comercial para os operadores de transporte.
 </div>
 
 ### 1.1 - 🎯 Objetivo
@@ -60,7 +60,7 @@ O projeto consiste em desenvolver um sistema digital para a comercialização de
 A falta de informações para saber quanto é uma passagem de um barco, a data do embarque e desembarque, o local são algumas das dificuldades de muitos, tendo que procurar informação de terceiros. O nosso sistema visa esclarecer os dados de uma viagem fluvial em um ambiente só, sendo possível a reserva de passagens e o suporte de gerenciamento de operadores de transporte.
 </div>
 
-### 1.3 - 🏷️ Caraterização do Projeto
+### 1.3 - 🏷️ Caracterização do Projeto
 
 #### 1.3.1 - Classe
 
@@ -85,14 +85,45 @@ O projeto visa desenvolver um aplicativo móvel para unificar informações de t
 </div>
 
 #### 2.1.1 - Escopo Específico
-- Cadastro e login do cliente e proprietário
-- Sistema multi-perfil de acordo com a persona;
-- Dashboard admnistrativo para o proprietário;
-- Dashboard para compra e visualização para o cliente.
+- **Autenticação e Segurança**:
+
+  - Sistema de cadastro e login unificado com controle de acesso multi-perfil (Passageiro e Proprietário);
+  - Criptografia e tokenização para proteção de dados sensíveis de pagamento nas transações de cartão de crédito.
+
+- **Perfil do Passageiro**:
+
+  - Mecanismo de busca e aplicação de filtros avançados para localização de rotas fluviais;
+
+  - Compra e reserva digital de passagens com atualização de inventário em tempo real;
+
+  - Processamento integrado de pagamentos através de Pix, Cartão de Crédito (com acréscimo de taxa administrativa de 2,0%) e Boleto Bancário;
+
+  - Fluxo de cancelamento de reserva e solicitação automatizada de estorno de tarifa;
+
+  - Acompanhamento geográfico da embarcação em mapa interativo com cálculo de tempo estimado de chegada (ETA);
+
+  - Consulta detalhada ao perfil das embarcações, incluindo o histórico de avaliações e comentários de outros utilizadores;
+
+  - Assistente interativo integrado (tutorial passo-a-passo) para orientação de novos utilizadores na interface;
+
+  - Histórico de viagens realizadas.
+
+- **Perfil do Proprietário**:
+
+  - Cadastro e gestão de frotas, detalhando as especificações técnicas, fotos e capacidades das embarcações;
+
+  - Painel de agendamento e publicação de novas viagens fluviais com antecedência mínima de 12 horas;
+
+  - Agenda em formato de calendário para organização, edição e monitorização das rotas ativas;
+
+  - Central de comunicação assíncrona para o disparo de notificações e alertas em massa aos passageiros vinculados a uma rota;
+
+  - Painel de controle financeiro (Dashboard de Faturamento) com cálculo automatizado do valor bruto e do valor líquido a receber.
 
 #### 2.1.2 - Escopo negativo
-- Não será implementado funcionalidades para transporte de encomendas;
-- Não serão implementadas funcionalidades avançadas de inteligência artificial.
+- Não será implementado o módulo de gerenciamento, precificação e despacho de cargas, mercadorias ou veículos pesados nesta versão do MVP, ficando o escopo restrito estritamente ao transporte e assentos de passageiros.
+
+- Não serão implementados algoritmos avançados de Inteligência Artificial para sistemas de recomendação ou precificação dinâmica automática de passagens.
 
 ### 2.2 - 🛠️ Ambiente de Desenvolvimento
 
