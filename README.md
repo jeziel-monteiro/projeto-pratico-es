@@ -1,5 +1,7 @@
 # projeto-pratico-es
-<div align = "justify" > 
+
+<div align = "justify">
+
 O repositório tem como objetivo de realizar as atividades da matéria de Engenharia de de Software I do ICET UFAM para uma aprendizagem sistemática, disciplinada e quantificável no
 desenvolvimento, operação e manutenção de software.
 
