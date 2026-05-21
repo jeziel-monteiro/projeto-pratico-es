@@ -14,7 +14,7 @@ No Diagrama de Contexto seu sistema é desenhado como uma caixa central, cercado
 
 Em relação à sua estrutura, o escopo foca em apenas um sistema de software, que atua como o elemento principal. Os elementos de apoio são justamente as pessoas e os sistemas externos conectados diretamente a ele, sendo que esses softwares secundários geralmente ficam fora da sua fronteira de responsabilidade ou domínio corporativo.
 
-## Diagrma do Projeto
+## Diagrama do Projeto
 
 <img width="5288" height="6728" alt="Diagrama_Contexto drawio" src="https://github.com/user-attachments/assets/327df16d-d312-491b-938c-f7390e1e8e55" />
 
