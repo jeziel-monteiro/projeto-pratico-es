@@ -10,31 +10,33 @@ Ao simplificar a visualização técnica, o modelo atua como uma ponte de comuni
 
 # Diagrama de Contexto
 
-No Diagrama de Contexto seu sistema é desenhado como uma caixa central, cercado diretamente pelos usuários que o utilizam e pelos outros sistemas com os quais ele interage. Como essa é uma visão panorâmica e distanciada da arquitetura, o detalhamento não é importante nesta fase. O foco deve estar estritamente nas pessoas (atores, papéis, personas) e nas dependências de software. 
+No Diagrama de Contexto, o sistema analisado é desenhado como uma caixa central, cercado diretamente pelos usuários que o utilizam e pelos outros sistemas com os quais interage. Por se tratar de uma visão panorâmica e distanciada da arquitetura, o detalhamento técnico não é relevante nesta fase, fazendo com que o foco recaia estritamente sobre as pessoas, como atores ou personas, e nas dependências de software.
 
-Em relação à sua estrutura, o escopo foca em apenas um sistema de software, que atua como o elemento principal. Os elementos de apoio são justamente as pessoas e os sistemas externos conectados diretamente a ele, sendo que esses softwares secundários geralmente ficam fora da sua fronteira de responsabilidade ou domínio corporativo.
+Em relação à sua estrutura, a modelagem possui um escopo voltado para apenas um sistema de software, que atua como o elemento principal. Os elementos de apoio são representados justamente por essas pessoas e pelos sistemas externos conectados diretamente ao núcleo, sendo que esses softwares secundários geralmente se situam fora da fronteira de responsabilidade ou do domínio corporativo da organização principal.
 
 ## Diagrama do Projeto
 
-<img width="5288" height="6728" alt="Diagrama_Contexto drawio" src="https://github.com/user-attachments/assets/327df16d-d312-491b-938c-f7390e1e8e55" />
+<img width="6336" height="6736" alt="diagrama_contexto_att drawio" src="https://github.com/user-attachments/assets/1f067210-856f-4a17-bcef-b2bfaf5ebc5a" />
 
 ## Componentes do Diagrama
 
 ### Sistema Central (Software System)
 
-- **Porto Certo:** É o coração da operação. Funciona como um hub digital (Aplicativo Móvel e Software Comercial) que unifica a venda de passagens, o controle da frota fluvial e o monitoramento das viagens em tempo real.
+- **Porto Certo:** Plataforma digital central responsável por unificar a comercialização de passagens, o controle logístico de frotas e a orquestração dos dados de viagem.
 
 ### Os Usuários (Person)
 
-- **Viajante:** É o consumidor final. A pessoa física que utiliza o aplicativo buscando a compra de passagens fluviais.
-
-- **Proprietário:** É o fornecedor comercial. A pessoa ou empresa dona das embarcações, responsável por garantir a infraestrutura de transporte oferecida na plataforma.
+- **Viajante:** O consumidor final que utiliza o aplicativo para buscar rotas, comprar e gerenciar passagens e acompanhar o deslocamento fluvial.
+  
+- **Proprietário:** O fornecedor comercial que utiliza o software para gerenciar embarcações, cadastrar rotas e monitorar o faturamento.
 
 ### Os Sistemas Externos (Software System)
 
-- **Gateway de Pagamento:** Uma instituição financeira que garante que as transferências de dinheiro sejam feitas com segurança e liquidez.
+- **Gateway de Pagamento:** Serviço financeiro que processa transações imediatas (Como o Pix e Cartão) e gerencia a emissão e conciliação assíncrona de boletos bancários
 
-- **Serviço de Mensageria:** Um provedor de telecomunicações focado na entrega de mensagens, documentos e alertas fora do ambiente do aplicativo.
+- **Serviço de Geolocalização:** Infraestrutura externa de mapeamento utilizada para renderizar as coordenadas e calcular trajetos.
+
+- **Serviço de Mensageria:** Provedor terceirizado responsável pelo envio de notificações e bilhetes via e-mail, SMS ou push.
 
 ## Ligação dos Componentes
 
@@ -42,6 +44,8 @@ Em relação à sua estrutura, o escopo foca em apenas um sistema de software, q
 
 **Ações do Proprietário -> Sistema:** O Proprietário atua na gestão. Ele envia dados para o sistema ao cadastrar suas embarcações, criar as rotas de viagem, iniciar e encerrar os trajetos, emitir notificações aos passageiros e consultar seus relatórios de faturamento.
 
-**Sistema -> Gateway de Pagamento:** Sempre que o Viajante finaliza uma compra de passagem, o sistema pega os dados dessa intenção de compra e os envia para o Gateway de Pagamento. O sistema externo é quem processa a transação real e devolve a confirmação.
+**Sistema -> Gateway de Pagamento:** O sistema envia dados de transações para processamento de Cartão de Crédito/Pix e registra cobranças de Boletos Bancários, recebendo de volta a confirmação assíncrona de compensação.
 
 **Sistema -> Serviço de Mensageria:** Quando o Proprietário decide emitir uma notificação sobre a viagem (ou quando o sistema precisa enviar o bilhete do passageiro), o sistema aciona o Serviço de Mensageria. É este provedor externo que realiza o disparo real dos e-mails, SMS ou alertas para os dispositivos dos usuários.
+
+**Sistema → Serviço de Geolocalização:** Provedor externo de mapas utilizado pelo sistema para calcular rotas, plotar as coordenadas geradas pela telemetria da embarcação e exibir o mapa interativo aos usuários.
