@@ -12,7 +12,6 @@ A concepção do Porto Certo utiliza a metodologia Golden Circle para alinhar o 
 <img width="1920" height="1080" alt="Golden-Circle" src="https://github.com/user-attachments/assets/456524e3-683e-4e33-9f66-b61d019770e8" />
 
 </div>
-
 <br>
 <br>
 <br>
