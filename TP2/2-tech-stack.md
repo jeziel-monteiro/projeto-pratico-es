@@ -9,26 +9,47 @@ Para garantir eficiência e organização, a pilha tecnológica é comumente est
 
 ## Modelo Visual do Sistema
 
-## Tabela de Tecnologias e Ferramentas
+## Tabela de Ferramentas e Tecnologias
 
-| Nome da Tecnologia | Camada | Justificativa de Uso |
+### Passageiro (Aplicativo Móvel)
+
+| Tecnologia | Camada | Justificativa |
 | :--- | :--- | :--- |
-| **Flutter (Dart)** | Frontend (Mobile) | Reduz o tempo e custo de desenvolvimento ao utilizar um único código-base nativo, Android e iOS. Apresenta alta performance na renderização de interfaces complexas. |
-| **Isar Database** | Armazenamento Local (Offline) | Banco de dados NoSQL ultrarrápido, ideal para armazenar a fila de eventos locais, permitindo a sincronização posterior com o servidor. |
-| **Bloc** | Gerenciamento de Estado | Padrão arquitetural corporativo que separa estritamente a interface da lógica de negócios. Baseia-se em eventos e estados, alinhando-se perfeitamente à lógica de Event Sourcing. |
-| **Node.js + NestJS** | Backend (Lógica e Serviços) | Oferece uma arquitetura modular e TypeScript. O NestJS possui módulos nativos que padronizam e aceleram a implementação do padrão CQRS. |
-| **RESTful + Swagger** | API (Padrão e Documentação) | O padrão RESTful assegura o processamento confiável das transações. O Swagger padroniza e automatiza a documentação dos endpoints, garantindo integração transparente. |
-| **PostgreSQL** | Banco de Dados (Escrita) | Atua como banco relacional focado na integridade transacional, armazenando a corrente imutável de eventos, Event Sourcing, com eficiência utilizando colunas JSONB. |
-| **MongoDB** | Banco de Dados (Leitura) | Banco NoSQL que proporciona indexação vertiginosa, entregando o catálogo de viagens de forma instantânea sem sobrecarregar o banco principal de transações. |
-| **AWS SQS / SNS** | Mensageria Interna (Backend) | Espinha dorsal do padrão CQRS que interliga os bancos de dados. Propaga eventos de forma assíncrona sem a necessidade de gerenciar servidores dedicados. |
-| **Firebase Authentication** | Autenticação e Autorização | Fornece segurança consolidada, simplifica a gestão de tokens de acesso e possui integração nativa, rápida e gratuita com o Flutter. |
-| **Firebase Cloud Messaging** | Mensageria Externa (Push) | Serviço responsável por interagir diretamente com o usuário final, disparando alertas nos smartphones dos passageiros inscritos em tópicos de viagens. |
-| **Mercado Pago** | Processamento de Pagamentos | Gateway com infraestrutura robusta para o mercado. Oferece suporte instantâneo ao Pix, fluxos de estorno e divisão de pagamentos para a retenção da taxa da plataforma. |
-| **Mapbox** | Mapas e Geolocalização | Apresenta superioridade técnica na renderização e na capacidade de cache de mapas para uso offline. |
-| **TLS 1.3 + AES-256** | Segurança e Conformidade | Assegura a proteção rigorosa de dados em trânsito e em repouso. Essencial para garantir a conformidade do sistema com as diretrizes da LGPD. |
-| **AWS ECS (Fargate) + S3** | Infraestrutura Cloud | Modelo serverless que escala automaticamente a infraestrutura em picos de tráfego e fornece armazenamento durável para mídias e documentos das embarcações. |
-| **GitHub Actions + Fastlane** | CI/CD (Automação de Deploy) | Automatiza testes e o deploy do backend na AWS nativamente. Agiliza a submissão simultânea de atualizações nas lojas de aplicativos. |
-| **GitHub Projects + Sentry** | Gestão e Observabilidade | Centraliza a operação ágil conectando requisitos de negócio ao código-fonte e captura em tempo real erros silenciosos ou falhas de conectividade no aplicativo. |
+| **Flutter (Dart)** | Frontend Mobile | Permite o desenvolvimento nativo para Android e iOS com um único código-base, entregando alta performance. |
+| **SQLite** | Armazenamento Local (Cache) | Atua na persistência de dados essenciais diretamente no dispositivo móvel, permitindo que o usuário consulte dados sem cobertura de internet. |
+| **Node.js com NestJS** | Backend (Servidor) | Processa as requisições de enviados pelo aplicativo móvel. |
+| **PostgreSQL** | Banco de Dados Relacional | Centraliza o armazenamento de dados estruturados em tempo real e o histórico transacional. |
+| **Firebase Authentication** | Autenticação | Controla o acesso seguro e mantém o estado da sessão ativo no aplicativo móvel de forma persistente. |
+| **Firebase Cloud Messaging (FCM)** | Notificações Push | Recebe alertas automáticos vindos do servidor e os exibe instantaneamente na tela do smartphone do passageiro. |
+| **Mercado Pago** | Processamento de Pagamentos | Viabiliza a integração direta com métodos de pagamento no aplicativo, processando transações via Pix, boleto ou cartão de crédito. |
+| **Mapbox** | Mapas e Geolocalização | Renderiza o mapa interativo no aplicativo móvel, permitindo o acompanhamento geográfico e o cálculo do tempo estimado. |
+| **AWS ECS (Fargate)** | Hospedagem Cloud | Garante o funcionamento estável do servidor da API que abastece o aplicativo móvel, escalando os recursos automaticamente. |
+| **GitHub Actions e Fastlane** | CI/CD e Automação | Automatiza a execução de testes no código e realiza o envio automatizado das novas versões do aplicativo para as lojas virtuais. |
 
+### Proprietário (Sistema Web)
+
+| Tecnologia | Camada | Justificativa |
+| :--- | :--- | :--- |
+| **Flutter (Dart)** | Frontend Web | Viabiliza a construção do painel administrativo para navegadores utilizando a mesma linguagem do aplicativo mobile. |
+| **Node.js com NestJS** | Backend (Servidor) | Recebe os comandos estruturados enviados pelo navegador do proprietário. |
+| **PostgreSQL** | Banco de Dados Relacional | Gerencia e organiza as tabelas de faturamento bruto e líquido, os dados cadastrais e as escalas de horários. |
+| **Firebase Authentication** | Autenticação | Fornece a validação de identidade e o controle de acesso do proprietário ao painel administrativo web de maneira unificada com o ecossistema mobile. |
+| **Firebase Cloud Messaging (FCM)** | Central de Comunicação | Serve de ponte técnica para que o proprietário, através do painel web, dispare mensagens informativas e alertas operacionais em massa para todos os passageiros vinculados a uma rota específica. |
+| **Mercado Pago** | Dashboard Financeiro | Fornece os dados transacionais de pagamentos e estornos processados para alimentar o painel de controle financeiro do proprietário com os cálculos de valores líquidos a receber. |
+| **AWS ECS (Fargate)** | Hospedagem Cloud | Fornece a infraestrutura em nuvem para manter o painel administrativo web acessível continuamente para os operadores de transporte. |
+| **AWS S3** | Armazenamento de Arquivos | Armazena de forma isolada e segura os documentos legais de navegação e as fotos das embarcações enviadas pelos proprietários através dos formulários web. |
+| **GitHub Actions** | CI/CD e Automação | Realiza a compilação e a publicação automática do sistema web na infraestrutura de nuvem a cada atualização de código aprovada no repositório. |
+| **Sentry** | Observabilidade | Captura falhas de execução, quebras de layout ou erros de comunicação com a API diretamente no navegador do proprietário, agilizando correções pela equipe técnica. |
+
+### Tecnologias transversais
+
+| Tecnologia | Camada | Justificativa |
+| :--- | :--- | :--- |
+| **RESTful e Swagger** | API e Documentação | O padrão RESTful assegura o processamento padronizado das requisições de ambos os clientes. O Swagger automatiza a documentação dos endpoints, garantindo uma integração transparente entre a equipe. |
+| **Git e GitHub** | Controle de Versão | Atuam como o sistema base de versionamento, permitindo o trabalho colaborativo simultâneo, a revisão de código por pares e o rastreio seguro de todo o histórico de alterações da plataforma. |
+| **Docker** | Conteneirização de Ambiente | Empacota a API do servidor e suas dependências em contêineres padronizados, garantindo que o código rode de maneira idêntica nas máquinas locais dos desenvolvedores e na nuvem. |
+| **Postman** | Testes de Integração (API) | Facilita a simulação, o teste e a validação dos endpoints RESTful durante o desenvolvimento, servindo como uma ponte prática para o consumo de dados. |
+| **TLS 1.3 e AES-256** | Segurança e Conformidade | Assegura a proteção rigorosa de dados sensíveis em trânsito e em repouso no banco de dados. Essencial para manter a conformidade do ecossistema com a LGPD. |
+| **GitHub Projects** | Gestão de Tarefas | Centraliza a operação ágil da equipe de desenvolvimento, conectando os requisitos de negócio e o quadro de tarefas diretamente aos códigos e atualizações do repositório. |
 
 </div>
