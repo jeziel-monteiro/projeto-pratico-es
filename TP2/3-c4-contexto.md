@@ -16,7 +16,7 @@ Em relação à sua estrutura, a modelagem possui um escopo voltado para apenas 
 
 ## Diagrama do Projeto
 
-<img width="6336" height="6736" alt="diagrama_contexto_att drawio" src="https://github.com/user-attachments/assets/1f067210-856f-4a17-bcef-b2bfaf5ebc5a" />
+<img width="12863" height="16384" alt="DiagramaC1A drawio" src="https://github.com/user-attachments/assets/0e0bf8f5-9cbc-450f-9141-adb9468741eb" />
 
 ## Componentes do Diagrama
 
@@ -36,8 +36,6 @@ Em relação à sua estrutura, a modelagem possui um escopo voltado para apenas 
 
 - **Serviço de Geolocalização:** Infraestrutura externa de mapeamento utilizada para renderizar as coordenadas e calcular trajetos.
 
-- **Serviço de Mensageria:** Provedor terceirizado responsável pelo envio de notificações e bilhetes via e-mail, SMS ou push.
-
 ## Ligação dos Componentes
 
 **Ações do Viajante-> Sistema:** O Viajante interage ativamente com o sistema enviando comandos para acessar a plataforma, buscar rotas disponíveis, reservar bilhetes e efetuar a compra de passagens.
@@ -46,6 +44,4 @@ Em relação à sua estrutura, a modelagem possui um escopo voltado para apenas 
 
 **Sistema -> Gateway de Pagamento:** O sistema envia dados de transações para processamento de Cartão de Crédito/Pix e registra cobranças de Boletos Bancários, recebendo de volta a confirmação assíncrona de compensação.
 
-**Sistema -> Serviço de Mensageria:** Quando o Proprietário decide emitir uma notificação sobre a viagem (ou quando o sistema precisa enviar o bilhete do passageiro), o sistema aciona o Serviço de Mensageria. É este provedor externo que realiza o disparo real dos e-mails, SMS ou alertas para os dispositivos dos usuários.
-
-**Sistema → Serviço de Geolocalização:** Provedor externo de mapas utilizado pelo sistema para calcular rotas, plotar as coordenadas geradas pela telemetria da embarcação e exibir o mapa interativo aos usuários.
+**Sistema -> Serviço de Geolocalização:** Provedor externo de mapas utilizado pelo sistema para calcular rotas, plotar as coordenadas geradas pela telemetria da embarcação e exibir o mapa interativo aos usuários.
