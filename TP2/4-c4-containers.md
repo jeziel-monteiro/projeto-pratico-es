@@ -4,6 +4,7 @@
 
 O Diagrama de Containers é o segundo nível do modelo C4 e apresenta a arquitetura interna do sistema. Ele mostra os principais containers da aplicação, suas responsabilidades, as tecnologias utilizadas e a forma como se comunicam entre si e com sistemas externos. Essa visão permite compreender a organização da solução e o fluxo de informações entre seus componentes.
 
+
 </div>
 
 # Diagrama de Containers
