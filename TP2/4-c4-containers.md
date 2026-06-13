@@ -1,477 +1,71 @@
-# Introdução
+# Visão Geral do Diagrama de Containers
 
 <div align="justify">
-  
-O Diagrama de Containers faz parte do modelo C4 (Context, Containers, Components e Code), sendo responsável por representar a arquitetura de alto nível interna de um sistema de software. Após a definição do Diagrama de Contexto - que mostra os usuários e sistemas externos que interagem com a plataforma - o Diagrama de Containers detalha como o sistema é dividido internamente em aplicações, serviços, bancos de dados e integrações.
 
-No modelo C4, um “container” não representa necessariamente um container Docker, mas sim uma unidade executável ou implantável do sistema, como aplicações web, aplicativos móveis, APIs, bancos de dados, sistemas de armazenamento ou serviços externos integrados.
+O Diagrama de Containers é o segundo nível do modelo C4 e apresenta a arquitetura interna do sistema. Ele mostra os principais containers da aplicação, suas responsabilidades, as tecnologias utilizadas e a forma como se comunicam entre si e com sistemas externos. Essa visão permite compreender a organização da solução e o fluxo de informações entre seus componentes.
 
-O objetivo principal do Diagrama de Containers é demonstrar:
-- como os principais módulos do sistema se comunicam;
-- onde as regras de negócio são executadas;
-- quais tecnologias podem ser utilizadas;
-- como ocorre a separação de responsabilidades;
-- quais integrações externas existem;
-- e como os dados circulam dentro da arquitetura.
-
-No sistema Porto Certo, o Diagrama de Containers foi elaborado com base nas 15 histórias de usuário refinadas, contemplando funcionalidades como:
-- busca e compra de passagens;
-- pagamentos via PIX, boleto e cartão;
-- rastreamento de embarcações em tempo real;
-- armazenamento offline de bilhetes;
-- acessibilidade;
-- notificações em massa;
-- cadastro de embarcações e viagens;
-- gerenciamento financeiro;
-- emissão de bilhetes digitais.
-
-A arquitetura foi organizada de forma modular, separando claramente:
-- interfaces dos usuários;
-- backend central;
-- armazenamento de dados;
-- serviços externos;
-- mecanismos de cache offline;
-- e serviços de comunicação em tempo real.
-
-# Diagrama de Containers - Sistema Porto Certo
-
-<img width="26384" height="22436" alt="image" src="https://github.com/user-attachments/assets/7a390fad-f9d4-42a9-abb0-2b96b24e86fe" />
 
-# Explicação Detalhada do Diagrama de Containers
+</div>
 
-O Diagrama de Containers do sistema Porto Certo representa a divisão interna da arquitetura da plataforma, demonstrando como as aplicações, serviços, banco de dados, armazenamento e integrações externas se comunicam para atender às funcionalidades descritas nas 15 histórias de usuário.
+# Diagrama de Containers
 
-No modelo C4, o Diagrama de Containers possui o objetivo de mostrar os principais blocos executáveis do sistema, suas responsabilidades, tecnologias e relações de comunicação. Diferente do Diagrama de Contexto — que mostra apenas usuários e sistemas externos — o Diagrama de Containers detalha a estrutura interna da solução.
-
-A arquitetura do Porto Certo foi organizada de forma modular para separar:
-- interfaces dos usuários;
-- regras de negócio;
-- armazenamento de dados;
-- serviços externos;
-- comunicação em tempo real;
-- persistência offline.
-
-Essa separação reduz o acoplamento entre partes do sistema e facilita manutenção, escalabilidade, segurança e evolução futura da plataforma.
-
----
-
-# Atores Principais do Sistema
-
-O sistema possui dois atores principais:
-
-## Viajante
-
-O Viajante representa o usuário final da plataforma, responsável por:
-- buscar viagens;
-- consultar embarcações;
-- comprar passagens;
-- acompanhar viagens;
-- acessar bilhetes digitais;
-- utilizar recursos de acessibilidade.
-
-Esse ator interage exclusivamente com o App Mobile do Viajante.
-
----
+<img width="16384" height="10094" alt="Untitled Diagram drawio (8)" src="https://github.com/user-attachments/assets/753fb0e2-1a1a-4e6d-8d23-e08e2a16d1fe" />
 
-## Proprietário
+## Containers do Sistema
 
-O Proprietário representa o fornecedor do serviço fluvial e o responsável pelas embarcações e viagens cadastradas na plataforma.
+| Container                            | Tecnologia                     | Responsabilidade                                                                                                                                       |
+| :------------------------------------: | :------------------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| App Mobile do Viajante               | Flutter (Dart)                 | Permite ao viajante cadastrar-se, buscar viagens, comprar passagens, consultar bilhetes, acompanhar embarcações em tempo real e utilizar recursos de acessibilidade. |
+| Cache Local do Dispositivo           | Persistência offline do Firebase Cloud Firestore | Armazena bilhetes digitais, favoritos e preferências do usuário para acesso offline e melhor experiência de uso.                                       |
+| Painel Web/App do Proprietário       | Flutter Web (Dart)             | Permite ao proprietário cadastrar embarcações, gerenciar viagens, enviar notificações, acompanhar faturamento e operar a frota.                        |
+| API Backend Porto Certo              | Render / Firebase Cloud Functions | Centraliza as regras de negócio da plataforma, gerencia cadastro de usuários, viagens, reservas, pagamentos, notificações, webhooks e integrações externas. |
+| Banco de Dados Principal             | Firebase Cloud Firestore       | Armazena dados estruturados da plataforma em coleções NoSQL, incluindo usuários, dados de cadastro, embarcações, viagens, reservas, pagamentos e notificações. |
+| Armazenamento de Arquivos            | Firebase Cloud Storage         | Armazena fotos das embarcações, bilhetes eletrônicos em PDF, boletos e demais documentos utilizados pelo sistema.                                      |
+| Gateway de Pagamento                 | Mercado Pago                   | Processa pagamentos via cartão, PIX e boleto, realizando validações, compensações e operações de estorno.                                              |
+| Serviço de Mensageria                | Firebase Cloud Messaging (FCM) | Envia notificações push e comunicações eletrônicas aos usuários sobre compras, alterações de viagens e avisos operacionais.                            |
+| Serviço de Localização em Tempo Real | Mapbox                         | Fornece rastreamento das embarcações, atualização de posição geográfica e cálculo do tempo estimado de chegada (ETA).                                  |
+| Serviço de Autenticação              | Firebase Authentication         | Realiza autenticação de usuários, validação de identidade e controle de acesso à plataforma.                                                           |
 
-Esse ator utiliza o Painel Web/App do Proprietário para:
-- cadastrar embarcações;
-- cadastrar viagens;
-- iniciar e encerrar viagens;
-- enviar notificações;
-- consultar faturamento;
-- gerenciar operações.
-
----
-
-# Containers Internos do Sistema
-
-# 1. App Mobile do Viajante
-
-O App Mobile do Viajante é a principal interface utilizada pelos passageiros da plataforma.
-
-Esse container é responsável pelas funcionalidades presentes nas seguintes histórias:
-- US01 — Busca de viagens;
-- US02 — Compra de passagens;
-- US05 — Rastreamento em tempo real;
-- US06 — Alto contraste;
-- US07 — Formas de pagamento;
-- US08 — Acessibilidade;
-- US10 — Perfil de embarcações;
-- US12 — Tutorial interativo;
-- US13 — Cancelamento de passagens;
-- US15 — Bilhetes offline.
-
-O aplicativo permite:
-- pesquisar viagens;
-- visualizar embarcações;
-- reservar assentos;
-- realizar pagamentos;
-- consultar bilhetes;
-- acompanhar localização da embarcação;
-- acessar funcionalidades offline;
-- utilizar recursos de acessibilidade.
-
-A comunicação principal do aplicativo ocorre com a API Backend Porto Certo.
-
-Além disso, o aplicativo recebe dados do Serviço de Localização em Tempo Real para exibir:
-- posição da embarcação;
-- deslocamento no mapa;
-- ETA (tempo estimado de chegada).
-
-O aplicativo também se comunica com o Cache Local do Dispositivo para armazenar:
-- bilhetes digitais;
-- dados temporários;
-- preferências visuais;
-- informações offline.
-
-Tecnologia:
-- Flutter.
-
----
-
-# 2. Painel Web/App do Proprietário
-
-O Painel Web/App do Proprietário representa a interface administrativa da plataforma.
-
-Esse container atende principalmente:
-- US03 — Cadastro de embarcações;
-- US04 — Notificações em massa;
-- US09 — Cadastro de viagens;
-- US11 — Dashboard financeiro;
-- US14 — Iniciar e encerrar viagens.
-
-Por meio desse painel, o proprietário consegue:
-- cadastrar embarcações;
-- cadastrar rotas e viagens;
-- iniciar viagens;
-- encerrar viagens;
-- enviar notificações;
-- consultar faturamento;
-- acompanhar operações.
-
-O painel envia todas as requisições para a API Backend Porto Certo, que executa as validações e regras de negócio.
-
-O painel não possui acesso direto:
-- ao banco de dados;
-- ao gateway de pagamento;
-- ao serviço de localização;
-- aos serviços externos.
-
-Essa decisão arquitetural aumenta a segurança e reduz acoplamento.
-
-Tecnologia:
-- React;
-- PWA.
-
----
-
-# 3. API Backend Porto Certo
-
-A API Backend Porto Certo é o núcleo central da arquitetura.
-
-Esse container concentra praticamente todas as regras de negócio da plataforma.
-
-Ele atende diretamente todas as histórias do sistema, principalmente:
-- controle de reservas;
-- validação de assentos;
-- autenticação;
-- pagamentos;
-- notificações;
-- rastreamento;
-- faturamento;
-- geração de bilhetes;
-- cancelamentos.
-
-O Backend é responsável por:
-- autenticar usuários;
-- controlar permissões;
-- validar disponibilidade;
-- processar reservas;
-- controlar status das viagens;
-- processar pagamentos;
-- solicitar estornos;
-- gerar bilhetes;
-- integrar serviços externos;
-- controlar rastreamento em tempo real;
-- enviar notificações;
-- realizar cálculos financeiros.
-
-A centralização das regras no Backend impede que validações importantes fiquem espalhadas entre aplicativos clientes.
-
-Essa decisão é fundamental para:
-- integridade dos dados;
-- segurança;
-- consistência das operações;
-- controle financeiro.
-
-O Backend se comunica com:
-- Banco de Dados Principal;
-- Gateway de Pagamento;
-- Serviço de Mensageria;
-- Serviço de Localização em Tempo Real;
-- Armazenamento de Arquivos.
-
-Tecnologias sugeridas:
-- Node.js com NestJS;
-  
----
-
-# 4. Banco de Dados Principal
-
-O Banco de Dados Principal é responsável pelo armazenamento persistente das informações da plataforma.
-
-Esse container armazena:
-- usuários;
-- embarcações;
-- viagens;
-- reservas;
-- pagamentos;
-- notificações;
-- rotas;
-- faturamento;
-- preferências.
-
-Ele atende praticamente todas as histórias de usuário, pois concentra os dados operacionais do sistema.
-
-O acesso ao banco é realizado exclusivamente pela API Backend Porto Certo.
-
-Essa decisão evita:
-- acessos indevidos;
-- inconsistências;
-- exposição direta dos dados.
-
-Tecnologia:
-- PostgreSQL;
-
----
-
-# 5. Cache Local do Dispositivo
-
-O Cache Local do Dispositivo é responsável pelo armazenamento offline do aplicativo móvel.
-
-Esse container atende principalmente:
-- US02 — Bilhete offline após compra;
-- US06 — Persistência do alto contraste;
-- US15 — Bilhetes acessíveis sem internet.
-
-O cache armazena:
-- bilhetes digitais;
-- metadados de PDFs;
-- preferências visuais;
-- dados recentes;
-- informações temporárias.
-
-Sua existência é essencial porque os requisitos exigem funcionamento parcial do aplicativo sem conexão com a internet.
-
-Isso permite que o viajante:
-- visualize bilhetes;
-- apresente documentos;
-- utilize acessibilidade;
-- consulte informações salvas;
-
-mesmo offline.
-
-Tecnologia:
-- SQLite;
-  
----
-
-# 6. Armazenamento de Arquivos
-
-O Armazenamento de Arquivos é responsável pelo armazenamento de arquivos binários da plataforma.
-
-Esse container atende:
-- US02 — Bilhetes PDF;
-- US03 — Fotos de embarcações;
-- US07 — Boletos PDF;
-- US15 — Bilhetes digitais.
-
-Nele ficam armazenados:
-- fotos das embarcações;
-- bilhetes em PDF;
-- boletos bancários;
-- documentos operacionais.
+## Ligação dos Componentes
 
-A API Backend Porto Certo realiza:
-- upload;
-- recuperação;
-- gerenciamento dos arquivos.
+<div align="justify">
 
-Tecnologias sugeridas:
-- Firebase Storage;
-  
----
+### Viajante → App Mobile do Viajante:
+O Viajante interage com o aplicativo para cadastrar-se, buscar viagens, reservar passagens, realizar pagamentos, acompanhar embarcações em tempo real e acessar bilhetes digitais.
 
-# 7. Gateway de Pagamento
+### App Mobile do Viajante → Cache Local do Dispositivo:
+O aplicativo armazena localmente bilhetes digitais, favoritos e preferências de acessibilidade por meio da persistência offline do Firebase Cloud Firestore, permitindo o uso offline de funcionalidades essenciais.
 
-O Gateway de Pagamento é um sistema externo responsável pelo processamento financeiro da plataforma.
+### App Mobile do Viajante → API Backend Porto Certo:
+O aplicativo envia requisições para realizar cadastro, consultar viagens, criar reservas, processar compras, acessar bilhetes e obter informações atualizadas da plataforma.
 
-Esse container atende:
-- US02 — Compra de passagens;
-- US07 — Múltiplas formas de pagamento;
-- US13 — Cancelamentos e estornos.
+### App Mobile do Viajante → Serviço de Autenticação:
+O aplicativo utiliza o serviço de autenticação para validar a identidade do viajante e controlar o acesso às funcionalidades da plataforma.
 
-Ele processa:
-- cartão de crédito;
-- PIX;
-- boleto bancário;
-- estornos;
-- confirmações financeiras.
+### Proprietário → Painel Web/App do Proprietário:
+O Proprietário utiliza o painel para cadastrar embarcações, criar viagens, iniciar e encerrar trajetos, emitir notificações e consultar faturamento.
 
-O sistema Porto Certo não armazena dados sensíveis de cartões.
+### Painel Web/App do Proprietário → API Backend Porto Certo:
+O painel envia comandos administrativos para gerenciar embarcações, viagens, passageiros, notificações, operações da frota e dados financeiros.
 
-Toda a tokenização financeira é delegada ao gateway externo, garantindo conformidade com requisitos de segurança.
+### Painel Web/App do Proprietário → Serviço de Autenticação:
+O painel utiliza o serviço de autenticação para validar a identidade do proprietário e controlar o acesso às funcionalidades administrativas da plataforma.
 
-O Gateway também envia:
-- confirmações;
-- falhas;
-- compensações;
-- webhooks financeiros.
-  
----
+### API Backend Porto Certo → Banco de Dados Principal:
+A API lê e grava dados estruturados do sistema no Firebase Cloud Firestore, como usuários, dados de cadastro, embarcações, viagens, reservas, pagamentos, notificações e histórico operacional.
 
-# 8. Serviço de Mensageria
+### API Backend Porto Certo → Armazenamento de Arquivos:
+A API armazena e recupera fotos de embarcações, bilhetes eletrônicos em PDF, boletos bancários e documentos da plataforma no Firebase Cloud Storage.
 
-O Serviço de Mensageria é responsável pela comunicação com os usuários da plataforma.
+### API Backend Porto Certo → Gateway de Pagamento:
+A API envia dados de pagamento para processamento de cartão, PIX e boleto, recebendo confirmações, falhas, compensações e estornos.
 
-Esse container atende:
-- US02 — Envio de bilhetes;
-- US04 — Notificações em massa;
-- US07 — Confirmações financeiras;
-- US13 — Avisos de cancelamento e estorno.
+### API Backend Porto Certo → Serviço de Mensageria:
+A API aciona o serviço externo para enviar e-mails e notificações push sobre compras, bilhetes, alterações de viagem, cancelamentos e alertas operacionais.
 
-Ele realiza:
-- envio de e-mails;
-- push notifications;
-- comprovantes;
-- alertas;
-- notificações operacionais.
+### API Backend Porto Certo → Serviço de Localização em Tempo Real:
+A API utiliza o serviço externo para gerenciar rastreamento, coordenadas das embarcações, exibição do mapa e cálculo do ETA em tempo real.
 
-A API Backend Porto Certo controla todos os disparos de mensagens.
+</div>
 
----
 
-# 9. Serviço de Localização em Tempo Real
-
-O Serviço de Localização em Tempo Real é responsável pelo rastreamento das embarcações.
-
-Esse container atende:
-- US05 — Rastreamento em mapa;
-- US14 — Controle de viagens em andamento.
-
-Ele é responsável por:
-- receber coordenadas GPS;
-- atualizar posição das embarcações;
-- calcular ETA;
-- transmitir localização em tempo real;
-- manter sincronização das viagens.
-
-O serviço fornece os dados de rastreamento diretamente para o App Mobile do Viajante.
-
-A API Backend Porto Certo controla quando o rastreamento pode acontecer, respeitando a regra de negócio que determina que a transmissão GPS só pode ocorrer enquanto a viagem estiver com status “Em Andamento”.
-
----
-
-# Relações Entre os Containers
-
-As relações do sistema foram organizadas para manter separação de responsabilidades.
-
-## Fluxo do viajante
-
-O Viajante acessa o App Mobile do Viajante.
-
-O aplicativo:
-- consulta viagens;
-- realiza reservas;
-- processa compras;
-- consulta bilhetes;
-- recebe localização em tempo real.
-
-O aplicativo envia requisições para a API Backend Porto Certo.
-
----
-
-## Fluxo do proprietário
-
-O Proprietário utiliza o Painel Web/App do Proprietário.
-
-O painel envia operações administrativas para a API Backend Porto Certo.
-
----
-
-## Fluxo de persistência
-
-A API Backend Porto Certo:
-- lê;
-- grava;
-- atualiza;
-
-dados no Banco de Dados Principal.
-
----
-
-## Fluxo de arquivos
-
-A API Backend Porto Certo:
-- armazena;
-- recupera;
-
-arquivos do Armazenamento de Arquivos.
-
----
-
-## Fluxo financeiro
-
-A API Backend Porto Certo envia solicitações para o Gateway de Pagamento.
-
-O Gateway retorna:
-- aprovações;
-- falhas;
-- estornos;
-- webhooks financeiros.
-
----
-
-## Fluxo de notificações
-
-A API Backend Porto Certo envia mensagens para o Serviço de Mensageria.
-
-O serviço realiza os disparos para os usuários.
-
----
-
-## Fluxo de localização
-
-A API Backend Porto Certo controla o rastreamento.
-
-O Serviço de Localização transmite:
-- localização;
-- movimentação;
-- ETA;
-
-para o App Mobile do Viajante.
-
----
-
-# Considerações Arquiteturais
-
-A arquitetura do Porto Certo foi organizada de forma modular e desacoplada.
-
-As principais decisões arquiteturais foram:
-- centralização das regras de negócio no Backend;
-- separação entre aplicações cliente e serviços;
-- uso de cache offline;
-- integração com serviços externos especializados;
-- isolamento das operações financeiras;
-- separação do serviço de rastreamento em tempo real.
-
-Essa estrutura reduz acoplamento e facilita:
-- manutenção;
-- escalabilidade;
-- segurança;
-- reutilização;
-- evolução futura do sistema.
