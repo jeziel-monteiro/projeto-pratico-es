@@ -9,6 +9,45 @@ Para garantir eficiência e organização, a pilha tecnológica é comumente est
 
 ## Modelo Visual do Sistema
 
+<img width="9602" height="2662" alt="mapa visual" src="https://github.com/user-attachments/assets/27fce476-06de-441a-808e-eb512a9c8411" />
+
+## Integração entre as Tecnologias
+
+### Front-End 
+
+* **Flutter (Dart):** Atua como o framework principal de desenvolvimento das interfaces visuais. No sistema, a tecnologia é responsável por renderizar tanto o aplicativo móvel dos passageiros quanto o painel administrativo web dos proprietários.
+
+### Back-End e Banco de Dados 
+
+* **Render:** Funciona como o provedor de hospedagem em nuvem para serviços de back-end. Na plataforma, ele abriga o servidor responsável por gerenciar integrações externas contínuas de forma isolada, atuando principalmente na escuta e processamento seguro dos avisos de pagamento enviados pelo gateway financeiro.
+* **Firebase Cloud Firestore:** É o banco de dados NoSQL estruturado em documentos e coleções. Ele centraliza todas as informações dinâmicas da operação, como perfis de usuários, cadastros de frotas, rotas e registros de viagens. Fornece também o recurso de persistência offline nativo, garantindo que os passageiros acessem seus bilhetes digitais no celular mesmo em áreas portuárias sem conexão à internet.
+
+### Segurança e Armazenamento
+
+* **Firebase Authentication:** Opera como o gerenciador de identidades e controle de acessos. Garante a segurança arquitetural da plataforma ao validar a identidade dos viajantes no aplicativo e dos proprietários no sistema web, emitindo tokens de acesso e protegendo os dados sensíveis contra acessos não autorizados.
+* **Firebase Cloud Storage:** Serve como o repositório em nuvem de arquivos estáticos e mídias pesadas. No escopo do projeto, a ferramenta é utilizada para armazenar de forma isolada as fotografias das embarcações e os documentos legais enviados pelos armadores por meio do painel de controle web.
+
+### Comunicação e Serviços Externos
+
+* **Firebase Cloud Messaging (FCM):** É o motor de entrega de mensagens instantâneas de sistema. O sistema utiliza esta ferramenta para disparar notificações Push diretamente para os smartphones dos passageiros, garantindo a entrega em tempo real de alertas sobre confirmações de compra, horários de embarque ou alterações imprevistas nas rotas.
+* **Mercado Pago:** Atua como o gateway financeiro terceirizado. Participa do ecossistema assumindo o ambiente seguro de checkout e processando as transações via Pix, boleto ou cartão de crédito. Além de realizar a cobrança, envia os dados de conciliação financeira para alimentar o dashboard de faturamento dos proprietários.
+* **Mapbox:** Fornece o serviço de inteligência geográfica e renderização visual de mapas. No aplicativo móvel, é acionado para exibir a malha hidroviária, plotar os trajetos exatos das embarcações em tempo real e fornecer estimativas de chegada, melhorando a previsibilidade logística para o viajante.
+
+### Observabilidade e Qualidade
+
+* **Firebase Crashlytics:** Opera como a ferramenta de telemetria e monitoramento de estabilidade. Trabalha nos bastidores registrando falhas fatais, quebras de interface e erros lógicos que ocorram nos dispositivos dos usuários finais, gerando relatórios consolidados que orientam a equipe técnica nas manutenções corretivas.
+
+### CI/CD (Automação de Entregas)
+
+* **GitHub Actions:** Funciona como o orquestrador de integração e entrega contínua em nuvem. A ferramenta compila, testa e publica automaticamente a versão mais recente do sistema web no ambiente de produção a cada nova atualização validada no repositório.
+* **Fastlane:** Atua como a ferramenta de automação voltada especificamente para o ecossistema móvel. Trabalhando em conjunto com o GitHub Actions, empacota o código do aplicativo Flutter e envia as novas versões e atualizações de forma autônoma diretamente para as lojas virtuais.
+
+### Gestão Global e Versionamento
+
+* **Git:** É o sistema estrutural de controle de versão. Rastreia detalhadamente todas as alterações feitas no código-fonte da plataforma, permitindo a reversão de arquivos para versões anteriores e o trabalho simultâneo e isolado de múltiplos desenvolvedores.
+* **GitHub:** É a plataforma de hospedagem do código em nuvem. Centraliza os repositórios do projeto, viabilizando as revisões de código por pares e mantendo o histórico de desenvolvimento seguro e acessível.
+* **GitHub Projects:** Atua como a ferramenta de gestão ágil acoplada ao repositório. Organiza o fluxo produtivo por meio de quadros de tarefas, conectando as necessidades de negócio, relatórios de bugs e novos requisitos arquiteturais diretamente às linhas de código em desenvolvimento.
+
 ## Tabela de Ferramentas e Tecnologias
 
 ### Passageiro (Aplicativo Móvel)
