@@ -23,3 +23,13 @@ Engenharia de Software
 ## Sumário
 - [Trabalho Prático 1](https://github.com/jeziel-monteiro/projeto-pratico-es/tree/5939ebfeff9e377759554349f1ac823dfdce06f5/TP1)
 - [Trabalho Prático 2](https://github.com/jeziel-monteiro/projeto-pratico-es/tree/main/TP2)
+- [Trabalho Prático 3](https://github.com/jeziel-monteiro/projeto-pratico-es/tree/main/TP3)
+
+## 🛠️ Ferramentas 
+
+Para o desenvolvimento, refinamento e validação de todos os artefatos técnicos, diagramas e documentações presentes neste repositório, utilizou-se o suporte estratégico de ferramentas de Inteligência Artificial Generativa. 
+
+A inclusão dessas tecnologias no ecossistema do projeto atuou como um acelerador de produtividade e um validador de consistência arquitetural:
+
+*   **Gemini** 
+*   **ChatGPT** 

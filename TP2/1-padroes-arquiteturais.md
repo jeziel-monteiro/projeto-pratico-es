@@ -6,7 +6,7 @@
 
 Padrões arquiteturais são estruturas conceituais que definem a organização global e a divisão de responsabilidades em um sistema de software, funcionando como soluções consolidadas para problemas complexos e recorrentes de engenharia. Enquanto os padrões de projeto atuam em nível de código, os arquiteturais determinam a macroestrutura e o fluxo de comunicação entre os subsistemas.
 
-Para o contexto do sistema Porto Certo, identificamos dois padrões arquiteturais adequados para a construção do MVP, os quais serão apresentados detalhadamente abaixo.
+Para o contexto do sistema Porto Certo, identificamos um padrão arquitetural adequado para a construção do MVP, o sera apresentado detalhadamente abaixo.
 
 </div>
 
