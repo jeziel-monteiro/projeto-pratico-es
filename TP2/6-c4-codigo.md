@@ -2,37 +2,91 @@
 
 O Diagrama de Código representa o quarto e mais profundo nível do Modelo C4. O objetivo desta camada não é mostrar a arquitetura macro, mas detalhar a estrutura interna de um componente mapeado nos níveis anteriores, traduzindo-o para elementos estruturais de programação orientada a objetos (como classes, atributos, operações e enumerações). Mapear o código permite compreender o encapsulamento dos dados, a herança entre as entidades e as regras de negócio intrínsecas que garantem o funcionamento lógico do sistema, servindo como o projeto definitivo para a implementação e manutenção do software.
 
-## Diagrama do Projeto
+## Diagrama do Projeto 
+<div align="center"> 
 
-<img width="1283" height="925" alt="Diagrama e código" src="https://github.com/user-attachments/assets/968239f1-d91a-40a5-a426-c5954187b056" />
+<img width="1283" height="925" alt="Diagrama e código" src="https://github.com/user-attachments/assets/1d259b62-1770-4fe4-bebb-aa572a6b6dcf" />
 
+</div>
 
 ## Explicação geral do diagrama modelado
 
 O diagrama modelado para o sistema Porto Certo ilustra a estrutura das coleções de dados e as regras de negócio centrais da aplicação com base no ecossistema Firebase. O fluxo demonstra a separação de responsabilidades em domínios específicos, destacando o uso de herança para reaproveitamento de código, o encapsulamento rígido para a segurança dos atributos e a padronização de estados através de Enumerações para evitar falhas no banco de dados. Além disso, a modelagem foi construída para atender estritamente aos requisitos mapeados no Backlog do produto.
 
+---
+
 ### Detalhamento por Partes e Relação com as Histórias de Usuário (US)
 
-**Acesso e Gestão de Perfis (Autenticação)**
-A classe abstrata `Usuario` atua como a base central, protegendo os dados comuns de cadastro (como nome, CPF e email). Dela, herdam duas especializações: o `Proprietario` (focado no Painel Web, armazenando CNPJ e dados bancários) e o `Viajante` (que interage com o App Mobile). 
-* **Relação com as US:** O atributo `modoAltoContraste` na classe `Viajante` atende diretamente ao requisito de acessibilidade visual solicitado na **US06**.
+#### 1. Acesso e Gestão de Perfis (Autenticação)
+<div align="center"> 
+  
+<img width="666" height="387" alt="Captura de tela 2026-06-14 211525" src="https://github.com/user-attachments/assets/834c471b-5800-41d9-8c09-ae42737019e9" />
 
-**Gestão Operacional (Frota e Rotas)**
-O componente `Embarcacao` é responsável por validar e armazenar as características físicas dos barcos. Ele atua como dependência direta para a `Viagem`, que é a classe que orquestra os agendamentos (origem, destino, data) e recebe as atualizações das coordenadas de telemetria.
-* **Relação com as US:** A classe `Embarcacao` e sua subordinação ao `Proprietario` materializam a **US03 (Cadastro de Frota)**. Já a classe `Viagem` e o método `favoritarTrecho()` no perfil do viajante atendem aos requisitos de busca e logística da **US01 (Busca de Viagens)**.
+</div>
 
-**Núcleo de Vendas e Checkout**
-O `Bilhete` tem a responsabilidade única de gerenciar a passagem, dependendo estritamente do processamento da classe `Pagamento`, que consolida os valores antes de acionar o Gateway financeiro.
-* **Relação com as US:** A relação de dependência entre estas duas classes reflete a **US02 (Processo de Compra)**. Além disso, a operação `gerarPdfOffline()` encapsulada na classe `Bilhete` é a solução arquitetural exata para a exigência de disponibilidade sem internet descrita na **US06 (Bilhete Offline)**.
+Esta modelagem reflete o componente de Serviço de Autenticação e as Regras de Segurança do Firebase. Isolamos os dados cadastrais comuns (como `#nomeCompleto` e `#cpf`) na superclasse abstrata `Usuario`, que detém a operação `+autenticar()` para validação de tokens.
+As propriedades específicas ficam nas subclasses: 
+* A classe `Viajante` abriga propriedades do aplicativo móvel, como o atributo `-modoAltoContraste` (atendendo à **US06** de acessibilidade) e o método `+favoritarTrecho()` (referente à **US01**). 
+* A classe `Proprietario` guarda dados para o painel web, como faturamento e CNPJ, através do método `+visualizarFaturamento()`.
 
-**Comunicação e Engajamento**
-A classe `Notificacao` atua no suporte aos imprevistos, gerenciando o conteúdo e o canal dos avisos disparados aos passageiros.
-* **Relação com as US:** A operação `dispararEmMassa()`, atrelada aos eventos de mudança de status da classe `Viagem`, cumpre integralmente a regra de negócio exigida na **US04 (Notificações em Massa)**.
+#### 2. Gestão de Frota
+<div align="center"> 
 
-### Ligação dos Componentes
+<img width="517" height="247" alt="Captura de tela 2026-06-14 211549" src="https://github.com/user-attachments/assets/554e23a7-74e9-41dd-8b60-16f96cfa58cf" />
 
-* **Proprietário → Embarcação e Viagem:** Relação estrutural de 1 para muitos (0..*). O proprietário cadastra e gerencia múltiplas embarcações e é o responsável direto por agendar diversas rotas.
-* **Embarcação → Viagem:** Relação de 1 para muitos. Uma mesma embarcação realiza várias viagens ao longo de sua vida útil, mas uma rota específica aloca estritamente um único barco.
-* **Viajante e Viagem → Bilhete:** Relações de 1 para muitos. O viajante adquire vários bilhetes ao longo do tempo, e uma viagem gera múltiplas passagens, mas cada bilhete é nominal a um único usuário e atrelado a uma rota inalterável.
-* **Bilhete → Pagamento:** Relação rígida de 1 para 1. Cada bilhete emitido pelo sistema possui exatamente uma transação financeira associada, garantindo a consistência do checkout.
-* **Classes de Negócio → Enumerações (Status):** Relação de Dependência. As classes `Viagem`, `Pagamento` e `Bilhete` dependem estruturalmente dos Enums (`StatusViagem`, `StatusPagamento`, `StatusBilhete`) para limitar seus estados a uma lista fechada de opções válidas (ex: PENDENTE, APROVADO, CANCELADA), blindando a aplicação contra erros de entrada de dados.
+</div>
+
+Esta seção amarra diretamente o componente web de Gestão de Embarcações com a **US03**.
+Um proprietário autenticado pode possuir e gerenciar uma frota inteira de barcos (relação `0..*`). No entanto, para fins de responsabilidade fiscal e auditoria de segurança no ecossistema, cada `Embarcacao` cadastrada pertence obrigatoriamente a exatamente uma conta de `Proprietario` (relação `1`). A manipulação desses dados ocorre através do método `+editarDados()`.
+
+#### 3. Agendamento e Rastreamento
+<div align="center"> 
+
+<img width="548" height="457" alt="Captura de tela 2026-06-14 211617" src="https://github.com/user-attachments/assets/f6a4af9e-6607-475d-91ba-b57347482e9c" />
+
+</div>
+
+Este bloco reflete o componente de Agendamento de Viagens (Rotas) e atende à **US09**.
+Para que uma rota aconteça, o Proprietário precisa criá-la informando obrigatoriamente uma embarcação previamente homologada. Um barco realiza diversas viagens ao longo do seu ciclo de vida (`0..*`), mas uma `Viagem` específica só pode ocorrer utilizando um único barco (`1`) devido à limitação física de assentos. É nesta classe que o fluxo de rastreamento no mapa ocorre, através do método `+atualizarTelemetria()`.
+
+#### 4. Resiliência e Emissão de Bilhetes
+<div align="center"> 
+
+<img width="677" height="395" alt="Captura de tela 2026-06-14 211653" src="https://github.com/user-attachments/assets/893a9e46-9b1f-45df-875b-7b8e16a2eb34" />
+
+</div>
+
+Modela o componente móvel "Meus Bilhetes" e a regra de resiliência offline exigida na **US06**.
+Uma viagem comercializa vários assentos, gerando múltiplos bilhetes (`0..*`). O passageiro armazena estes bilhetes localmente no cache do seu telemóvel para consulta sem internet, através do método `+gerarPdfOffline()`. Cada `Bilhete` está atrelado rigidamente a uma única viagem específica (`1`) e a um único passageiro comprador (`1`), impedindo fraudes ou clonagem de assentos.
+
+#### 5. Núcleo de Vendas e Checkout
+<div align="center"> 
+
+<img width="545" height="287" alt="Captura de tela 2026-06-14 211727" src="https://github.com/user-attachments/assets/3beba771-c4a3-49e7-a9c7-b2a0e358433e" />
+
+</div>
+
+Reflete a integração rigorosa entre o Checkout de Passagem e a Cloud Function conectada ao Gateway de Pagamento.
+De acordo com a **US02 (Processo de Compra)**, a emissão oficial do bilhete em PDF só ocorre após a transação financeira ser dada como concluída. Por isso, existe uma relação estrita de `1 para 1`: cada passagem emitida corresponde a exatamente uma transação financeira processada pelo ecossistema BaaS através do método `+processarCheckout()`.
+
+#### 6. Notificações e Engajamento
+<div align="center"> 
+
+<img width="727" height="216" alt="Captura de tela 2026-06-14 211821" src="https://github.com/user-attachments/assets/e14deec8-3b52-489d-a53d-913e35b95387" />
+
+</div>
+
+Atende diretamente ao requisito da **US04 (Notificações em massa disparadas pelo proprietário)**.
+Como o Firebase utiliza funções reativas baseadas em eventos, quando um proprietário emite um alerta de atraso ou mudança climática, esse disparo é indexado e amarrado diretamente ao identificador daquela `Viagem`. A operação `+dispararEmMassa()` permite que a Cloud Function encaminhe a mensagem de alerta estritamente aos passageiros com passagens ativas para aquela rota específica.
+
+#### 7. Padronização de Estados (Enumerações)
+<div align="center"> 
+
+<img width="858" height="503" alt="image" src="https://github.com/user-attachments/assets/cd07ddd9-b4c6-4a18-9142-919972af0311" />
+
+</div>
+
+Para garantir a integridade do banco de dados, as classes de negócio utilizam relações de dependência (setas tracejadas) apontando para Enumerações (`<<enumeration>>`):
+* **`Pagamento` $\rightarrow$ `StatusPagamento`:** O checkout não pode aceitar um texto qualquer para registrar a transação. O status restringe o sistema a aceitar apenas `PENDENTE`, `APROVADO`, `RECUSADO` ou `ESTORNADO`.
+* **`Viagem` $\rightarrow$ `StatusViagem`:** Amarra as regras de agendamento e telemetria. O status da viagem (`AGENDADA`, `EM_ANDAMENTO`, `CONCLUIDA`, `CANCELADA`) dita o comportamento de busca de rotas para o viajante.
+* **`Bilhete` $\rightarrow$ `StatusBilhete`:** Ligado à US06, o sistema precisa garantir o estado da passagem (`RESERVADO`, `EMITIDO`, `CANCELADO`) antes de renderizar os dados de acessibilidade ou gerar o PDF offline de forma segura.
