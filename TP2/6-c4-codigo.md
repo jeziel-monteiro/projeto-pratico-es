@@ -1,5 +1,7 @@
 # Diagrama de Código (Classes)
 
+<div align = "justify">
+
 O Diagrama de Código representa o quarto e mais profundo nível do Modelo C4. O objetivo desta camada não é mostrar a arquitetura macro, mas detalhar a estrutura interna de um componente mapeado nos níveis anteriores, traduzindo-o para elementos estruturais de programação orientada a objetos (como classes, atributos, operações e enumerações). Mapear o código permite compreender o encapsulamento dos dados, a herança entre as entidades e as regras de negócio intrínsecas que garantem o funcionamento lógico do sistema, servindo como o projeto definitivo para a implementação e manutenção do software.
 
 ## Diagrama do Projeto

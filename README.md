@@ -27,6 +27,8 @@ Engenharia de Software
 
 ## 🛠️ Ferramentas 
 
+<div align = "justify">
+
 Para o desenvolvimento, refinamento e validação de todos os artefatos técnicos, diagramas e documentações presentes neste repositório, utilizou-se o suporte estratégico de ferramentas de Inteligência Artificial Generativa. 
 
 A inclusão dessas tecnologias no ecossistema do projeto atuou como um acelerador de produtividade e um validador de consistência arquitetural:

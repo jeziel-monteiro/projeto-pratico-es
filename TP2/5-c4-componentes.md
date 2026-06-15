@@ -1,4 +1,7 @@
 # Diagrama de Componentes 
+
+<div align = "justify">
+
 O Diagrama de Componentes funciona como um "zoom" detalhado sobre um Container específico do sistema que foi mapeado no nível anterior. O objetivo desta camada não é mostrar classes individuais ou linhas de código, mas sim identificar como o contêiner é dividido em blocos lógicos de código, chamados de componentes, que possuem responsabilidades únicas, fronteiras bem definidas e interfaces de comunicação claras.
 
 Mapear os componentes permite compreender o encapsulamento das regras de negócio, o nível de dependência interna do código (acoplamento) e como as requisições que entram no contêiner são processadas até atingirem a camada de dados ou os serviços externos.
