@@ -6,7 +6,7 @@ Esta seção apresenta a análise detalhada de rastreabilidade técnica do siste
 
 
 ### US01: Busca Avançada de Viagens
-**História:** Como viajante, desejo buscar por viagens informando origem, destino e data, para encontrar opções de transporte disponíveis que atendam à minha necessidade.
+**História:** Enquanto viajante, desejo buscar por viagens informando origem, destino e data, para encontrar opções de transporte disponíveis que atendam à minha necessidade.
 
 * **Diagrama de Contexto:** Relaciona-se com o ator **Viajante**, que interage com o sistema **Porto Certo** para pesquisar as opções de rotas disponíveis na malha fluvial.
 * **Diagrama de Contêiner:** Ocorre quando o **App Mobile do Viajante (Flutter)** envia uma requisição de leitura HTTP para a **API Backend Porto Certo (Firebase Cloud Functions)**, que por sua vez consulta as rotas no **Banco de Dados Principal (Firebase Cloud Firestore)**.
@@ -158,7 +158,7 @@ Esta seção apresenta a análise detalhada de rastreabilidade técnica do siste
 ---
 
 ### US16: Cadastro de Viajante (Passageiro)
-**História:** Como viajante, desejo me cadastrar na plataforma informando meus dados, para que eu possa ter acesso às funcionalidades do aplicativo.
+**História:** Enquanto viajante, desejo me cadastrar na plataforma informando meus dados, para que eu possa ter acesso às funcionalidades do aplicativo.
 
 * **Diagrama de Contexto:** O processo de criação de conta e autenticação no **Porto Certo** se integra de forma transparente com o sistema de segurança externo **Serviço de Autenticação**.
 * **Diagrama de Contêiner:** O **App Mobile do Viajante** envia as credenciais. A **API Backend Porto Certo** intercepta o fluxo, valida a maioridade, delega a criação do usuário seguro para o **Serviço de Autenticação (Firebase Authentication)** e salva o perfil complementar com a senha forte criptografada no banco NoSQL **Cloud Firestore**.
@@ -168,7 +168,7 @@ Esta seção apresenta a análise detalhada de rastreabilidade técnica do siste
 ---
 
 ### US17: Cadastro de Proprietário
-**História:** Como Proprietário, desejo me cadastrar na plataforma informando meus dados, para que eu possa ter acesso às funcionalidades do aplicativo.
+**História:** Enquanto Proprietário, desejo me cadastrar na plataforma informando meus dados, para que eu possa ter acesso às funcionalidades do aplicativo.
 
 * **Diagrama de Contexto:** O **Proprietário** realiza o cadastro de sua empresa no **Porto Certo**, que interage com o **Serviço de Autenticação** externo para validar os privilégios administrativos corporativos da conta.
 * **Diagrama de Contêiner:** O **Painel Web do Proprietário** envia os dados de faturamento e o CNPJ. A **API Backend Porto Certo** cria as credenciais seguras no contêiner do **Serviço de Autenticação**, e grava os dados comerciais no **Cloud Firestore** sob o status inicial "Em Análise" (pendente de auditoria de documentação naval).
