@@ -7,10 +7,6 @@ Esta seção apresenta as classes de equivalência definidas para as histórias 
 
 **US01**: Enquanto viajante, desejo buscar por viagens informando origem, destino e data, para encontrar opções de transporte disponíveis que atendam à minha necessidade.
 
-## Descrição
-<div align="justify">
-As classes de equivalência desta história foram derivadas dos critérios de aceitação e regras de negócio definidos no refinamento da funcionalidade. Foram consideradas as condições de entrada que impactam diretamente o resultado da busca, como o preenchimento dos filtros obrigatórios, a disponibilidade de vagas e o status da viagem.
-
 ## Classes de Equivalência
 
 | Condição de Entrada                       | Classe Válida                                      | Classe Inválida                            | Classe Inválida                |
@@ -24,10 +20,6 @@ As classes de equivalência desta história foram derivadas dos critérios de ac
 # Compra de Passagem
 
 **US02**: Enquanto viajante, desejo realizar a compra de uma passagem fluvial informando meus dados e efetuando o pagamento, para garantir minha reserva na embarcação e receber o bilhete eletrônico de forma automatizada.
-
-## Descrição
-<div align="justify">
-As classes de equivalência desta história foram definidas a partir das validações necessárias para a compra de passagens. Foram consideradas as entradas relacionadas aos dados da viagem, identificação do passageiro, disponibilidade do assento, forma de pagamento e aprovação da transação, pois essas condições impactam diretamente a conclusão da compra e a emissão do bilhete eletrônico.
 
 ## Classes de Equivalência
 
@@ -46,10 +38,6 @@ As classes de equivalência desta história foram definidas a partir das valida�
 
 **US03**: Enquanto proprietário, desejo cadastrar os dados, fotos e especificações técnicas das minhas embarcações, para que os viajantes possam conhecer a infraestrutura e comodidades oferecidas antes de realizarem a compra da passagem.
 
-## Descrição
-<div align="justify">
-As classes de equivalência desta história foram construídas com base nas validações do cadastro de embarcações. Foram consideradas as informações obrigatórias da embarcação, a unicidade do registro oficial, os requisitos para upload de imagens e as permissões de gerenciamento definidas pelas regras de negócio.
-
 ## Classes de Equivalência
 
 | Condição de Entrada              | Classe Válida                                        | Classe Inválida                                          | Classe Inválida                                |
@@ -66,10 +54,6 @@ As classes de equivalência desta história foram construídas com base nas vali
 
 **US04**: Enquanto proprietário, desejo enviar notificações em massa para os viajantes que compraram passagens para uma viagem específica, para informá-los rapidamente sobre imprevistos, atrasos, mudanças de rota ou cancelamentos, garantindo uma comunicação transparente e minimizando transtornos.
 
-## Descrição
-<div align="justify">
-As classes de equivalência desta história foram derivadas das regras relacionadas ao envio de notificações. Foram consideradas as restrições de status da viagem, os destinatários elegíveis, o conteúdo da mensagem e o intervalo mínimo permitido entre notificações.
-
 ## Classes de Equivalência
 
 | Condição de Entrada          | Classe Válida                                        | Classe Inválida                         | Classe Inválida                   |
@@ -85,10 +69,6 @@ As classes de equivalência desta história foram derivadas das regras relaciona
 
 **US05**: Enquanto viajante, desejo acompanhar o deslocamento do transporte em tempo real em um mapa interativo, para reduzir a incerteza sobre minha localização exata e planejar meu desembarque com base no tempo estimado de chegada.
 
-## Descrição
-<div align="justify">
-As classes de equivalência desta história foram construídas a partir das condições necessárias para disponibilizar o rastreamento em tempo real. Foram consideradas as validações relacionadas ao GPS, ao status da viagem e ao cálculo da previsão de chegada.
-
 ## Classes de Equivalência
 
 | Condição de Entrada        | Classe Válida                            | Classe Inválida                                 | Classe Inválida                        |
@@ -103,10 +83,6 @@ As classes de equivalência desta história foram construídas a partir das cond
 # Modo de Alto Contraste
 
 **US06**: Enquanto viajante com baixa visão, desejo ativar um modo de alto contraste na interface, para que eu possa distinguir claramente os textos, botões e elementos visuais, navegando pelo aplicativo com maior conforto e autonomia.
-
-## Descrição
-<div align="justify">
-As classes de equivalência desta história foram derivadas dos requisitos de acessibilidade relacionados ao modo de alto contraste. Foram consideradas as validações de ativação do recurso, aplicação do tema, persistência da configuração e manutenção da funcionalidade da aplicação.
 
 ## Classes de Equivalência
 
@@ -124,10 +100,6 @@ As classes de equivalência desta história foram derivadas dos requisitos de ac
 
 **US07**: Enquanto viajante, desejo escolher entre diferentes formas de pagamento no momento de finalizar a compra da minha passagem fluvial, para que eu possa utilizar a opção mais conveniente para o meu planejamento financeiro e garantir minha reserva na embarcação.
 
-## Descrição
-<div align="justify">
-As classes de equivalência desta história foram derivadas das validações relacionadas às modalidades de pagamento disponíveis na plataforma. Foram consideradas as restrições de uso do boleto bancário, o processamento dos pagamentos e a confirmação da transação.
-
 ## Classes de Equivalência
 
 | Condição de Entrada | Classe Válida | Classe Inválida | Classe Inválida |
@@ -143,10 +115,6 @@ As classes de equivalência desta história foram derivadas das validações rel
 # Acessibilidade para Deficiência Visual
 
 **US08**: Enquanto viajante com deficiência visual (cegueira ou baixa visão), desejo que a interface do aplicativo suporte plenamente tecnologias assistivas e padrões de acessibilidade, para que eu possa navegar, buscar viagens e comprar minhas passagens de forma autônoma, intuitiva e segura.
-
-## Descrição
-<div align="justify">
-As classes de equivalência desta história foram definidas a partir dos requisitos de acessibilidade do sistema. Foram consideradas as condições relacionadas ao uso de leitores de tela, navegação assistiva, descrições alternativas, contraste e redimensionamento de texto.
 
 ## Classes de Equivalência
 
@@ -164,10 +132,6 @@ As classes de equivalência desta história foram definidas a partir dos requisi
 
 **US09**: Enquanto proprietário, desejo cadastrar os detalhes de uma nova viagem fluvial, incluindo a embarcação utilizada, rota, data, horários e frequência, para que eu possa disponibilizar a venda de passagens aos viajantes e gerenciar minha oferta de transporte na plataforma.
 
-## Descrição
-<div align="justify">
-As classes de equivalência desta história foram construídas a partir das validações do cadastro de viagens. Foram consideradas as regras relacionadas à seleção da embarcação, preenchimento dos dados obrigatórios, tipo da viagem, antecedência mínima e capacidade disponível.
-
 ## Classes de Equivalência
 
 | Condição de Entrada | Classe Válida | Classe Inválida | Classe Inválida |
@@ -183,11 +147,8 @@ As classes de equivalência desta história foram construídas a partir das vali
 
 # Perfil da Embarcação
 <div align="justify">
-**US10**: Enquanto viajante, desejo acessar uma página de perfil detalhada de cada embarcação (contendo fotos, especificações técnicas e comodidades), para que eu possa comparar diferentes opções de transporte e escolher aquela que melhor atende às minhas preferências de conforto e segurança para a viagem.
 
-## Descrição
-<div align="justify">
-As classes de equivalência desta história foram derivadas das regras de visualização do perfil público das embarcações. Foram consideradas as validações de status da embarcação, consistência das informações e permissões de acesso.
+  **US10**: Enquanto viajante, desejo acessar uma página de perfil detalhada de cada embarcação (contendo fotos, especificações técnicas e comodidades), para que eu possa comparar diferentes opções de transporte e escolher aquela que melhor atende às minhas preferências de conforto e segurança para a viagem.
 
 ## Classes de Equivalência
 
@@ -201,11 +162,8 @@ As classes de equivalência desta história foram derivadas das regras de visual
 
 # Dashboard de Faturamento
 <div align="justify">
-**US11**: Enquanto proprietário, desejo acessar um painel de controle financeiro (Dashboard de Faturamento) com o cálculo automatizado do valor bruto e do valor líquido a receber das minhas viagens, para que eu possa gerenciar a receita do meu negócio com transparência e acompanhar o impacto de taxas e descontos aplicados.
 
-## Descrição
-<div align="justify">
-As classes de equivalência desta história foram definidas a partir das validações dos cálculos financeiros e filtros do dashboard. Foram consideradas as entradas relacionadas ao período de consulta, dados financeiros, taxas, descontos e resultado dos cálculos.
+  **US11**: Enquanto proprietário, desejo acessar um painel de controle financeiro (Dashboard de Faturamento) com o cálculo automatizado do valor bruto e do valor líquido a receber das minhas viagens, para que eu possa gerenciar a receita do meu negócio com transparência e acompanhar o impacto de taxas e descontos aplicados.
 
 ## Classes de Equivalência
 
@@ -222,11 +180,8 @@ As classes de equivalência desta história foram definidas a partir das valida�
 
 # Assistente Interativo
 <div align="justify">
-**US12**: Enquanto viajante, desejo ter acesso a um assistente interativo com instruções passo a passo (tutorial em tela), para que eu possa entender facilmente como utilizar as funcionalidades do aplicativo, como buscar viagens e comprar passagens, sem me sentir perdido ou precisar de ajuda externa.
 
-## Descrição
-<div align="justify">
-As classes de equivalência desta história foram derivadas dos critérios de aceitação e regras de negócio definidos para o assistente interativo. Foram consideradas as condições relacionadas ao conteúdo das mensagens, acionamento do tutorial, navegação e autonomia do usuário.
+  **US12**: Enquanto viajante, desejo ter acesso a um assistente interativo com instruções passo a passo (tutorial em tela), para que eu possa entender facilmente como utilizar as funcionalidades do aplicativo, como buscar viagens e comprar passagens, sem me sentir perdido ou precisar de ajuda externa.
 
 ## Classes de Equivalência
 
@@ -244,9 +199,6 @@ As classes de equivalência desta história foram derivadas dos critérios de ac
 
 **US13**: Enquanto viajante, desejo ter a opção de cancelar uma passagem adquirida diretamente pelo aplicativo, para que eu possa reaver o valor investido ou liberar o assento em caso de imprevistos ou alterações nos meus planos de viagem.
 <div align="justify">
-## Descrição
-
-As classes de equivalência desta história foram derivadas das regras relacionadas ao cancelamento de passagens e ao processo de estorno. Foram consideradas as condições referentes ao prazo para cancelamento, situação da viagem, status do boleto e aplicação correta do estorno.
 
 ## Classes de Equivalência
 
@@ -262,10 +214,6 @@ As classes de equivalência desta história foram derivadas das regras relaciona
 # Iniciar e Encerrar Viagem
 
 **US14**: Enquanto proprietário ou comandante da embarcação, desejo dispor de um comando para iniciar e encerrar oficialmente uma viagem agendada, para que o aplicativo passe a transmitir os dados de localização geográfica (GPS) aos passageiros apenas durante o percurso planejado.
-
-## Descrição
-<div align="justify">
-As classes de equivalência desta história foram construídas a partir das regras relacionadas ao controle do status da viagem e à transmissão de dados de localização. Foram consideradas as condições de início da viagem, transmissão de GPS, encerramento do percurso e conectividade da aplicação.
 
 ## Classes de Equivalência
 
@@ -283,10 +231,6 @@ As classes de equivalência desta história foram construídas a partir das regr
 
 **US15**: Enquanto viajante, desejo que os meus bilhetes de passagem sejam salvos automaticamente no armazenamento local do meu dispositivo após a compra, contendo todos os meus dados de identificação e os detalhes da rota, para que eu consiga apresentar a cédula de embarque digital ao proprietário e garantir meu acesso à embarcação de forma totalmente visual, mesmo sem conectividade com a internet.
 
-## Descrição
-<div align="justify">
-As classes de equivalência desta história foram derivadas das validações relacionadas ao armazenamento local dos bilhetes, acesso offline e integridade das informações exibidas ao passageiro. Foram consideradas as condições de pagamento, disponibilidade do bilhete, dados do passageiro e dados da viagem.
-
 ## Classes de Equivalência
 
 | Condição de Entrada | Classe Válida | Classe Inválida | Classe Inválida |
@@ -303,10 +247,6 @@ As classes de equivalência desta história foram derivadas das validações rel
 # Cadastro de Viajante
 
 **US16**: Como viajante, desejo me cadastrar na plataforma informando meus dados, para que eu possa ter acesso às funcionalidades do aplicativo.
-
-## Descrição
-<div align="justify">
-As classes de equivalência desta história foram derivadas das validações do processo de cadastro do viajante. Foram consideradas as entradas relacionadas ao contato do usuário, código de verificação, idade mínima exigida, preenchimento dos dados pessoais e requisitos de segurança para criação da senha.
 
 ## Classes de Equivalência
 
@@ -326,10 +266,6 @@ As classes de equivalência desta história foram derivadas das validações do 
 # Cadastro de Proprietário
 
 **US17**: Como Proprietário, desejo me cadastrar na plataforma informando meus dados, para que eu possa ter acesso às funcionalidades do aplicativo.
-
-## Descrição
-<div align="justify">
-As classes de equivalência desta história foram definidas a partir das validações do cadastro de proprietários. Foram consideradas as regras relacionadas à validação do CNPJ, unicidade dos dados cadastrais, verificação do código de autenticação, preenchimento dos dados corporativos e requisitos de segurança da senha de acesso.
 
 ## Classes de Equivalência
 
