@@ -1,6 +1,6 @@
 # Classes de Equivalência
 <div align="justify">
-Esta seção apresenta as classes de equivalência definidas para as histórias de usuário do sistema. A técnica foi aplicada com base nos critérios de aceitação e regras de negócio previamente especificados, considerando as principais condições de entrada válidas e inválidas para cada funcionalidade.
+Esta seção apresenta as classes de equivalência e os casos de teste definidas para as histórias de usuário do sistema. A técnica foi aplicada com base nos critérios de aceitação e regras de negócio previamente especificados, considerando as principais condições de entrada válidas e inválidas para cada funcionalidade.
 </div>
 
 # Busca de Viagens
@@ -249,20 +249,20 @@ Esta seção apresenta as classes de equivalência definidas para as histórias 
 | Quantidade de assentos | Quantidade de assentos menor ou igual à capacidade da embarcação (12) | Quantidade de assentos superior à capacidade da embarcação (13) | |
 | Disponibilidade de embarcação | Proprietário possui pelo menos uma embarcação validada disponível (14) | Proprietário sem embarcações validadas (15) | |
 
-## Casos de Teste
+## Casos de teste
 
-| Casos de Teste | Classes de <br> Equivalência | <div align="center">Entradas</div> | <div align="center">Resultado Esperado</div> |
-| :---: | :---: | :--- | :--- |
-| **Caso 1** | 1, 4, 7, 10, 12, 14 | **Embarcação:** "Boto Rosa (Validada)"<br>**Dados:** "Manaus a Parintins (08:00)"<br>**Tipo:** "Viagem Única"<br>**Antecedência:** "48 horas"<br>**Assentos:** "80 (Capacidade: 100)"<br>**Proprietário:** "Possui embarcação validada" | O sistema processa o formulário com sucesso e a nova viagem é criada e disponibilizada para venda. (Cadastro válido) |
-| **Caso 2** | 2, 4, 7, 10, 12, 14 | **Embarcação:** *[Nenhuma]*<br>**Dados:** "Manaus a Parintins (08:00)"<br>**Tipo:** "Viagem Única"<br>**Antecedência:** "48 horas"<br>**Assentos:** "80 (Capacidade: 100)"<br>**Proprietário:** "Possui embarcação validada" | O sistema impede o registo e exige que o utilizador selecione uma embarcação da lista. (Embarcação não selecionada) |
-| **Caso 3** | 3, 4, 7, 10, 12, 14 | **Embarcação:** "Cobra Grande (Em Análise)"<br>**Dados:** "Manaus a Parintins (08:00)"<br>**Tipo:** "Viagem Única"<br>**Antecedência:** "48 horas"<br>**Assentos:** "80 (Capacidade: 100)"<br>**Proprietário:** "Possui embarcação validada" | O sistema bloqueia a ação informando que apenas embarcações com status validado podem realizar viagens. (Embarcação não validada) |
-| **Caso 4** | 1, 5, 7, 10, 12, 14 | **Embarcação:** "Boto Rosa (Validada)"<br>**Dados:** "Manaus a *[Em branco]* (08:00)"<br>**Tipo:** "Viagem Única"<br>**Antecedência:** "48 horas"<br>**Assentos:** "80 (Capacidade: 100)"<br>**Proprietário:** "Possui embarcação validada" | O formulário não é submetido. O ecrã exibe um erro solicitando o preenchimento do campo de destino. (Algum campo obrigatório não preenchido) |
-| **Caso 5** | 1, 6, 7, 10, 12, 14 | **Embarcação:** "Boto Rosa (Validada)"<br>**Dados:** "Manaus a Manaus (08:00)"<br>**Tipo:** "Viagem Única"<br>**Antecedência:** "48 horas"<br>**Assentos:** "80 (Capacidade: 100)"<br>**Proprietário:** "Possui embarcação validada" | O sistema rejeita os dados inseridos, alertando que a origem e o destino não podem ser iguais. (Dados inválidos) |
-| **Caso 6** | 1, 4, 8, 10, 12, 14 | **Embarcação:** "Boto Rosa (Validada)"<br>**Dados:** "Manaus a Parintins (08:00)"<br>**Tipo:** *[Não definido]*<br>**Antecedência:** "48 horas"<br>**Assentos:** "80 (Capacidade: 100)"<br>**Proprietário:** "Possui embarcação validada" | O registo falha. O sistema solicita que seja escolhido se a viagem será única ou recorrente. (Tipo de viagem não definido) |
-| **Caso 7** | 1, 4, 9, 10, 12, 14 | **Embarcação:** "Boto Rosa (Validada)"<br>**Dados:** "Manaus a Parintins (08:00)"<br>**Tipo:** "Viagem Recorrente" *(Sem dias escolhidos)*<br>**Antecedência:** "48 horas"<br>**Assentos:** "80 (Capacidade: 100)"<br>**Proprietário:** "Possui embarcação validada" | O sistema exibe um aviso exigindo que pelo menos um dia da semana seja marcado para viagens recorrentes. (Viagem recorrente sem dias da semana definidos) |
-| **Caso 8** | 1, 4, 7, 11, 12, 14 | **Embarcação:** "Boto Rosa (Validada)"<br>**Dados:** "Manaus a Parintins (08:00)"<br>**Tipo:** "Viagem Única"<br>**Antecedência:** "5 horas"<br>**Assentos:** "80 (Capacidade: 100)"<br>**Proprietário:** "Possui embarcação validada" | O sistema impede a criação da viagem por desrespeitar o tempo de carência para venda. (Horário com menos de 12 horas de antecedência) |
-| **Caso 9** | 1, 4, 7, 10, 13, 14 | **Embarcação:** "Boto Rosa (Validada)"<br>**Dados:** "Manaus a Parintins (08:00)"<br>**Tipo:** "Viagem Única"<br>**Antecedência:** "48 horas"<br>**Assentos:** "150 (Capacidade: 100)"<br>**Proprietário:** "Possui embarcação validada" | A submissão é bloqueada. Um alerta indica que os assentos ultrapassam o limite de segurança do barco. (Quantidade de assentos superior à capacidade da embarcação) |
-| **Caso 10**| 2, 4, 7, 10, 12, 15 | **Embarcação:** *[Lista Vazia]*<br>**Dados:** "Manaus a Parintins (08:00)"<br>**Tipo:** "Viagem Única"<br>**Antecedência:** "48 horas"<br>**Assentos:** "80"<br>**Proprietário:** "Nenhuma embarcação validada" | O sistema impede o acesso ao formulário de criação de viagens, informando que é necessário ter uma embarcação validada primeiro. (Proprietário sem embarcações validadas) |
+| Casos de teste | Classes de equivalência | Entradas | Resultados esperados |
+| :--- | :--- | :--- | :--- |
+| Caso 1 | 1, 4, 7, 10, 12, 14 | **Embarcação**: "Validada"<br>**Origem**: "Manaus"<br>**Destino**: "Parintins"<br>**Horário**: "20:00 (antecedência de 24h)"<br>**Tipo**: "Única"<br>**Assentos**: 50 (Capacidade: 50) | O sistema processa o cadastro com sucesso e disponibiliza a viagem para venda. |
+| Caso 2 | 2, 4, 7, 10, 12, 14 | **Embarcação**: *[Em branco]*<br>**Origem**: "Manaus"<br>**Destino**: "Parintins"<br>**Horário**: "20:00"<br>**Tipo**: "Única"<br>**Assentos**: 50 | Cadastro rejeitado. O sistema exibe mensagem de erro na seleção do veículo. (Embarcação não selecionada) |
+| Caso 3 | 3, 4, 7, 10, 12, 14 | **Embarcação**: "Em Análise"<br>**Origem**: "Manaus"<br>**Destino**: "Parintins"<br>**Horário**: "20:00"<br>**Tipo**: "Única"<br>**Assentos**: 50 | Cadastro rejeitado. O sistema impede a vinculação de barcos não homologados. (Embarcação não validada) |
+| Caso 4 | 1, 5, 7, 10, 12, 14 | **Embarcação**: "Validada"<br>**Origem**: "Manaus"<br>**Destino**: *[Em branco]*<br>**Horário**: *[Em branco]*<br>**Tipo**: "Única"<br>**Assentos**: 50 | Cadastro rejeitado. Os campos obrigatórios vazios são destacados na interface. (Algum campo obrigatório não preenchido) |
+| Caso 5 | 1, 6, 7, 10, 12, 14 | **Embarcação**: "Validada"<br>**Origem**: "@#$%"<br>**Destino**: "1234"<br>**Horário**: "20:00"<br>**Tipo**: "Única"<br>**Assentos**: 50 | Cadastro rejeitado. O sistema aciona o validador de caracteres de texto. (Dados inválidos) |
+| Caso 6 | 1, 4, 8, 10, 12, 14 | **Embarcação**: "Validada"<br>**Origem**: "Manaus"<br>**Destino**: "Parintins"<br>**Horário**: "20:00"<br>**Tipo**: *[Não selecionado]*<br>**Assentos**: 50 | Cadastro rejeitado. O sistema exige a definição da recorrência da rota. (Tipo de viagem não definido) |
+| Caso 7 | 1, 4, 9, 10, 12, 14 | **Embarcação**: "Validada"<br>**Origem**: "Manaus"<br>**Destino**: "Parintins"<br>**Horário**: "20:00"<br>**Tipo**: "Recorrente"<br>**Dias da semana**: *[Nenhum selecionado]*<br>**Assentos**: 50 | Cadastro rejeitado. O sistema bloqueia a criação de agenda sem dias definidos. (Viagem recorrente sem dias da semana definidos) |
+| Caso 8 | 1, 4, 7, 11, 12, 14 | **Embarcação**: "Validada"<br>**Origem**: "Manaus"<br>**Destino**: "Parintins"<br>**Horário**: "18:30 (daqui a 2 horas)"<br>**Tipo**: "Única"<br>**Assentos**: 50 | Cadastro rejeitado. O sistema barra a operação devido ao limite de antecedência mínima. (Horário com menos de 12 horas de antecedência) |
+| Caso 9 | 1, 4, 7, 10, 13, 14 | **Embarcação**: "Validada" (Capacidade: 50)<br>**Origem**: "Manaus"<br>**Destino**: "Parintins"<br>**Horário**: "20:00"<br>**Tipo**: "Única"<br>**Assentos**: 65 | Cadastro rejeitado. O sistema bloqueia a venda de assentos acima do limite físico do barco. (Quantidade de assentos superior à capacidade da embarcação) |
+| Caso 10 | 1, 4, 7, 10, 12, 15 | **Proprietário**: *[Sem embarcações validadas]*<br>**Ação**: Tentar abrir tela de criação de viagem | Acesso bloqueado. O sistema redireciona o usuário para a inclusão de frotas. (Proprietário sem embarcações validadas) |
 
 ---
 
@@ -278,6 +278,17 @@ Esta seção apresenta as classes de equivalência definidas para as histórias 
 | Status da embarcação | Embarcação com status "Validada" (1) | Embarcação com status "Em Análise" (2) | Embarcação inexistente ou removida (3) |
 | Dados do perfil | Dados aprovados e consistentes com o cadastro (4) | Dados incompletos no perfil (5) | Dados divergentes do cadastro aprovado (6) |
 | Permissão de acesso | Usuário possui acesso apenas para visualização (7) | Usuário consegue alterar informações do perfil (8) | |
+
+## Casos de Teste
+
+| Casos de teste | Classes de equivalência | Entradas | Resultados esperados |
+| :--- | :--- | :--- | :--- |
+| Caso 1 | 1, 4, 7 | **Status da embarcação**: "Validada"<br>**Dados do perfil**: Fotos e especificações íntegras<br>**Tipo de Usuário**: Viajante | O perfil carrega perfeitamente na interface com dados e mídias consistentes para leitura. |
+| Caso 2 | 2, 4, 7 | **Status da embarcação**: "Em Análise"<br>**Ação**: Viajante força acesso via URL direta | Acesso negado. A interface exibe aviso de que a embarcação está indisponível para o público. (Embarcação com status "Em Análise") |
+| Caso 3 | 3, 4, 7 | **Status da embarcação**: "Inexistente" (Removida)<br>**Ação**: Viajante tenta abrir o link | Erro 404. O sistema informa que o recurso não foi encontrado na base de dados. (Embarcação nonexistent ou removida) |
+| Caso 4 | 1, 5, 7 | **Status da embarcação**: "Validada"<br>**Dados do perfil**: *[Capacidade em branco / Sem fotos]* | O sistema intercepta o carregamento para evitar quebras visuais de tela. (Dados incompletos no perfil) |
+| Caso 5 | 1, 6, 7 | **Status da embarcação**: "Validada"<br>**Dados do perfil**: Fotos e especificações adulteradas | O sistema indica erro de integridade de dados e não renderiza a página. (Dados divergentes do cadastro aprovado) |
+| Caso 6 | 1, 4, 8 | **Status da embarcação**: "Validada"<br>**Tipo de Usuário**: Viajante<br>**Ação**: Forçar requisição de alteração de dados | Ação bloqueada pelo back-end por falta de privilégios de escrita. (Usuário consegue alterar informações do perfil) |
 
 ---
 
@@ -297,6 +308,21 @@ Esta seção apresenta as classes de equivalência definidas para as histórias 
 | Valor líquido calculado | Valor líquido maior ou igual a zero (12) | Valor líquido negativo (13) | |
 | Recalculo financeiro | Alterações atualizam os valores corretamente (14) | Valores não atualizados após alteração (15) | |
 
+## Casos de Teste
+
+| Casos de teste | Classes de equivalência | Entradas | Resultados esperados |
+| :--- | :--- | :--- | :--- |
+| Caso 1 | 1, 4, 7, 10, 12, 14 | **Período**: "Mês atual"<br>**Dados financeiros**: Tarifas válidas<br>**Taxas/Descontos**: Válidos (deduções normais)<br>**Modalidade**: PIX / Crédito | Os gráficos consolidam os valores brutos e líquidos com a subtração exata das taxas operacionais. |
+| Caso 2 | 2, 4, 7, 10, 12, 14 | **Período**: *[Em branco]*<br>**Ação**: Tentar carregar Dashboard | O sistema impede a plotagem de dados e solicita a definição de um intervalo de busca. (Período não informado) |
+| Caso 3 | 3, 4, 7, 10, 12, 14 | **Período**: Data Inicial "30/12/2026" / Data Final "01/12/2026" | Erro de validação. O sistema acusa inconsistência lógica no intervalo cronológico. (Período inválido) |
+| Caso 4 | 1, 5, 7, 10, 12, 14 | **Período**: "Mês atual"<br>**Dados financeiros**: Viagem sem registro de tarifa base | O cálculo é pausado e uma notificação de erro estrutural de faturamento é disparada. (Dados financeiros incompletos) |
+| Caso 5 | 1, 6, 7, 10, 12, 14 | **Período**: "Mês atual"<br>**Dados financeiros**: Valores corrompidos em formato string | O sistema aborta a operação para evitar a generation de somas matemáticas incorretas. (Dados financeiros inválidos) |
+| Caso 6 | 1, 4, 8, 10, 12, 14 | **Período**: "Mês atual"<br>**Taxas**: Cadastrada com valor negativo (-1%) | O cálculo financeiro rejeita a taxa incoerente por questões de segurança de auditoria. (Taxas inválidas) |
+| Caso 7 | 1, 4, 9, 10, 12, 14 | **Período**: "Mês atual"<br>**Descontos**: Valor superior ao preço do bilhete | O sistema barra a consolidação de cupons abusivos que zeram ou negativam custos. (Descontos inválidos) |
+| Caso 8 | 1, 4, 7, 11, 12, 14 | **Modalidade**: Método desconhecido vindo do gateway | O painel isola a transação em uma categoria de auditoria pendente. (Modalidade não identificada) |
+| Caso 9 | 1, 4, 7, 10, 13, 14 | **Taxas aplicadas**: > 100% da receita bruta | O sistema força o resultado líquido a zero e emite um alerta crítico de faturamento. (Valor líquido negativo) |
+| Caso 10 | 1, 4, 7, 10, 12, 15 | **Ação**: Realizar estorno de passagem<br>**Estado do painel**: Gráficos sem atualização imediata | O sistema aciona uma sincronização de cache forçada para corrigir os números defasados. (Valores não atualizados após alteração) |
+
 ---
 
 # Assistente Interativo
@@ -314,6 +340,19 @@ Esta seção apresenta as classes de equivalência definidas para as histórias 
 | Reativação do assistente | Tutorial reativado pelo botão de ajuda (9) | Botão de ajuda indisponível (10) | |
 | Autonomia do usuário | Usuário pode pular o tutorial a qualquer momento (11) | Usuário obrigado a concluir o tutorial (12) | |
 
+## Casos de Teste
+
+| Casos de teste | Classes de equivalência | Entradas | Resultados esperados |
+| :--- | :--- | :--- | :--- |
+| Caso 1 | 1, 4, 6, 9, 11 | **Usuário**: Primeiro acesso<br>**Mensagem**: Instrução curta (80 caracteres)<br>**Navegação**: Clique em "Pular" | O assistente renderiza os componentes perfeitamente e é fechado sem deixar rastros na interface. |
+| Caso 2 | 2, 4, 6, 9, 11 | **Mensagem**: *[Em branco / Vazia]*<br>**Ação**: Sistema tenta renderizar passo | O passo do tutorial é suprimido para evitar a amostragem de balões de fala sem conteúdo. (Mensagem vazia) |
+| Caso 3 | 3, 4, 6, 9, 11 | **Mensagem**: Texto longo (150 caracteres) | O layout quebra ou o texto sofre um corte abrupto com reticências. (Mensagem com mais de 100 caracteres) |
+| Caso 4 | 1, 5, 6, 9, 11 | **Usuário**: Primeiro acesso (com dados locais limpos)<br>**Estado**: Disparador falha em abrir tela | O tutorial não inicia sozinho, exigindo que o usuário localize o menu de suporte manualmente. (Assistente não exibido no primeiro acesso) |
+| Caso 5 | 1, 4, 7, 9, 11 | **Navegação**: Clique no comando "Voltar" | O aplicativo trava na tela atual devido à falha de callback do botão de navegação. (Navegação parcialmente disponível) |
+| Caso 6 | 1, 4, 8, 9, 11 | **Navegação**: Botões de controle ausentes na tela | O usuário fica impossibilitado de fechar ou progredir, restando apenas reiniciar o app. (Navegação indisponível) |
+| Caso 7 | 1, 4, 6, 10, 11 | **Estado**: Ícone de ajuda oculto/removido<br>**Ação**: Solicitar abertura manual | Ação impossibilitada por falta do elemento gráfico de acionamento. (Botão de ajuda indisponível) |
+| Caso 8 | 1, 4, 6, 9, 12 | **Navegação**: Botão "Pular" ocultado pelo sistema | O fluxo impede a saída do usuário, gerando uma experiência de uso impositiva. (Usuário obrigado a concluir o tutorial) |
+
 ---
 
 # Cancelamento de Passagem
@@ -329,6 +368,17 @@ Esta seção apresenta as classes de equivalência definidas para as histórias 
 | Cancelamento por viagem cancelada | Viagem cancelada pelo proprietário com direito a estorno integral (3) | Viagem não cancelada pelo proprietário (4) | |
 | Status do boleto | Boleto ainda não compensado (5) | Boleto já compensado (6) | |
 | Estorno da passagem | Estorno realizado conforme as regras de negócio (7) | Estorno não realizado quando devido (8) | Estorno realizado indevidamente (9) |
+
+## Casos de Teste
+
+| Casos de teste | Classes de equivalência | Entradas | Resultados esperados |
+| :--- | :--- | :--- | :--- |
+| Caso 1 | 1, 3, 5, 7 | **Prazo**: Solicitado com 48h de antecedência<br>**Motivo**: Desistência voluntária<br>**Status do boleto**: Não compensado | A passagem é cancelada de imediato, o assento retorna à venda e o boleto é invalidado. |
+| Caso 2 | 2, 3, 5, 7 | **Prazo**: Solicitado faltando 5 hours para a partida | Ação bloqueada. O sistema informa as regras de restrição de cancelamento tardio. (Solicitação realizada com menos de 24 horas de antecedência) |
+| Caso 3 | 1, 4, 5, 7 | **Motivo**: Reclamação de viagem não cancelada pelo dono<br>**Ação**: Forçar estorno integral | O sistema bloqueia o estorno integral automático por falta de conformidade regulatória. (Viagem não cancelada pelo proprietário) |
+| Caso 4 | 1, 3, 6, 7 | **Status do boleto**: Já compensado no sistema<br>**Ação**: Solicitar cancelamento | O sistema altera a rotina interna para estorno bancário e devolução em vez de apenas anular a cobrança. (Boleto já compensado) |
+| Caso 5 | 1, 3, 5, 8 | **Ação**: Executar cancelamento<br>**Estado**: Gateway financeiro fora do ar | A passagem é marcada como cancelada na plataforma, mas o reembolso financeiro entra em fila de erro. (Estorno não realizado quando devido) |
+| Caso 6 | 1, 3, 5, 9 | **Estado da passagem**: Já utilizada em viagem anterior<br>**Ação**: Enviar comando de cancelamento | O back-end recusa a operação por violação temporal do ciclo de vida do bilhete. (Estorno realizado indevidamente) |
 
 ---
 
@@ -346,6 +396,19 @@ Esta seção apresenta as classes de equivalência definidas para as histórias 
 | Encerramento da viagem | Comando "Encerrar Viagem" executado ao final do percurso (9) | Viagem não encerrada após chegada ao destino (10) | |
 | Conectividade durante a viagem | Conexão ativa ou restabelecida automaticamente (11) | Falha de conexão sem tentativa de reconexão (12) | |
 
+## Casos de Teste
+
+| Casos de teste | Classes de equivalência | Entradas | Resultados esperados |
+| :--- | :--- | :--- | :--- |
+| Caso 1 | 1, 4, 6, 9, 11 | **Status para início**: "Agendada" (no horário)<br>**Comando**: "Iniciar Viagem"<br>**Status de rede**: Conexão ativa<br>**Comando final**: "Encerrar Viagem" (no destino) | A viagem muda de estado, a malha de rastreio GPS inicia a transmissão em tempo real e encerra sem falhas ao chegar. |
+| Caso 2 | 2, 4, 6, 9, 11 | **Status para início**: "Em Análise"<br>**Comando**: "Iniciar Viagem" | O comando é desativado para impedir o início operacional de rotas sem aprovação prévia. (Viagem não agendada) |
+| Caso 3 | 3, 4, 6, 9, 11 | **Status para início**: "Agendada" (antecedência de 5 dias)<br>**Comando**: "Iniciar Viagem" | Erro de validação temporal. O sistema bloqueia a inicialização precoce de cronogramas. (Viagem fora do horário de partida) |
+| Caso 4 | 1, 5, 6, 9, 11 | **Comando**: "Iniciar Viagem"<br>**Conectividade**: Dispositivo totalmente sem sinal | O comando falha em propagar para a nuvem e a viagem permanece inalterada no servidor. (Comando não executado) |
+| Caso 5 | 1, 4, 7, 9, 11 | **Status de transmissão**: "Agendada"<br>**Ação**: Enviar coordenadas geográficas | O servidor descarta os pacotes de GPS por inconsistência de estado operacional. (Viagem com status "Agendada") |
+| Caso 6 | 1, 4, 8, 9, 11 | **Status de transmissão**: "Finalizada"<br>**Ação**: Enviar coordenadas geográficas | O receptor de dados bloqueia a entrada de telemetria após o fechamento da viagem. (Viagem com status "Finalizada") |
+| Caso 7 | 1, 4, 6, 10, 11 | **Estado da viagem**: Barco atracou no destino<br>**Comando**: *[Nenhum - Esquecimento do comandante]* | O status da rota permanece ativo e o rastreador continua consumindo dados em segundo plano. (Viagem não encerrada após chegada ao destino) |
+| Caso 8 | 1, 4, 6, 9, 12 | **Conectividade**: Queda de sinal de rede<br>**Ação do sistema**: Sem tentativas de reconexão | O mapa congela na última posição recebida, deixando os passageiros desinformados. (Falha de conexão sem tentativa de reconexão) |
+
 ---
 
 # Bilhete Offline
@@ -362,6 +425,20 @@ Esta seção apresenta as classes de equivalência definidas para as histórias 
 | Dados de identificação | Nome, CPF e RG exibidos corretamente (7) | Dados incompletos (8) | Dados divergentes dos informados na compra (9) |
 | Dados da viagem | Embarcação, assento, origem, destino, data e horário exibidos corretamente (10) | Dados da viagem incompletos (11) | Dados da viagem incorretos (12) |
 | Preferências de acessibilidade | Configurações visuais mantidas no modo offline (13) | Configurações visuais não mantidas no modo offline (14) | |
+
+## Casos de Teste
+
+| Casos de teste | Classes de equivalência | Entradas | Resultados esperados |
+| :--- | :--- | :--- | :--- |
+| Caso 1 | 1, 3, 5, 7, 10, 13 | **Pagamento**: Confirmado<br>**Cache**: Salvo localmente<br>**Rede**: Offline<br>**Dados**: Completos<br>**Acessibilidade**: Alto contraste ativo | O aplicativo abre a réplica visual estável do bilhete com dados e acessibilidade preservados através do cache. |
+| Caso 2 | 2, 3, 5, 7, 10, 13 | **Pagamento**: Pendente / Não confirmado<br>**Rede**: Offline<br>**Ação**: Abrir bilhete eletrônico | A renderização de validação (QR Code) é suprimida para impedir embarques sem quitação. (Pagamento não confirmado) |
+| Caso 3 | 1, 4, 5, 7, 10, 13 | **Cache**: Não gravado devido a erro de disco<br>**Rede**: Offline | A tela de passagens carrega vazia devido à indisponibilidade de persistência local. (Bilhete não salvo no cache local) |
+| Caso 4 | 1, 3, 6, 7, 10, 13 | **Rede**: Offline<br>**Ação**: Forçar atualização de tela (Gestos) | A tela gera um aviso pop-up informando a impossibilidade de sincronizar dados sem rede. (Bilhete indisponível sem internet) |
+| Caso 5 | 1, 3, 5, 8, 10, 13 | **Dados de ID**: Nome preenchido / CPF: *[Em branco]* | O bilhete exibe dados incompletos, podendo acarretar problemas na conferência visual do porto. (Dados incompletos) |
+| Caso 6 | 1, 3, 5, 9, 10, 13 | **Dados de ID**: Cache exibindo dados de outro usuário | O sistema impede a exibição por quebra de segurança de dados privados. (Dados divergentes dos informados na compra) |
+| Caso 7 | 1, 3, 5, 7, 11, 13 | **Dados da viagem**: Destino e data / Embarcação: *[Em branco]* | O bilhete falha em guiar o passageiro pela ausência de parâmetros logísticos básicos. (Dados da viagem incompletos) |
+| Caso 8 | 1, 3, 5, 7, 12, 13 | **Dados da viagem**: Horário divergente do banco | O bilhete mostra o horário defasado do cache, desconsiderando correções feitas na nuvem. (Dados da viagem incorretos) |
+| Caso 9 | 1, 3, 5, 7, 10, 14 | **Acessibilidade**: Ativada online<br>**Rede**: Offline<br>**Estado**: Cores voltaram ao padrão | A interface perde os estilos adaptados por incapacidade de carregar as folhas de estilo locais. (Configurações visuais não mantidas no modo offline) |
 
 ---
 
@@ -382,6 +459,25 @@ Esta seção apresenta as classes de equivalência definidas para as histórias 
 | Complexidade da senha | Senha com no mínimo 8 caracteres, letra maiúscula, letra minúscula, número e caractere especial (17) | Senha com menos de 8 caracteres (18) | Senha sem atender aos requisitos de complexidade (19) |
 | Confirmação de senha | Senha e confirmação idênticas (20) | Senha e confirmação diferentes (21) | |
 
+## Casos de Teste
+
+| Casos de teste | Classes de equivalência | Entradas | Resultados esperados |
+| :--- | :--- | :--- | :--- |
+| Caso 1 | 1, 4, 7, 10, 13, 15, 17, 20 | **E-mail/Telefone**: "valido@email.com" / inédito<br>**Código**: Correto (inserido em 2 min)<br>**Idade**: 22 anos<br>**Campos**: Completos<br>**Senha**: "Forte@2026" / Confirmada | Conta gerada com sucesso, chaves de autenticação criadas e login automático executado. |
+| Caso 2 | 2, 4, 7, 10, 13, 15, 17, 20 | **E-mail**: "viajantegmail.com" | O front-end bloqueia o envio exibindo alerta de formatação ausente. (E-mail em formato inválido) |
+| Caso 3 | 3, 4, 7, 10, 13, 15, 17, 20 | **Telefone**: "92999" | O validador interrompe o avanço por contagem insuficiente de dígitos de celular. (Telefone em formato inválido) |
+| Caso 4 | 1, 5, 7, 10, 13, 15, 17, 20 | **E-mail**: "usuario_ativo@email.com" | O sistema recusa o avanço antes da validação por duplicidade de índice no banco. (E-mail já cadastrado) |
+| Caso 5 | 1, 6, 7, 10, 13, 15, 17, 20 | **Telefone**: "(92) 98888-8888" | O sistema intercepta o fluxo e informa que o contato já possui vínculo na base. (Telefone já cadastrado) |
+| Caso 6 | 1, 4, 8, 10, 13, 15, 17, 20 | **Código de verificação**: "000000" | Mensagem de erro avisa sobre a divergência do token inserido. (Código incorreto) |
+| Caso 7 | 1, 4, 9, 10, 13, 15, 17, 20 | **Código de verificação**: Digitado após 10 min | O servidor invalida o código por expiração do tempo útil do token. (Código expirado) |
+| Caso 8 | 1, 4, 7, 11, 13, 15, 17, 20 | **Reenvio de código**: Clicado após 15 segundos | O botão permanece desativado até cumprir o intervalo mínimo anti-spam. (Reenvio antes de 60 segundos) |
+| Caso 9 | 1, 4, 7, 12, 13, 15, 17, 20 | **Reenvio de código**: 4ª tentativa na mesma hora | O sistema suspende temporariamente os disparos para o contato. (Mais de 3 reenvios por hora) |
+| Caso 10 | 1, 4, 7, 10, 13, 14, 15, 20 | **Data de nascimento**: "10/10/2015" | O sistema rejeita a continuidade informando a restrição de idade da plataforma. (Idade menor que 18 anos) |
+| Caso 11 | 1, 4, 7, 10, 13, 15, 16, 20 | **Dados pessoais**: Nome preenchido / Sobrenome: *[Em branco]* | O formulário aponta a obrigatoriedade dos dados nominativos faltantes. (Algum campo obrigatório não preenchido) |
+| Caso 12 | 1, 4, 7, 10, 13, 15, 17, 18 | **Senha**: "Ab1@" | O campo de senha rejeita a entrada pela baixa contagem de caracteres. (Senha com menos de 8 caracteres) |
+| Caso 13 | 1, 4, 7, 10, 13, 15, 17, 19 | **Senha**: "12345678" | O sistema avisa que a composição falha nos critérios de segurança e símbolos. (Senha sem atender aos requisitos de complexidade) |
+| Caso 14 | 1, 4, 7, 10, 13, 15, 17, 21 | **Senha**: "Forte@2026"<br>**Confirmação**: "Diferente@2026" | O envio é travado por incompatibilidade de strings nos campos de senha. (Senha e confirmação diferentes) |
+
 ---
 
 # Cadastro de Proprietário
@@ -401,5 +497,26 @@ Esta seção apresenta as classes de equivalência definidas para as histórias 
 | Senha corporativa | Senha com no mínimo 8 caracteres, letras maiúsculas, minúsculas, números e caracteres especiais (18) | Senha que não atende aos requisitos mínimos de complexidade (19) | Senha baseada em dados óbvios do cadastro (20) |
 | Confirmação de senha | Senha e confirmação idênticas (21) | Senha e confirmação diferentes (22) | |
 | Status do cadastro | Cadastro criado com status "Em Análise" (23) | Cadastro liberado sem validação da plataforma (24) | |
+
+## Casos de Teste
+
+| Casos de teste | Classes de equivalência | Entradas | Resultados esperados |
+| :--- | :--- | :--- | :--- |
+| Caso 1 | 1, 4, 7, 10, 13, 16, 18, 21, 23 | **E-mail/Telefone**: válidos/inéditos<br>**CNPJ**: Ativo/inédito<br>**Código**: Correto<br>**Dados**: Completos<br>**Senha**: "Empresa@2026" / Confirmada | O cadastro corporativo é criado com status passivo, aguardando moderação humana dos documentos. |
+| Caso 2 | 2, 4, 7, 10, 13, 16, 18, 21, 23 | **E-mail**: "dono_empresa.com" | O sistema invalida o campo pela ausência da estrutura básica de correio digital. (E-mail em formato inválido) |
+| Caso 3 | 3, 4, 7, 10, 13, 16, 18, 21, 23 | **Telefone**: "texto123" | A máscara de entrada expurga os caracteres alfabéticos inválidos. (Telefone em formato inválido) |
+| Caso 4 | 1, 5, 7, 10, 13, 16, 18, 21, 23 | **CNPJ**: "12.345.678/001" | O campo acusa erro estrutural por falta de numeração básica do documento jurídico. (CNPJ com formato inválido) |
+| Caso 5 | 1, 6, 7, 10, 13, 16, 18, 21, 23 | **CNPJ**: "00.000.000/0001-00" (Inativo) | A API de back-end consulta a Receita Federal e rejeita a inscrição do CNPJ irregular. (CNPJ inativo ou irregular) |
+| Caso 6 | 1, 4, 8, 10, 13, 16, 18, 21, 23 | **E-mail**: "proprietario_ativo@email.com" | O sistema bloqueia a criação indicando que o e-mail já encabeça outra frota. (E-mail já cadastrado) |
+| Caso 7 | 1, 4, 9, 10, 13, 16, 18, 21, 23 | **CNPJ**: "11.222.333/0001-44" (Duplicado) | O validador rejeita a operação informando duplicidade cadastral de pessoa jurídica. (Telefone ou CNPJ já cadastrado) |
+| Caso 8 | 1, 4, 7, 11, 13, 16, 18, 21, 23 | **Código de verificação**: "999999" | O avanço de tela é negado pela inconsistência numérica do token. (Código incorreto) |
+| Caso 9 | 1, 4, 7, 12, 13, 16, 18, 21, 23 | **Código de verificação**: Inserido após 6 minutos | O token é recusado na validação por estourar o tempo regulamentar em nuvem. (Código expirado) |
+| Caso 10 | 1, 4, 7, 10, 14, 16, 18, 21, 23 | **Reenvio de código**: Clicado com 20 segundos | A solicitação é ignorada até o encerramento do cronômetro de segurança de tela. (Reenvio antes de 60 segundos) |
+| Caso 11 | 1, 4, 7, 10, 15, 16, 18, 21, 23 | **Reenvio de código**: 5ª tentativa consecutiva | O sistema suspende temporariamente os envios para evitar gargalos nos servidores. (Mais de 3 reenvios por hora) |
+| Caso 12 | 1, 4, 7, 10, 13, 17, 16, 18, 21, 23 | **Dados cadastrais**: Razão Social: *[Em branco]* | O envio de arquivos é suspenso por falta de preenchimento dos metadados textuais obrigatórios. (Algum campo obrigatório não preenchido) |
+| Caso 13 | 1, 4, 7, 10, 13, 16, 19, 21, 23 | **Senha**: "admin123" | O sistema notifica a fraqueza da senha por falta de alternância de caixa e símbolos. (Senha que não atende aos requisitos mínimos de complexidade) |
+| Caso 14 | 1, 4, 7, 10, 13, 16, 20, 21, 23 | **Razão Social**: "Fluvial Tapajós"<br>**Senha**: "FluvialTapajos" | A política de segurança recusa a combinação por expor dados idênticos ao cadastro da empresa. (Senha baseada em dados óbvios do cadastro) |
+| Caso 15 | 1, 4, 7, 10, 13, 16, 18, 22, 23 | **Senha**: "Empresa@2026"<br>**Confirmação**: "Errada@2026" | O sistema emite alerta visual e impede a finalização devido à discrepância de inputs. (Senha e confirmação diferentes) |
+| Caso 16 | 1, 4, 7, 10, 13, 16, 18, 21, 24 | **Ação**: Injetar parâmetro direto para status "Aprovado" | A validação do banco de dados intercepta a tentativa e força o status default de segurança. (Cadastro liberado sem validação da plataforma) |
 
 </div>
