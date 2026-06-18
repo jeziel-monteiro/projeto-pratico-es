@@ -15,6 +15,16 @@ Esta seção apresenta as classes de equivalência definidas para as histórias 
 | Disponibilidade da viagem                 | Viagem com vagas disponíveis (4)                   | Viagem sem vagas disponíveis (5)           |                                |
 | Status da viagem                          | Embarque ainda não realizado (6)                   | Embarque já iniciado ou realizado (7)      |                                |
 
+## Casos de Teste 
+
+| Casos de Teste | Classes de <br> Equivalência | <div align="center">Entradas</div> | <div align="center">Resultado Esperado</div> |
+| :---: | :---: | :--- | :--- |
+| **Caso 1** | 1, 4, 6 | **Origem:** "Manaus"<br>**Destino:** "Parintins"<br>**Data:** "20/12/2026" | O sistema processa a busca com sucesso e exibe a lista de viagens disponíveis para o trecho e data informados. (Origem, destino e data informados corretamente) |
+| **Caso 2** | 2, 4, 6 | **Origem:** "Manaus"<br>**Destino:** *[Em branco]*<br>**Data:** "20/12/2026" | Busca rejeitada. O sistema exibe uma mensagem de erro solicitando o preenchimento de todos os filtros obrigatórios. (Algum filtro obrigatório não informado) |
+| **Caso 3** | 3, 4, 6 | **Origem:** "1234"<br>**Destino:** "@#$%"<br>**Data:** "32/13/2026" | Busca rejeitada. O sistema exibe uma mensagem de erro indicando que os dados inseridos são inválidos. (Dados inválidos para busca) |
+| **Caso 4** | 1, 5, 6 | **Origem:** "Manaus"<br>**Destino:** "Tefé"<br>**Data:** "15/11/2026" | A busca é processada, mas o sistema exibe uma mensagem indicando que as viagens para esta data estão esgotadas. (Viagem sem vagas disponíveis) |
+| **Caso 5** | 1, 4, 7 | **Origem:** "Manaus"<br>**Destino:** "Coari"<br>**Data:** "10/01/2016" | A busca é processada, mas o sistema não lista as viagens. (Embarque já iniciado ou realizado) |
+
 ---
 
 # Compra de Passagem
@@ -32,6 +42,23 @@ Esta seção apresenta as classes de equivalência definidas para as histórias 
 | Status do pagamento        | Pagamento aprovado (12)                                | Pagamento recusado (13)                | Falha na transação (14)                        |
 | Emissão do bilhete         | Bilhete gerado após aprovação do pagamento (15)        | Bilhete não gerado após aprovação (16) | Bilhete gerado sem aprovação do pagamento (17) |
 
+## Casos de Teste 
+
+| Casos de Teste | Classes de <br> Equivalência | <div align="center">Entradas</div> | <div align="center">Resultado Esperado</div> |
+| :---: | :---: | :--- | :--- |
+| **Caso 1** | 1, 4, 7, 9, 12, 15 | **Viagem:** "Manaus a Parintins (20/12/2026)"<br>**Passageiro:** "João Silva"<br>**Documento:** "123.456.789-00"<br>**Assento:** "15"<br>**Pagamento:** "PIX" | O sistema processa a compra, aprova o pagamento com sucesso e disponibiliza o bilhete. (Bilhete gerado após aprovação do pagamento) |
+| **Caso 2** | 2, 4, 7, 9, 12, 15 | **Viagem:** [Em branco]<br>**Passageiro:** "João Silva"<br>**Documento:** "123.456.789-00"<br>**Assento:** "15"<br>**Pagamento:** "PIX" | A compra é rejeitada na etapa inicial. O sistema alerta que os detalhes da viagem são obrigatórios. (Dados não informados) |
+| **Caso 3** | 3, 4, 7, 9, 12, 15 | **Viagem:** "Destino Inválido (32/13/2026)"<br>**Passageiro:** "João Silva"<br>**Documento:** "123.456.789-00"<br>**Assento:** "15"<br>**Pagamento:** "PIX" | A compra não avança. O sistema exibe uma mensagem indicando que a viagem selecionada possui informações incorretas. (Dados inválidos) |
+| **Caso 4** | 1, 5, 7, 9, 12, 15 | **Viagem:** "Manaus a Parintins (20/12/2026)"<br>**Passageiro:** [Em branco]<br>**Documento:** "123.456.789-00"<br>**Assento:** "15"<br>**Pagamento:** "PIX" | A compra é rejeitada. O sistema exibe um alerta exigindo o preenchimento do nome completo do passageiro. (Nome não informado) |
+| **Caso 5** | 1, 6, 7, 9, 12, 15 | **Viagem:** "Manaus a Parintins (20/12/2026)"<br>**Passageiro:** "João Silva"<br>**Documento:** "000.000.000-00"<br>**Assento:** "15"<br>**Pagamento:** "PIX" | A submissão é bloqueada, exigindo que o utilizador insira um número de documento real. (Documento inválido ou não informado) |
+| **Caso 6** | 1, 4, 8, 9, 12, 15 | **Viagem:** "Manaus a Parintins (20/12/2026)"<br>**Passageiro:** "João Silva"<br>**Documento:** "123.456.789-00"<br>**Assento:** "15" (Ocupado)<br>**Pagamento:** "PIX" | O sistema impede a confirmação da reserva e exibe mensagem informando que a vaga foi preenchida. (Assento indisponível) |
+| **Caso 7** | 1, 4, 7, 10, 12, 15 | **Viagem:** "Manaus a Parintins (20/12/2026)"<br>**Passageiro:** "João Silva"<br>**Documento:** "123.456.789-00"<br>**Assento:** "15"<br>**Pagamento:** "Cheque" | O sistema impossibilita a seleção informando que o método escolhido não é suportado pela plataforma. (Forma de pagamento inválida) |
+| **Caso 8** | 1, 4, 7, 11, 12, 15 | **Viagem:** "Manaus a Parintins (20/12/2026)"<br>**Passageiro:** "João Silva"<br>**Documento:** "123.456.789-00"<br>**Assento:** "15"<br>**Pagamento:** "Cartão" (CVV incorreto) | O processo é interrompido na validação dos dados bancários preenchidos. (Dados de pagamento inválidos) |
+| **Caso 9** | 1, 4, 7, 9, 13, 15 | **Viagem:** "Manaus a Parintins (20/12/2026)"<br>**Passageiro:** "João Silva"<br>**Documento:** "123.456.789-00"<br>**Assento:** "15"<br>**Pagamento:** "Cartão" (Sem limite) | O sistema informa que a operadora não autorizou a transação e interrompe a compra. (Pagamento recusado) |
+| **Caso 10** | 1, 4, 7, 9, 14, 15 | **Viagem:** "Manaus a Parintins (20/12/2026)"<br>**Passageiro:** "João Silva"<br>**Documento:** "123.456.789-00"<br>**Assento:** "15"<br>**Pagamento:** "PIX" (Timeout na API) | O sistema notifica que houve um erro de comunicação com o banco/operadora e a transação falhou. (Falha na transação) |
+| **Caso 11** | 1, 4, 7, 9, 12, 16 | **Viagem:** "Manaus a Parintins (20/12/2026)"<br>**Passageiro:** "João Silva"<br>**Documento:** "123.456.789-00"<br>**Assento:** "15"<br>**Pagamento:** "PIX" (Aprovado) | O pagamento é processado, mas ocorre erro interno e a tela exibe falha técnica ao tentar emitir o bilhete. (Bilhete não gerado após aprovação) |
+| **Caso 12** | 1, 4, 7, 9, 12, 17 | **Viagem:** "Manaus a Parintins (20/12/2026)"<br>**Passageiro:** "João Silva"<br>**Documento:** "123.456.789-00"<br>**Assento:** "15"<br>**Pagamento:** "PIX" (Simulação de bypass) | Falha crítica de validação do sistema: ele emite indevidamente o bilhete ignorando o fluxo de aprovação. (Bilhete gerado sem aprovação do pagamento) |
+
 ---
 
 # Cadastro de Embarcação
@@ -48,6 +75,20 @@ Esta seção apresenta as classes de equivalência definidas para as histórias 
 | Permissão de gerenciamento       | Proprietário criador ou administrador (10)           | Usuário sem permissão para editar ou excluir (11)        |                                                |
 | Status do cadastro               | Nova embarcação registrada como "Em Análise" (12)    | Embarcação listada aos viajantes antes da aprovação (13) |                                                |
 
+## Casos de Teste 
+
+| Casos de Teste | Classes de <br> Equivalência | <div align="center">Entradas</div> | <div align="center">Resultado Esperado</div> |
+| :---: | :---: | :--- | :--- |
+| **Caso 1** | 1, 4, 7, 10, 12 | **Nome:** "Boto Fluvial"<br>**Tipo:** "Lancha"<br>**Capacidade:** "80"<br>**Registro:** "RE-12345-AM"<br>**Foto:** "perfil.jpg (2MB)"<br>**Usuário:** "Proprietário Logado" | O sistema realiza o cadastro da embarcação com sucesso no banco de dados. (Nome, tipo e capacidade preenchidos corretamente) |
+| **Caso 2** | 2, 4, 7, 10, 12 | **Nome:** [Em branco]<br>**Tipo:** "Lancha"<br>**Capacidade:** "80"<br>**Registro:** "RE-12345-AM"<br>**Foto:** "perfil.jpg (2MB)"<br>**Usuário:** "Proprietário Logado" | O cadastro é rejeitado. O sistema exibe uma mensagem de erro alertando sobre o preenchimento de campos obrigatórios. (Algum campo obrigatório não preenchido) |
+| **Caso 3** | 3, 4, 7, 10, 12 | **Nome:** "Boto Fluvial"<br>**Tipo:** "Lancha"<br>**Capacidade:** "-5"<br>**Registro:** "RE-12345-AM"<br>**Foto:** "perfil.jpg (2MB)"<br>**Usuário:** "Proprietário Logado" | O cadastro não avança. O sistema aponta erro informando que a capacidade não pode ser negativa ou que os dados possuem formato inválido. (Dados obrigatórios inválidos) |
+| **Caso 4** | 1, 5, 7, 10, 12 | **Nome:** "Boto Fluvial"<br>**Tipo:** "Lancha"<br>**Capacidade:** "80"<br>**Registro:** "RE-11111-AM" (Já cadastrado)<br>**Foto:** "perfil.jpg (2MB)"<br>**Usuário:** "Proprietário Logado" | O sistema impede o envio e emite um alerta informando que a embarcação com este registro já existe na plataforma. (Registro oficial já cadastrado) |
+| **Caso 5** | 1, 6, 7, 10, 12 | **Nome:** "Boto Fluvial"<br>**Tipo:** "Lancha"<br>**Capacidade:** "80"<br>**Registro:** "123-AM"<br>**Foto:** "perfil.jpg (2MB)"<br>**Usuário:** "Proprietário Logado" | O sistema bloqueia o envio e exige que o registro oficial siga o padrão formatado estabelecido pelos órgãos reguladores. (Registro oficial não informado ou inválido) |
+| **Caso 6** | 1, 4, 8, 10, 12 | **Nome:** "Boto Fluvial"<br>**Tipo:** "Lancha"<br>**Capacidade:** "80"<br>**Registro:** "RE-12345-AM"<br>**Foto:** "documento.pdf (1MB)"<br>**Usuário:** "Proprietário Logado" | O upload é bloqueado. O sistema exibe um erro informando que o formato do arquivo não é suportado pela plataforma. (Arquivo em formato diferente de PNG/JPG) |
+| **Caso 7** | 1, 4, 9, 10, 12 | **Nome:** "Boto Fluvial"<br>**Tipo:** "Lancha"<br>**Capacidade:** "80"<br>**Registro:** "RE-12345-AM"<br>**Foto:** "perfil.jpg (15MB)"<br>**Usuário:** "Proprietário Logado" | O upload é interrompido. O sistema exibe um alerta de que a imagem ultrapassa o limite máximo de tamanho permitido. (Arquivo maior que 5MB) |
+| **Caso 8** | 1, 4, 7, 11, 12 | **Nome:** "Boto Fluvial"<br>**Tipo:** "Lancha"<br>**Capacidade:** "80"<br>**Registro:** "RE-12345-AM"<br>**Foto:** "perfil.jpg (2MB)"<br>**Usuário:** "Viajante Comum" | A ação é bloqueada pelo sistema, exibindo um aviso de erro de permissão de acesso para esta funcionalidade. (Usuário sem permissão para editar ou excluir) |
+| **Caso 9** | 1, 4, 7, 10, 13 | **Nome:** "Boto Fluvial"<br>**Tipo:** "Lancha"<br>**Capacidade:** "80"<br>**Registro:** "RE-12345-AM"<br>**Foto:** "perfil.jpg (2MB)"<br>**Usuário:** "Proprietário Logado" (Simulação de bypass) | O sistema aplica obrigatoriamente o status "Em Análise" e bloqueia a exibição da embarcação no catálogo público, garantindo que não fique visível antes da aprovação de um administrador. (Embarcação listada aos viajantes antes da aprovação) |
+
 ---
 
 # Notificações em Massa
@@ -62,6 +103,17 @@ Esta seção apresenta as classes de equivalência definidas para as histórias 
 | Passageiros destinatários    | Viajantes com reservas confirmadas (4)               | Viajantes sem reserva confirmada (5)    |                                   |
 | Mensagem da notificação      | Mensagem preenchida corretamente (6)                 | Mensagem vazia (7)                      |                                   |
 | Intervalo entre notificações | Envio respeitando intervalo mínimo de 10 minutos (8) | Envio antes de completar 10 minutos (9) |                                   |
+
+## Casos de Teste 
+
+| Casos de Teste | Classes de <br> Equivalência | <div align="center">Entradas</div> | <div align="center">Resultado Esperado</div> |
+| :---: | :---: | :--- | :--- |
+| **Caso 1** | 1, 4, 6, 8 | **Viagem:** "Manaus a Tefé (Agendada)"<br>**Destinatários:** "Passageiros confirmados"<br>**Mensagem:** "Atraso de 30 minutos na partida."<br>**Último Envio:** "Há 2 horas" | O sistema envia a notificação com sucesso para todos os passageiros da viagem. (Mensagem preenchida corretamente) |
+| **Caso 2** | 2, 4, 6, 8 | **Viagem:** "Manaus a Tefé (Finalizada)"<br>**Destinatários:** "Passageiros confirmados"<br>**Mensagem:** "Obrigado por viajar conosco."<br>**Último Envio:** "Nenhum" | O sistema bloqueia o envio da notificação, pois a viagem já foi concluída. (Viagem com status "Finalizada") |
+| **Caso 3** | 3, 4, 6, 8 | **Viagem:** "Manaus a Tefé (Cancelada)"<br>**Destinatários:** "Passageiros confirmados"<br>**Mensagem:** "Aviso sobre reembolso do trajeto."<br>**Último Envio:** "Nenhum" | O sistema bloqueia o envio da notificação, alertando que a viagem se encontra cancelada. (Viagem com status "Cancelada") |
+| **Caso 4** | 1, 5, 6, 8 | **Viagem:** "Manaus a Tefé (Agendada)"<br>**Destinatários:** "Usuários sem reserva"<br>**Mensagem:** "Aviso geral para a viagem."<br>**Último Envio:** "Nenhum" | O sistema não permite o envio e exibe um alerta de que os destinatários selecionados não possuem reserva. (Viajantes sem reserva confirmada) |
+| **Caso 5** | 1, 4, 7, 8 | **Viagem:** "Manaus a Tefé (Agendada)"<br>**Destinatários:** "Passageiros confirmados"<br>**Mensagem:** [Em branco]<br>**Último Envio:** "Há 30 minutos" | O envio falha e o sistema solicita o preenchimento obrigatório do campo de texto. (Mensagem vazia) |
+| **Caso 6** | 1, 4, 6, 9 | **Viagem:** "Manaus a Tefé (Agendada)"<br>**Destinatários:** "Passageiros confirmados"<br>**Mensagem:** "Correção: Atraso de 40 min."<br>**Último Envio:** "Há 2 minutos" | O sistema bloqueia a ação e exige aguardar o tempo mínimo, exibindo um erro. (Envio antes de completar 10 minutos) |
 
 ---
 
@@ -78,6 +130,19 @@ Esta seção apresenta as classes de equivalência definidas para as histórias 
 | Atualização de localização | Dados atualizados a cada 10 segundos (7) | Atualização fora do intervalo previsto (8)      | Dados de localização não enviados (9)  |
 | Tempo estimado de chegada  | ETA calculado corretamente (10)          | ETA não atualizado após alterações de rota (11) | ETA inválido (12)                      |
 
+## Casos de Teste
+
+| Casos de Teste | Classes de <br> Equivalência | <div align="center">Entradas</div> | <div align="center">Resultado Esperado</div> |
+| :---: | :---: | :--- | :--- |
+| **Caso 1** | 1, 4, 7, 10 | **GPS do dispositivo:** "Ativo"<br>**Status da Viagem:** "Em Andamento"<br>**Atualização:** "Enviada em 10s"<br>**ETA:** "Calculado pelo sistema" | O sistema exibe o mapa interativo atualizando a localização do transporte a cada 10 segundos e mostrando a previsão de chegada. (ETA calculado corretamente) |
+| **Caso 2** | 2, 4, 7, 10 | **GPS do dispositivo:** "Desativado"<br>**Status da Viagem:** "Em Andamento"<br>**Atualização:** "Enviada em 10s"<br>**ETA:** "Calculado pelo sistema" | O sistema exibe um pop-up solicitando permissão para ativar a localização do dispositivo do usuário. (GPS desativado) |
+| **Caso 3** | 3, 4, 7, 10 | **GPS do dispositivo:** "Sinal instável"<br>**Status da Viagem:** "Em Andamento"<br>**Atualização:** "Enviada em 10s"<br>**ETA:** "Calculado pelo sistema" | O mapa informa que a localização do usuário não pode ser precisa devido à falta de sinal no dispositivo. (Sinal GPS instável ou indisponível) |
+| **Caso 4** | 1, 5, 7, 10 | **GPS do dispositivo:** "Ativo"<br>**Status da Viagem:** "Agendada"<br>**Atualização:** "Enviada em 10s"<br>**ETA:** "Calculado pelo sistema" | O acompanhamento em tempo real fica inativo e uma mensagem informa que a viagem ainda não começou. (Viagem com status "Agendada") |
+| **Caso 5** | 1, 6, 7, 10 | **GPS do dispositivo:** "Ativo"<br>**Status da Viagem:** "Finalizada"<br>**Atualização:** "Enviada em 10s"<br>**ETA:** "Calculado pelo sistema" | O sistema oculta o rastreamento em tempo real ou exibe uma notificação informando que a viagem já foi concluída. (Viagem com status "Finalizada") |
+| **Caso 6** | 1, 4, 8, 10 | **GPS do dispositivo:** "Ativo"<br>**Status da Viagem:** "Em Andamento"<br>**Atualização:** "Atrasada (30s)"<br>**ETA:** "Calculado pelo sistema" | O sistema exibe um alerta de lentidão na atualização dos dados e mostra a última localização conhecida da embarcação. (Atualização fora do intervalo previsto) |
+| **Caso 7** | 1, 4, 9, 10 | **GPS do dispositivo:** "Ativo"<br>**Status da Viagem:** "Em Andamento"<br>**Atualização:** "Falha no envio"<br>**ETA:** "Calculado pelo sistema" | O marcador no mapa fica estático e o sistema exibe um alerta de perda temporária de comunicação com a embarcação. (Dados de localização não enviados) |
+| **Caso 8** | 1, 4, 7, 11 | **GPS do dispositivo:** "Ativo"<br>**Status da Viagem:** "Em Andamento"<br>**Atualização:** "Enviada em 10s"<br>**ETA:** "Congelado após desvio" | O sistema emite um aviso visual indicando que a previsão de chegada está em recálculo devido a alterações no percurso. (ETA não atualizado após alterações de rota) |
+| **Caso 9** | 1, 4, 7, 12 | **GPS do dispositivo:** "Ativo"<br>**Status da Viagem:** "Em Andamento"<br>**Atualização:** "Enviada em 10s"<br>**ETA:** "Erro de cálculo" | A localização da embarcação é atualizada no mapa, mas o campo de tempo estimado de chegada exibe "Indisponível". (ETA inválido) |
 ---
 
 # Modo de Alto Contraste
@@ -93,6 +158,18 @@ Esta seção apresenta as classes de equivalência definidas para as histórias 
 | Contraste visual                   | Contraste atende às diretrizes de acessibilidade (6)      | Contraste abaixo do mínimo exigido (7)           |                       |
 | Persistência da configuração       | Preferência salva para sessões futuras (8)                | Preferência não salva (9)                        |                       |
 | Funcionalidades do sistema         | Funcionalidades permanecem disponíveis após ativação (10) | Funcionalidades ocultadas ou desabilitadas (11)  |                       |
+
+## Casos de Teste
+
+| Casos de Teste | Classes de <br> Equivalência | <div align="center">Entradas</div> | <div align="center">Resultado Esperado</div> |
+| :---: | :---: | :--- | :--- |
+| **Caso 1** | 1, 3, 6, 8, 10 | **Ativação:** "Solicitada pelo usuário"<br>**Navegação:** "Telas do aplicativo"<br>**Verificação:** "Taxa de contraste"<br>**Sessão:** "App reiniciado"<br>**Uso:** "Busca e compra ativas" | O sistema aplica o tema escuro/alto contraste em todo o app, preservando botões e salvando a preferência do usuário. (Modo ativado corretamente) |
+| **Caso 2** | 2, 3, 6, 8, 10 | **Ativação:** "Solicitada pelo usuário"<br>**Navegação:** "Telas do aplicativo"<br>**Verificação:** "Taxa de contraste"<br>**Sessão:** "App reiniciado"<br>**Uso:** "Busca e compra ativas" | O aplicativo falha em processar a mudança e a interface permanece no tema padrão claro. (Modo não ativado após solicitação do usuário) |
+| **Caso 3** | 1, 4, 6, 8, 10 | **Ativação:** "Solicitada pelo usuário"<br>**Navegação:** "Telas do aplicativo"<br>**Verificação:** "Taxa de contraste"<br>**Sessão:** "App reiniciado"<br>**Uso:** "Busca e compra ativas" | O sistema ativa o modo, mas algumas telas (como o perfil da embarcação) continuam com o tema padrão. (Tema aplicado parcialmente) |
+| **Caso 4** | 1, 5, 6, 8, 10 | **Ativação:** "Solicitada pelo usuário"<br>**Navegação:** "Telas do aplicativo"<br>**Verificação:** "Taxa de contraste"<br>**Sessão:** "App reiniciado"<br>**Uso:** "Busca e compra ativas" | O usuário ativa a funcionalidade, o sistema processa a ação, mas a interface não sofre nenhuma alteração visual. (Tema não aplicado) |
+| **Caso 5** | 1, 3, 7, 8, 10 | **Ativação:** "Solicitada pelo usuário"<br>**Navegação:** "Telas do aplicativo"<br>**Verificação:** "Taxa de contraste"<br>**Sessão:** "App reiniciado"<br>**Uso:** "Busca e compra ativas" | O tema é aplicado, mas a cor das fontes sobre os botões não atende às regras de acessibilidade, dificultando a leitura. (Contraste abaixo do mínimo exigido) |
+| **Caso 6** | 1, 3, 6, 9, 10 | **Ativação:** "Solicitada pelo usuário"<br>**Navegação:** "Telas do aplicativo"<br>**Verificação:** "Taxa de contraste"<br>**Sessão:** "App reiniciado"<br>**Uso:** "Busca e compra ativas" | O modo é ativado com sucesso e funciona durante o uso, mas após reiniciar o aplicativo, a interface volta ao tema padrão claro. (Preferência não salva) |
+| **Caso 7** | 1, 3, 6, 8, 11 | **Ativação:** "Solicitada pelo usuário"<br>**Navegação:** "Telas do aplicativo"<br>**Verificação:** "Taxa de contraste"<br>**Sessão:** "App reiniciado"<br>**Uso:** "Busca e compra ativas" | O modo é ativado com sucesso, porém o botão de "Confirmar Pagamento" desaparece ou se torna inclicável na interface. (Funcionalidades ocultadas ou desabilitadas) |
 
 ---
 
@@ -110,6 +187,20 @@ Esta seção apresenta as classes de equivalência definidas para as histórias 
 | Status do pagamento | Pagamento aprovado ou compensado (8) | Pagamento recusado (9) | Falha na comunicação com a operadora (10) |
 | Emissão do bilhete | Bilhete gerado após confirmação do pagamento (11) | Bilhete não gerado após confirmação (12) | Bilhete gerado sem pagamento confirmado (13) |
 
+## Casos de Teste 
+
+| Casos de Teste | Classes de <br> Equivalência | <div align="center">Entradas</div> | <div align="center">Resultado Esperado</div> |
+| :---: | :---: | :--- | :--- |
+| **Caso 1** | 1, 4, 6, 8, 11 | **Viagem:** "Manaus a Parintins (Daqui a 5 dias)"<br>**Forma de Pagamento:** "Cartão de Crédito"<br>**Tempo de Pagamento:** "Imediato"<br>**Retorno da Operadora:** "Aprovado" | O sistema processa o pagamento com sucesso e disponibiliza o bilhete ao utilizador. (Bilhete gerado após confirmação do pagamento) |
+| **Caso 2** | 2, 4, 6, 8, 11 | **Viagem:** "Manaus a Parintins (Daqui a 5 dias)"<br>**Forma de Pagamento:** *[Nenhuma]*<br>**Tempo de Pagamento:** "Imediato"<br>**Retorno da Operadora:** "Aprovado" | O sistema impede o avanço para a confirmação e exige a escolha de um método. (Forma de pagamento não selecionada) |
+| **Caso 3** | 3, 4, 6, 8, 11 | **Viagem:** "Manaus a Parintins (Daqui a 5 dias)"<br>**Forma de Pagamento:** "Cheque" *(Não suportado)*<br>**Tempo de Pagamento:** "Imediato"<br>**Retorno da Operadora:** "N/A" | A compra não avança. O sistema informa que o método escolhido não é aceite pela plataforma. (Forma de pagamento inválida) |
+| **Caso 4** | 1, 5, 6, 8, 11 | **Viagem:** "Manaus a Parintins (Para amanhã - 24h)"<br>**Forma de Pagamento:** "Boleto"<br>**Tempo de Pagamento:** "Imediato"<br>**Retorno da Operadora:** "Aprovado" | O sistema bloqueia a emissão do boleto e sugere outra forma de pagamento, devido ao prazo de compensação. (Viagem com menos de 72 horas úteis de antecedência) |
+| **Caso 5** | 1, 4, 7, 8, 11 | **Viagem:** "Manaus a Parintins (Daqui a 5 dias)"<br>**Forma de Pagamento:** "PIX"<br>**Tempo de Pagamento:** "15 minutos"<br>**Retorno da Operadora:** "Aprovado" | O sistema cancela a reserva temporária e informa que o tempo limite expirou. (Pagamento não realizado dentro do prazo) |
+| **Caso 6** | 1, 4, 6, 9, 11 | **Viagem:** "Manaus a Parintins (Daqui a 5 dias)"<br>**Forma de Pagamento:** "Cartão de Crédito"<br>**Tempo de Pagamento:** "Imediato"<br>**Retorno da Operadora:** "Saldo Insuficiente" | A compra é interrompida e o ecrã notifica que a transação não foi autorizada. (Pagamento recusado) |
+| **Caso 7** | 1, 4, 6, 10, 11 | **Viagem:** "Manaus a Parintins (Daqui a 5 dias)"<br>**Forma de Pagamento:** "Cartão de Crédito"<br>**Tempo de Pagamento:** "Imediato"<br>**Retorno da Operadora:** "Sem resposta / Timeout" | O sistema exibe um erro técnico de conexão e pede para o utilizador tentar novamente. (Falha na comunicação com a operadora) |
+| **Caso 8** | 1, 4, 6, 8, 12 | **Viagem:** "Manaus a Parintins (Daqui a 5 dias)"<br>**Forma de Pagamento:** "PIX"<br>**Tempo de Pagamento:** "Imediato"<br>**Retorno da Operadora:** "Aprovado" | O valor é descontado e o pagamento consta como confirmado, mas ocorre um erro interno e a interface não emite o bilhete. (Bilhete não gerado após confirmação) |
+| **Caso 9** | 1, 4, 6, 8, 13 | **Viagem:** "Manaus a Parintins (Daqui a 5 dias)"<br>**Forma de Pagamento:** "PIX"<br>**Tempo de Pagamento:** "Imediato"<br>**Retorno da Operadora:** "Aprovado" | O sistema emite o bilhete prematuramente, antes mesmo de realizar a etapa de validação da confirmação do pagamento, quebrando o fluxo de segurança. (Bilhete gerado sem pagamento confirmado) |
+
 ---
 
 # Acessibilidade para Deficiência Visual
@@ -125,6 +216,21 @@ Esta seção apresenta as classes de equivalência definidas para as histórias 
 | Elementos não textuais | Imagens e ícones com descrição alternativa (7) | Descrições incompletas (8) | Ausência de descrição alternativa (9) |
 | Redimensionamento de texto | Interface permanece funcional após ampliação do texto (10) | Interface parcialmente comprometida (11) | Interface quebrada após ampliação (12) |
 | Informações visuais | Informação visual acompanhada de texto acessível (13) | Informação disponível apenas por cor ou elemento visual (14) | |
+
+## Casos de Teste 
+
+| Casos de Teste | Classes de <br> Equivalência | <div align="center">Entradas</div> | <div align="center">Resultado Esperado</div> |
+| :---: | :---: | :--- | :--- |
+| **Caso 1** | 1, 4, 7, 10, 13 | **Leitura:** "Compatível"<br>**Navegação:** "Por gestos"<br>**Imagens:** "Descritas"<br>**Texto:** "Ampliado"<br>**Cores:** "Com texto de apoio" | O utilizador consegue navegar, ouvir todos os elementos, compreender as imagens e concluir a compra com a interface funcional mesmo com o texto ampliado. (Acessibilidade plena ativada) |
+| **Caso 2** | 2, 4, 7, 10, 13 | **Leitura:** "Parcial"<br>**Navegação:** "Por gestos"<br>**Imagens:** "Descritas"<br>**Texto:** "Ampliado"<br>**Cores:** "Com texto de apoio" | O sistema omite a leitura de algumas partes cruciais da interface, prejudicando o entendimento do utilizador. (Leitura parcial dos elementos) |
+| **Caso 3** | 3, 4, 7, 10, 13 | **Leitura:** "Incompatível"<br>**Navegação:** "Por gestos"<br>**Imagens:** "Descritas"<br>**Texto:** "Ampliado"<br>**Cores:** "Com texto de apoio" | O leitor de tela fica mudo ao interagir com a interface, impedindo qualquer retorno sonoro. (Elementos não interpretados pelo leitor de tela) |
+| **Caso 4** | 1, 5, 7, 10, 13 | **Leitura:** "Compatível"<br>**Navegação:** "Parcial"<br>**Imagens:** "Descritas"<br>**Texto:** "Ampliado"<br>**Cores:** "Com texto de apoio" | O utilizador consegue navegar por gestos em parte do ecrã, mas o foco não alcança menus pop-up ou rodapés. (Navegação parcialmente acessível) |
+| **Caso 5** | 1, 6, 7, 10, 13 | **Leitura:** "Compatível"<br>**Navegação:** "Impossível"<br>**Imagens:** "Descritas"<br>**Texto:** "Ampliado"<br>**Cores:** "Com texto de apoio" | A navegação assistiva não funciona, obrigando o utilizador a tocar diretamente na posição visual dos componentes. (Navegação impossível sem toque direto) |
+| **Caso 6** | 1, 4, 8, 10, 13 | **Leitura:** "Compatível"<br>**Navegação:** "Por gestos"<br>**Imagens:** "Incompletas"<br>**Texto:** "Ampliado"<br>**Cores:** "Com texto de apoio" | O leitor dita uma descrição vaga para a imagem da embarcação, sem detalhar o que ela representa. (Descrições incompletas) |
+| **Caso 7** | 1, 4, 9, 10, 13 | **Leitura:** "Compatível"<br>**Navegação:** "Por gestos"<br>**Imagens:** "Sem descrição"<br>**Texto:** "Ampliado"<br>**Cores:** "Com texto de apoio" | O sistema foca nos ícones, mas o leitor de tela dita apenas o nome do arquivo da imagem ou "botão", não informando a ação. (Ausência de descrição alternativa) |
+| **Caso 8** | 1, 4, 7, 11, 13 | **Leitura:** "Compatível"<br>**Navegação:** "Por gestos"<br>**Imagens:** "Descritas"<br>**Texto:** "Ampliado"<br>**Cores:** "Com texto de apoio" | Ao aumentar o tamanho da fonte, alguns botões de "Comprar" sobrepõem-se a outros elementos, dificultando o acesso. (Interface parcialmente comprometida) |
+| **Caso 9** | 1, 4, 7, 12, 13 | **Leitura:** "Compatível"<br>**Navegação:** "Por gestos"<br>**Imagens:** "Descritas"<br>**Texto:** "Ampliado"<br>**Cores:** "Com texto de apoio" | O redimensionamento do texto desconfigura totalmente o ecrã, empurrando os botões de ação para fora da área visível. (Interface quebrada após ampliação) |
+| **Caso 10** | 1, 4, 7, 10, 14 | **Leitura:** "Compatível"<br>**Navegação:** "Por gestos"<br>**Imagens:** "Descritas"<br>**Texto:** "Ampliado"<br>**Cores:** "Sem texto de apoio" | O sistema indica um erro mudando apenas a cor da borda de um campo para vermelho, sem gerar nenhum alerta em texto para o leitor de tela. (Informação disponível apenas por cor ou elemento visual) |
 
 ---
 
@@ -142,6 +248,21 @@ Esta seção apresenta as classes de equivalência definidas para as histórias 
 | Antecedência da viagem | Horário cadastrado com no mínimo 12 horas de antecedência (10) | Horário com menos de 12 horas de antecedência (11) | |
 | Quantidade de assentos | Quantidade de assentos menor ou igual à capacidade da embarcação (12) | Quantidade de assentos superior à capacidade da embarcação (13) | |
 | Disponibilidade de embarcação | Proprietário possui pelo menos uma embarcação validada disponível (14) | Proprietário sem embarcações validadas (15) | |
+
+## Casos de Teste
+
+| Casos de Teste | Classes de <br> Equivalência | <div align="center">Entradas</div> | <div align="center">Resultado Esperado</div> |
+| :---: | :---: | :--- | :--- |
+| **Caso 1** | 1, 4, 7, 10, 12, 14 | **Embarcação:** "Boto Rosa (Validada)"<br>**Dados:** "Manaus a Parintins (08:00)"<br>**Tipo:** "Viagem Única"<br>**Antecedência:** "48 horas"<br>**Assentos:** "80 (Capacidade: 100)"<br>**Proprietário:** "Possui embarcação validada" | O sistema processa o formulário com sucesso e a nova viagem é criada e disponibilizada para venda. (Cadastro válido) |
+| **Caso 2** | 2, 4, 7, 10, 12, 14 | **Embarcação:** *[Nenhuma]*<br>**Dados:** "Manaus a Parintins (08:00)"<br>**Tipo:** "Viagem Única"<br>**Antecedência:** "48 horas"<br>**Assentos:** "80 (Capacidade: 100)"<br>**Proprietário:** "Possui embarcação validada" | O sistema impede o registo e exige que o utilizador selecione uma embarcação da lista. (Embarcação não selecionada) |
+| **Caso 3** | 3, 4, 7, 10, 12, 14 | **Embarcação:** "Cobra Grande (Em Análise)"<br>**Dados:** "Manaus a Parintins (08:00)"<br>**Tipo:** "Viagem Única"<br>**Antecedência:** "48 horas"<br>**Assentos:** "80 (Capacidade: 100)"<br>**Proprietário:** "Possui embarcação validada" | O sistema bloqueia a ação informando que apenas embarcações com status validado podem realizar viagens. (Embarcação não validada) |
+| **Caso 4** | 1, 5, 7, 10, 12, 14 | **Embarcação:** "Boto Rosa (Validada)"<br>**Dados:** "Manaus a *[Em branco]* (08:00)"<br>**Tipo:** "Viagem Única"<br>**Antecedência:** "48 horas"<br>**Assentos:** "80 (Capacidade: 100)"<br>**Proprietário:** "Possui embarcação validada" | O formulário não é submetido. O ecrã exibe um erro solicitando o preenchimento do campo de destino. (Algum campo obrigatório não preenchido) |
+| **Caso 5** | 1, 6, 7, 10, 12, 14 | **Embarcação:** "Boto Rosa (Validada)"<br>**Dados:** "Manaus a Manaus (08:00)"<br>**Tipo:** "Viagem Única"<br>**Antecedência:** "48 horas"<br>**Assentos:** "80 (Capacidade: 100)"<br>**Proprietário:** "Possui embarcação validada" | O sistema rejeita os dados inseridos, alertando que a origem e o destino não podem ser iguais. (Dados inválidos) |
+| **Caso 6** | 1, 4, 8, 10, 12, 14 | **Embarcação:** "Boto Rosa (Validada)"<br>**Dados:** "Manaus a Parintins (08:00)"<br>**Tipo:** *[Não definido]*<br>**Antecedência:** "48 horas"<br>**Assentos:** "80 (Capacidade: 100)"<br>**Proprietário:** "Possui embarcação validada" | O registo falha. O sistema solicita que seja escolhido se a viagem será única ou recorrente. (Tipo de viagem não definido) |
+| **Caso 7** | 1, 4, 9, 10, 12, 14 | **Embarcação:** "Boto Rosa (Validada)"<br>**Dados:** "Manaus a Parintins (08:00)"<br>**Tipo:** "Viagem Recorrente" *(Sem dias escolhidos)*<br>**Antecedência:** "48 horas"<br>**Assentos:** "80 (Capacidade: 100)"<br>**Proprietário:** "Possui embarcação validada" | O sistema exibe um aviso exigindo que pelo menos um dia da semana seja marcado para viagens recorrentes. (Viagem recorrente sem dias da semana definidos) |
+| **Caso 8** | 1, 4, 7, 11, 12, 14 | **Embarcação:** "Boto Rosa (Validada)"<br>**Dados:** "Manaus a Parintins (08:00)"<br>**Tipo:** "Viagem Única"<br>**Antecedência:** "5 horas"<br>**Assentos:** "80 (Capacidade: 100)"<br>**Proprietário:** "Possui embarcação validada" | O sistema impede a criação da viagem por desrespeitar o tempo de carência para venda. (Horário com menos de 12 horas de antecedência) |
+| **Caso 9** | 1, 4, 7, 10, 13, 14 | **Embarcação:** "Boto Rosa (Validada)"<br>**Dados:** "Manaus a Parintins (08:00)"<br>**Tipo:** "Viagem Única"<br>**Antecedência:** "48 horas"<br>**Assentos:** "150 (Capacidade: 100)"<br>**Proprietário:** "Possui embarcação validada" | A submissão é bloqueada. Um alerta indica que os assentos ultrapassam o limite de segurança do barco. (Quantidade de assentos superior à capacidade da embarcação) |
+| **Caso 10**| 2, 4, 7, 10, 12, 15 | **Embarcação:** *[Lista Vazia]*<br>**Dados:** "Manaus a Parintins (08:00)"<br>**Tipo:** "Viagem Única"<br>**Antecedência:** "48 horas"<br>**Assentos:** "80"<br>**Proprietário:** "Nenhuma embarcação validada" | O sistema impede o acesso ao formulário de criação de viagens, informando que é necessário ter uma embarcação validada primeiro. (Proprietário sem embarcações validadas) |
 
 ---
 
