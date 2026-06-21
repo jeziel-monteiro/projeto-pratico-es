@@ -7,6 +7,17 @@ Esta seção apresenta as classes de equivalência e os casos de teste definidas
 
 **US01**: Enquanto viajante, desejo buscar por viagens informando origem, destino e data, para encontrar opções de transporte disponíveis que atendam à minha necessidade.
 
+ **Critérios de aceitação**
+
+- **CR01**: A tela de busca deve conter filtros obrigatórios para "Origem", "Destino" e "Data".
+- **CR02**: O sistema deve exibir uma lista de resultados contendo o nome da embarcação, horário de saída, duração e preço.
+- **CR03**: As consultas de busca ao sistema devem ser respondidas e listadas na tela em até três segundos.
+- **CR04**: O sistema deve permitir registrar como "Favoritos" os trechos e viagens que são de interesse recorrente do usuário.
+
+**Regras de Negócio**
+
+- **RN01**: Listar apenas viagens com vagas disponíveis e com embarque que ainda não foi realizado a viagem.
+
 ## Classes de Equivalência
 
 | Condição de Entrada                       | Classe Válida                                      | Classe Inválida                            | Classe Inválida                |
@@ -30,6 +41,26 @@ Esta seção apresenta as classes de equivalência e os casos de teste definidas
 # Compra de Passagem
 
 **US02**: Enquanto viajante, desejo realizar a compra de uma passagem fluvial informando meus dados e efetuando o pagamento, para garantir minha reserva na embarcação e receber o bilhete eletrônico de forma automatizada.
+
+**Critérios de Aceitação:**
+
+- **CR01**: O sistema deve permitir a seleção de origem, destino e data da viagem através de seletores claros e validados.
+- **CR02**: O sistema deve exibir o valor total da compra, incluindo todas as taxas, de forma destacada antes da etapa de finalização do pagamento.
+- **CR03**: O sistema deve disponibilizar um formulário para inserção dos dados do passageiro (Nome completo e documento) e campos para os dados da forma de pagamento escolhida.
+- **CR04**: O sistema deve validar a transação em tempo real junto à operadora financeira e informar o usuário sobre o sucesso ou o motivo exato de uma eventual falha.
+- **CR05**: Caso o processamento do pagamento demore mais de 2 segundos, o sistema deve exibir um indicador visual de progresso para evitar que o usuário abandone a tela.
+- **CR06**: Após a aprovação, o sistema deve gerar automaticamente o bilhete eletrônico em PDF e enviá-lo para o e-mail cadastrado.
+- **CR07**: O sistema deve armazenar em cache local do dispositivo os metadados do bilhete em PDF gerado após a compra, garantindo que o passageiro possa consultá-lo e exibi-lo mesmo em modo offline.
+- **CR08**: O sistema deve exibir um alerta de confirmação caso o usuário tente fechar a tela ou voltar após já ter iniciado a inserção dos dados de pagamento.
+
+**Regras de Negócio:**
+
+- **RN01**: O sistema deve realizar uma última verificação de disponibilidade do assento escolhido imediatamente antes de processar a cobrança junto à operadora.
+- **RN02**: O valor final da passagem não pode sofrer alterações após o usuário ter iniciado o preenchimento dos dados na etapa de pagamento.
+- **RN03**: O processamento de dados sensíveis de cartão de crédito deve ser delegado a um gateway de pagamento homologado por meio de tokenização, proibindo o armazenamento de dados brutos de cartões no servidor local.
+- **RN04**: Para atender às normas de proteção de dados e segurança financeira, dados sensíveis de cartão de crédito nunca devem ser armazenados de forma descriptografada no banco de dados.
+- **RN05**: A geração e envio do bilhete eletrônico são ações condicionais, permitidas estritamente quando o status do pagamento retornado pela operadora for "Aprovado".
+
 
 ## Classes de Equivalência
 
@@ -65,6 +96,24 @@ Esta seção apresenta as classes de equivalência e os casos de teste definidas
 
 **US03**: Enquanto proprietário, desejo cadastrar os dados, fotos e especificações técnicas das minhas embarcações, para que os viajantes possam conhecer a infraestrutura e comodidades oferecidas antes de realizarem a compra da passagem.
 
+**Critérios de Aceitação:**
+
+- **CR01**: O sistema deve disponibilizar um formulário estruturado para a inserção do nome da embarcação, número de registro oficial, capacidade de passageiros, tipos de assentos e velocidade média.
+- **CR02**: O sistema deve alertar o usuário e destacar os campos obrigatórios em vermelho caso ele tente salvar o cadastro sem preencher o nome, tipo e capacidade.
+- **CR03**: O sistema deve permitir a seleção de comodidades da embarcação através de uma lista de opções (ex: ar-condicionado, lanchonete, espaço para redes).
+- **CR04**: O sistema deve permitir o upload de fotos para a criação de uma galeria, notificando o proprietário imediatamente caso o arquivo não seja PNG/JPG ou ultrapasse 5MB.
+- **CR05**: O sistema deve validar o registro oficial em tempo real e exibir uma mensagem de erro clara caso o número já esteja cadastrado, impedindo a submissão do formulário.
+- **CR06**: O sistema deve oferecer um botão de "Pré-visualização", permitindo que o proprietário veja como o perfil da embarcação aparecerá para os viajantes antes de confirmar o salvamento.
+- **CR07**: O sistema deve permitir que o proprietário gerencie suas embarcações, oferecendo opções de edição e exclusão. A exclusão deve acionar uma caixa de diálogo pedindo a confirmação final da ação para evitar exclusões acidentais.
+- **CR08**: Ao concluir o cadastro, o sistema deve exibir uma mensagem de sucesso indicando que os dados foram salvos e que a embarcação encontra-se "Em Análise".
+
+**Regras de Negócio:**
+
+- **RN01**: O sistema deve bloquear o salvamento de qualquer cadastro que não possua os campos de nome, tipo e capacidade preenchidos.
+- **RN02**: O número de registro oficial da embarcação é um identificador único no sistema; cadastros duplicados não são permitidos sob nenhuma hipótese.
+- **RN03**: Toda nova embarcação inserida no sistema recebe automaticamente o status de "Em Análise", não sendo listada para os viajantes nas buscas de viagens até que seja aprovada.
+- **RN04**: Apenas a conta do proprietário que criou o registro da embarcação (ou um perfil de Administrador da plataforma) tem permissão de sistema para editar ou excluir aquele cadastro.
+
 ## Classes de Equivalência
 
 | Condição de Entrada              | Classe Válida                                        | Classe Inválida                                          | Classe Inválida                                |
@@ -95,6 +144,22 @@ Esta seção apresenta as classes de equivalência e os casos de teste definidas
 
 **US04**: Enquanto proprietário, desejo enviar notificações em massa para os viajantes que compraram passagens para uma viagem específica, para informá-los rapidamente sobre imprevistos, atrasos, mudanças de rota ou cancelamentos, garantindo uma comunicação transparente e minimizando transtornos.
 
+**Critérios de Aceitação:**
+
+- **CR01**: O sistema deve permitir que o proprietário selecione uma de suas viagens (agendadas ou em andamento) para ser o alvo da notificação.
+- **CR02**: O sistema deve disponibilizar um campo de texto para a redação do aviso, exibindo de forma clara um contador e o limite máximo de caracteres permitidos.
+- **CR03**: Antes do disparo, o sistema deve exibir uma caixa de diálogo de confirmação (Alerta) mostrando a prévia da mensagem e informando a quantidade de passageiros que a receberão.
+- **CR04**: Após a confirmação, o sistema deve disparar as mensagens (via Push Notification e/ou E-mail) para todos os viajantes com bilhetes válidos para aquela viagem.
+- **CR05**: O sistema deve exibir um feedback de sucesso (Status do Sistema) informando que as notificações foram enviadas e processadas pela plataforma.
+- **CR06**: O sistema deve manter um histórico visível para o proprietário com todas as notificações enviadas vinculadas àquela viagem.
+
+**Regras de Negócio:**
+
+- **RN01**: O disparo de notificações é sistêmico e restrito aos viajantes com reservas confirmadas na viagem selecionada. O proprietário não tem acesso direto aos dados pessoais (como e-mail ou telefone) dos usuários, sendo a plataforma a intermediária do envio.
+- **RN02**: Só é permitido o envio de notificações para viagens que estejam com o status "Agendada" ou "Em Andamento". Viagens com status "Finalizada" ou "Cancelada" (após o aviso de cancelamento) têm o canal de notificação em massa bloqueado.
+- **RN03**: Para evitar o uso indevido e o excesso de alertas nos dispositivos dos viajantes, o sistema deve impor um intervalo mínimo (cooldown) de 10 minutos entre o envio de notificações sucessivas para a mesma viagem.
+- **RN04**: O cancelamento de uma viagem por parte do proprietário através do painel de calendário deve disparar de forma automatizada o gatilho de estorno (refund) financeiro para a operadora de pagamentos e publicar simultaneamente um alerta em massa no broker de notificações para os passageiros afetados.
+
 ## Classes de Equivalência
 
 | Condição de Entrada          | Classe Válida                                        | Classe Inválida                         | Classe Inválida                   |
@@ -120,6 +185,20 @@ Esta seção apresenta as classes de equivalência e os casos de teste definidas
 # Acompanhamento em Tempo Real
 
 **US05**: Enquanto viajante, desejo acompanhar o deslocamento do transporte em tempo real em um mapa interativo, para reduzir a incerteza sobre minha localização exata e planejar meu desembarque com base no tempo estimado de chegada.
+
+**Critérios de Aceitação:**
+
+- **CR01**: O usuário deve estar com o GPS ativado no dispositivo para ter acesso a sua visualização no mapa.
+- **CR02**: O mapa deve exibir um icone representativo do transporte que se desloca suavemente conforme as coordenadas mudam.
+- **CR03**: O sistema deve notificar ao usuário referente a perda de sinal por meio de uma mensagem simples (Exemplo: instabilidade na conexão com a internet") no centro da tela caso o sinal de GPS seja perdido ou esteja instável.
+- **CR04**: A interface do mapa deve ser responsiva, permitindo gestos de zoom e rotação sem travamentos.
+- **CR05**: O tempo de chegada deve ser recalculado automaticamente e exibido na tela sempre que houver desvios na rota original ou atrasos significativos em relação ao que foi estipulado no cadastro da viagem pelo proprietário.
+
+**Regras de Negócio:**
+
+- **RN01**: O sistema deve atualizar à posição do usuário no mapa em intervalos fixos de 10 segundos para otimizar o consumo de dados e bateria.
+- **RN02**: O acesso ao mapa com geolocalização em tempo real só deve ser permitido enquanto os status da viagem for em "Andamento".
+- **RN03**: O sistema deve emitir uma expectativa de tempo de chegada atualizada em casos de atrasos, desvios ou paradas não programadas.
 
 ## Classes de Equivalência
 
@@ -149,6 +228,20 @@ Esta seção apresenta as classes de equivalência e os casos de teste definidas
 
 **US06**: Enquanto viajante com baixa visão, desejo ativar um modo de alto contraste na interface, para que eu possa distinguir claramente os textos, botões e elementos visuais, navegando pelo aplicativo com maior conforto e autonomia.
 
+**Critérios de Aceitação:**
+
+- **CR01**: O sistema deve disponibilizar uma opção de fácil acesso (chave de ativação/desativação) para o "Modo de Alto Contraste" nas configurações.
+- **CR02**: Ao ativar o recurso, o sistema deve aplicar instantaneamente o tema de alto contraste em absolutamente todas as telas e componentes do aplicativo.
+- **CR03**: O tema de alto contraste deve garantir a legibilidade destacando textos, contornos de botões, formulários e ícones contra o fundo.
+- **CR04**: O sistema deve salvar a preferência do usuário (persistência de configuração), garantindo que o modo de alto contraste permaneça ativado automaticamente sempre que ele retornar ao aplicativo em sessões futures.
+- **CR05**: A ativação do modo de alto contraste não deve ocultar, desabilitar ou sobrepor nenhuma funcionalidade ou informação existente no modo padrão.
+
+**Regras de Negócio:**
+
+- **RN01**: O esquema de cores projetado para o modo de alto contraste deve obrigatoriamente atender à razão mínima de contraste exigida pelas diretrizes internacionais de acessibilidade.
+- **RN02**: A configuração de tema visual é uma preferência individual e deve ser armazenada em banco de dados vinculada ao perfil do usuário logado (ou localmente no dispositivo para usuários não logados).
+- **RN03**: A alteração para o tema de alto contraste é uma modificação estritamente visual e de acessibilidade; sob nenhuma circunstância ela deve interferir nas regras de negócio, fluxos de compra ou funcionamento técnico do sistema.
+
 ## Classes de Equivalência
 
 | Condição de Entrada                | Classe Válida                                             | Classe Inválida                                  | Classe Inválida       |
@@ -176,6 +269,30 @@ Esta seção apresenta as classes de equivalência e os casos de teste definidas
 # Formas de Pagamento
 
 **US07**: Enquanto viajante, desejo escolher entre diferentes formas de pagamento no momento de finalizar a compra da minha passagem fluvial, para que eu possa utilizar a opção mais conveniente para o meu planejamento financeiro e garantir minha reserva na embarcação.
+
+**Critérios de Aceitação:**
+
+- **CR01**: O sistema deve apresentar claramente as opções de pagamento habilitadas para a viagem, como: "Cartão de Crédito", "PIX" e "Boleto Bancário".
+- **CR02**: A opção "Boleto Bancário" só deve aparecer visível e selecionável se a data de embarque da viagem respeitar o prazo mínimo de antecedência configurado nas regras de negócio. Caso contrário, a opção deve ser ocultada ou aparecer desabilitada com um aviso informando o motivo (ex: "Indisponível: compras via boleto exigem X dias de antecedência para compensação").
+- **CR03**: Ao selecionar "Cartão de Crédito", o sistema deve exibir um alerta claro sobre o acréscimo da taxa de 2,0% antes que o usuário clique em "Pagar".
+- **CR04**: Ao selecionar "Boleto Bancário" e finalizar a reserva, o sistema deve exibir uma tela de instruções com o código de barras copiável e um botão bem visível para "Baixar Boleto em PDF".
+- **CR05**: Durante o processamento do pagamento, o sistema deve exibir um indicador visual de carregamento e bloquear o botão de confirmação para evitar cobranças em duplicidade.
+- **CR06**: Se o pagamento falhar (ex: saldo insuficiente, erro de comunicação), o sistema deve notificar o usuário com uma mensagem clara sobre o motivo e permitir a tentativa com outro método.
+- **CR07**: O sistema deve disponibilizar um botão "Voltar" ou "Cancelar" para que o usuário possa desistir do pagamento e retornar ao resumo da reserva sem perder o assento (desde que dentro do tempo limite).
+- **CR08**: Após a confirmação do pagamento, o usuário deve ser redirecionado para uma tela de "Sucesso" contendo o número do voucher da viagem e um botão para baixar o bilhete em formato PDF.
+- **CR09**: Para **PIX/Crédito**, o sistema deve exibir uma tela de "Sucesso" imediato contendo o número do voucher e o botão para baixar o bilhete em formato PDF.
+- **CR10**: Para **Boleto**, o sistema deve exibir uma tela de "Reserva Aguardando Pagamento", informando a data limite para o vencimento do boleto e avisando que o bilhete definitivo só será liberado após a compensação bancária.
+- **CR11**: A opção "Boleto Bancário" deve ficar indisponível para seleção caso a viagem possua menos de 72 horas úteis de antecedência para o embarque.
+
+**Regras de Negócio:**
+
+- **RN01**: Compras de passagens realizadas na modalidade de crédito possuem um acréscimo de 2,0% sobre o valor total da tarifa.
+- **RN02**: Transações via PIX ("QR Code" ou "Copia e Cola") possuem um tempo de validade estrito de 10 minutos; após esse período sem confirmação, a intenção de compra é expirada.
+- **RN03**: O pagamento via Boleto Bancário só será permitido para viagens cujo embarque esteja previsto para, no mínimo, 72 horas úteis (3 dias úteis) de antecedência a partir do momento da emissão.
+- **RN04**: O prazo de vencimento do boleto bancário será de 24 horas úteis após a sua geração. Caso o pagamento não seja detectado pela API de conciliação bancária dentro deste prazo, o assento reservado deve ser devolvido automaticamente ao inventário da embarcação e a reserva cancelada.
+- **RN05**: O bilhete/voucher definitivo em PDF só será gerado e enviado para o e-mail do usuário após o recebimento do arquivo de retorno bancário (ou webhook da API de pagamentos) confirmando o status de "Compensado".
+- **RN06**: A plataforma deve sempre operar oferecendo, no mínimo, duas modalidades distintas de pagamento para garantir a conversão da venda.
+- **RN07**: Os boletos gerados pela plataforma possuem prazo estrito de vencimento de 24 horas úteis; a ausência de compensação bancária neste período resulta no cancelamento automático da reserva e na liberação do assento de volta ao inventário.
 
 ## Classes de Equivalência
 
@@ -207,6 +324,23 @@ Esta seção apresenta as classes de equivalência e os casos de teste definidas
 
 **US08**: Enquanto viajante com deficiência visual (cegueira ou baixa visão), desejo que a interface do aplicativo suporte plenamente tecnologias assistivas e padrões de acessibilidade, para que eu possa navegar, buscar viagens e comprar minhas passagens de forma autônoma, intuitiva e segura.
 
+**Critérios de Aceitação:**
+
+- **CR01**: O sistema deve ser totalmente compatível com leitores de tela nativos dos sistemas operacionais (como TalkBack e VoiceOver), lendo corretamente todos os elementos e fluxos da tela.
+- **CR02**: O sistema deve permitir a navegação completa e a execução de todas as tarefas (como selecionar origem/destino e preencher formulários) utilizando apenas comandos de teclado ou gestos de varredura direcional.
+- **CR03**: Todas as imagens, ícones gráficos e elementos não textuais informativos devem possuir descrições alternativas claras (alt text) programadas no código.
+- **CR04**: A interface deve garantir uma relação de contraste adequada entre os textos e as cores de fundo, garantindo legibilidade para usuários com baixa visão.
+- **CR05**: O layout do aplicativo deve suportar o redimensionamento do texto nas configurações do sistema operacional sem quebrar a interface, sobrepor botões ou ocultar informações vitais da viagem.
+- **CR06**: Os formulários e botões interativos devem possuir rótulos (labels) descritivos ocultos ou visíveis, indicando claramente sua finalidade e estado atual (ex: "botão confirmar pagamento, desativado").
+
+**Regras de Negócio:**
+
+- **RN01**: A estrutura semântica e o desenvolvimento da interface devem obrigatoriamente aderir às diretrizes internacionais de acessibilidade WCAG (Web Content Accessibility Guidelines).
+- **RN02**: Nenhuma funcionalidade do sistema pode depender exclusivamente do uso de mouse ou de toques de alta precisão na tela, exigindo sempre uma alternativa de navegação sequencial.
+- **RN03**: Qualquer informação ou feedback transmitido visualmente (como o uso da cor vermelha para indicar um erro no formulário) deve ser obrigatoriamente acompanhado de um aviso textual ou equivalente interpretável pelo leitor de tela.
+- **RN04**: O sistema deve manter um padrão lógico e consistente na ordem de tabulação e foco dos elementos em todas as telas, respeitando o fluxo natural de leitura.
+- **RN05**: Todos os dados de identificação do passageiro exibidos na cédula de embarque offline devem possuir rótulos de acessibilidade descritivos para leitura linear, impedindo que o leitor de tela pule campos cruciais como o número do CPF ou o assento durante a conferência no porto.
+
 ## Classes de Equivalência
 
 | Condição de Entrada | Classe Válida | Classe Inválida | Classe Inválida |
@@ -237,6 +371,23 @@ Esta seção apresenta as classes de equivalência e os casos de teste definidas
 # Cadastro de Viagem
 
 **US09**: Enquanto proprietário, desejo cadastrar os detalhes de uma nova viagem fluvial, incluindo a embarcação utilizada, rota, data, horários e frequência, para que eu possa disponibilizar a venda de passagens aos viajantes e gerenciar minha oferta de transporte na plataforma.
+
+**Critérios de Aceitação:**
+
+- **CR01**: O sistema deve permitir a seleção de uma embarcação da frota do proprietário, listando apenas aquelas que já foram validadas pela plataforma.
+- **CR02**: O sistema deve oferecer campos obrigatórios para definir a origem, o destino e o horário de saída da viagem.
+- **CR03**: O sistema deve permitir que o proprietário marque a viagem como "Única" ou "Recorrente". Caso seja recorrente, deve permitir a seleção dos dias da semana em que a viagem se repete.
+- **CR04**: O sistema deve validar o horário de saída e impedir o cadastro caso o intervalo seja inferior a 12 horas de antecedência, exibindo uma mensagem de orientação ao usuário.
+- **CR05**: Antes de finalizar a publicação, o sistema deve exibir uma tela de resumo com todos os dados (embarcação, rota, datas, horários e preço) para revisão.
+- **CR06**: O sistema deve exibir uma caixa de diálogo de confirmação solicitando que o usuário valide as informações antes da conclusão definitiva.
+- **CR07**: Após a confirmação, o sistema deve exibir um indicador de processamento e, em seguida, uma mensagem de sucesso informando que a viagem já está visível para os viajantes.
+
+**Regras de Negócio:**
+
+- **RN01**: O sistema deve aplicar uma trava de integridade que impeça a publicação de uma nova rota caso o proprietário não selecione uma embarcação cadastrada que possua o status de 'Validada' pela moderação da plataforma.
+- **RN02**: O proprietário está autorizado a cadastrar novas viagens apenas se possuir pelo menos uma embarcação com status "Validada" e disponível em seu perfil.
+- **RN03**: O sistema deve impedir que o limite de assentos disponíveis informado para a viagem seja superior à capacidade total cadastrada para a embarcação selecionada.
+- **RN04**: Para fins de planejamento logístico e processamento de dados, o sistema impõe uma restrição de tempo onde uma viagem só pode ser registrada com um prazo mínimo de 12 horas de antecedência em relação ao horário previsto para o embarque.
 
 ## Classes de Equivalência
 
@@ -271,6 +422,20 @@ Esta seção apresenta as classes de equivalência e os casos de teste definidas
 
   **US10**: Enquanto viajante, desejo acessar uma página de perfil detalhada de cada embarcação (contendo fotos, especificações técnicas e comodidades), para que eu possa comparar diferentes opções de transporte e escolher aquela que melhor atende às minhas preferências de conforto e segurança para a viagem.
 
+  **Critérios de Aceitação:**
+
+- **CR01**: O sistema deve exibir uma página dedicada para a embarcação com seu nome, número de registro oficial, capacidade máxima e velocidade média.
+- **CR02**: O sistema deve apresentar uma galeria de fotos navegável (carrossel ou grade) com as imagens cadastradas pelo proprietário.
+- **CR03**: O sistema deve listar de forma clara todas as comodidades oferecidas na embarcação (ex: ar-condicionado, lanchonete, espaço para redes).
+- **CR04**: O sistema deve fornecer um botão de "Voltar" claramente visível para que o viajante possa retornar facilmente à lista de resultados de busca sem perder os filtros aplicados.
+- **CR05**: Na página de perfil da embarcação, o sistema deve exibir um botão de atalho ou seção mostrando as "Próximas Viagens" disponíveis para aquele barco específico.
+
+**Regras de Negócio:**
+
+- **RN01**: Apenas embarcações que possuem o status de cadastro "Validada" (e não "Em Análise") podem ter seus perfis exibidos publicamente para os viajantes.
+- **RN02**: O ambiente de visualização de perfis para o usuário com perfil de "Viajante" deve ser estritamente de leitura (read-only), sem qualquer possibilidade de alteração das informações exibidas.
+- **RN03**: As informações apresentadas no perfil público devem ser um reflexo exato dos dados aprovados no banco de dados durante o cadastro feito pelo proprietário.
+
 ## Classes de Equivalência
 
 | Condição de Entrada | Classe Válida | Classe Inválida | Classe Inválida |
@@ -296,6 +461,30 @@ Esta seção apresenta as classes de equivalência e os casos de teste definidas
 <div align="justify">
 
   **US11**: Enquanto proprietário, desejo acessar um painel de controle financeiro (Dashboard de Faturamento) com o cálculo automatizado do valor bruto e do valor líquido a receber das minhas viagens, para que eu possa gerenciar a receita do meu negócio com transparência e acompanhar o impacto de taxas e descontos aplicados.
+
+**Critérios de Aceitação**
+
+- **CR01**: O sistema deve disponibilizar uma tela dedicada de "Dashboard de Faturamento" dentro do perfil do proprietário.
+
+- **CR02**: O painel deve exibir de forma clara e destacada três indicadores principais: Valor Bruto Total, Total de Deduções/Taxas e Valor Líquido Acumulado.
+
+- **CR03**: O sistema deve listar o valor líquido individual gerado por cada viagem cadastrada e realizada, permitindo a filtragem por período (dia, semana, mês).
+
+- **CR04**: O painel deve discriminar visualmente a origem dos valores, separando o faturamento por modalidade de pagamento (Pix, Cartão de Crédito e Boleto Bancário).
+
+- **CR05**: Ao detalhar uma viagem específica, o proprietário deve visualizar o impacto das taxas administrativas cobradas dos clientes (como o acréscimo de 2,0% do crédito) e as taxas retidas pela plataforma/gateway de pagamento.
+
+- **CR06**: Quando o proprietário editar os valores base ou conceder descontos em uma viagem existente, o sistema deve recalcular automaticamente o valor líquido daquela rota e atualizar o total acumulado do painel em tempo real.
+
+**Regras de Negócio**
+
+- **RN01**: O processamento financeiro automatizado do sistema deve seguir estritamente as equações de integridade:
+
+$$Valor\ Bruto = Tarifa\ Base \times Quantidade\ de\ Passagens\ Vendidas$$$$Valor\ Líquido = Valor\ Bruto - Taxas\ de\ Intermediação - Descontos$$
+
+- **RN02**: O acréscimo de 2,0% cobrado nas transações de cartão de crédito deve entrar no sistema como um valor acessório repassado e ser discriminado separadamente, não podendo ser contabilizado como prejuízo ou dedução do valor bruto original devido ao proprietário.
+- **RN03**: A aplicação de taxas e descontos não é obrigatória para a criação de uma viagem; caso os campos de parametrização operacional fiquem vazios, o sistema deve assumir o valor padrão de "0" para os cálculos.
+- **RN03**: O valor líquido calculado e exibido para uma viagem ou para o total do painel sob nenhuma circunstância pode resultar em um valor negativo; caso as deduções superem o bruto (erro de configuração externa), o sistema deve bloquear a exibição e gerar um log de auditoria.
 
 ## Classes de Equivalência
 
@@ -330,6 +519,19 @@ Esta seção apresenta as classes de equivalência e os casos de teste definidas
 
   **US12**: Enquanto viajante, desejo ter acesso a um assistente interativo com instruções passo a passo (tutorial em tela), para que eu possa entender facilmente como utilizar as funcionalidades do aplicativo, como buscar viagens e comprar passagens, sem me sentir perdido ou precisar de ajuda externa.
 
+**Critérios de Aceitação:**
+
+- **CR01**: O sistema deve exibir as dicas e orientações do assistente imediatamente (em tempo real) após a interação do usuário com a tela ou botão correspondente.
+- **CR02**: O sistema deve permitir que o usuário navegue pelas mensagens, oferecendo botões para avançar para a próxima dica, voltar para a anterior ou encerrar (pular) o assistente a qualquer momento.
+- **CR03**: O sistema deve disponibilizar um botão de "Ajuda" ou ícone informativo (como um ponto de interrogação) que permita ao usuário reativar o assistente passo a passo sempre que desejar rever o tutorial.
+- **CR04**: Os balões de mensagem ou a sobreposição visual do assistente devem focar no elemento da interface que está sendo explicado, escurecendo o restante da tela para direcionar a atenção do usuário.
+
+**Regras de Negócio:**
+
+- **RN01**: O conteúdo textual das mensagens do assistente deve ter no máximo 100 caracteres.
+- **RN02**: O fluxo do assistente passo a passo deve ser acionado de forma automática apenas durante o primeiro acesso do usuário ao aplicativo ou quando uma funcionalidade completamente nova for lançada.
+- **RN03**: A presença do assistente não deve obrigar o usuário a completar o tutorial para usar o aplicativo; a opção de "Pular" ou fechar a assistência deve respeitar a autonomia do viajante.
+
 ## Classes de Equivalência
 
 | Condição de Entrada | Classe Válida | Classe Inválida | Classe Inválida |
@@ -358,6 +560,19 @@ Esta seção apresenta as classes de equivalência e os casos de teste definidas
 # Cancelamento de Passagem
 
 **US13**: Enquanto viajante, desejo ter a opção de cancelar uma passagem adquirida diretamente pelo aplicativo, para que eu possa reaver o valor investido ou liberar o assento em caso de imprevistos ou alterações nos meus planos de viagem.
+
+**Critérios de Aceitação:**
+
+- **CR01**: O sistema deve exibir um botão de "Cancelar Reserva" visível na tela de detalhes do bilhete, ativo até o prazo limite estipulado nas regras de negócio.
+- **CR02**: Ao acionar o cancelamento, o aplicativo deve exibir uma janela de confirmação alertando o usuário sobre as políticas de retenção de taxas, se houver.
+- **CR03**: O sistema deve notificar o usuário na tela e por e-mail com o comprovante de solicitação de estorno e o prazo para crédito na conta bancária.
+- **CR04**: Caso a passagem tenha sido comprada via boleto e ainda não compensada, o cancelamento deve ser imediato e sem ônus.
+
+**Regras de Negócio:**
+
+- **RN01**: O cancelamento automatizado com estorno direto só é permitido se solicitado com até 24 horas de antecedência do horário previsto para o embarque.
+- **RN02**: Passageiros afetados por cancelamentos de viagens em massa disparados pelo Proprietário possuem direito a estorno integral (100%) automático, independente do prazo.
+
 <div align="justify">
 
 ## Classes de Equivalência
@@ -385,6 +600,18 @@ Esta seção apresenta as classes de equivalência e os casos de teste definidas
 # Iniciar e Encerrar Viagem
 
 **US14**: Enquanto proprietário ou comandante da embarcação, desejo dispor de um comando para iniciar e encerrar oficialmente uma viagem agendada, para que o aplicativo passe a transmitir os dados de localização geográfica (GPS) aos passageiros apenas durante o percurso planejado.
+
+**Critérios de Aceitação:**
+
+- **CR01**: O painel da agenda/calendário do proprietário deve exibir um botão "Iniciar Viagem" para rotas com status "Agendada" e que estejam no horário de partida.
+- **CR02**: Ao clicar em "Iniciar Viagem", o status da rota no banco de dados deve mudar para "Em Andamento", liberando o acesso ao mapa para os passageiros.
+- **CR03**: Durante todo o percurso, o aplicativo do condutor deve exibir um indicador visual claro de que a transmissão de localização está ativa ("Transmitindo sinal de GPS...").
+- **CR04**: Ao chegar ao destino, o condutor deve clicar em "Encerrar Viagem", mudando o status da rota para "Finalizada" e interrompendo o consumo de dados de localização do dispositivo.
+
+**Regras de Negócio:**
+
+- **RN01**: O aplicativo só está autorizado a coletar e transmitir coordenadas de latitude e longitude para o servidor central enquanto o status da respectiva viagem for estritamente "Em Andamento".
+- **RN02**: Caso o sinal de internet caia durante o trajeto, o aplicativo do condutor deve tentar restabelecer a conexão em background sem travar a interface de navegação do comando.
 
 ## Classes de Equivalência
 
@@ -414,6 +641,21 @@ Esta seção apresenta as classes de equivalência e os casos de teste definidas
 # Bilhete Offline
 
 **US15**: Enquanto viajante, desejo que os meus bilhetes de passagem sejam salvos automaticamente no armazenamento local do meu dispositivo após a compra, contendo todos os meus dados de identificação e os detalhes da rota, para que eu consiga apresentar a cédula de embarque digital ao proprietário e garantir meu acesso à embarcação de forma totalmente visual, mesmo sem conectividade com a internet.
+
+**Critérios de Aceitação:**
+
+- **CR01**: Imediatamente após a confirmação do pagamento ou compensação, o sistema deve realizar o download silencioso e salvar os dados do bilhete no cache interno do aplicativo.
+- **CR02**: Se o usuário abrir o aplicativo sem conexão de rede ativa, a interface deve exibir um alerta discreto ("Modo Offline Ativo") e permitir o acesso imediato à tela de "Meus Bilhetes".
+- **CR03**: A interface do bilhete em modo offline deve exibir, obrigatoriamente e de forma destacada, as informações completas de identificação do passageiro: Nome Completo, CPF e Número do Documento de Identidade (RG).
+- **CR04**: O bilhete digital deve apresentar claramente os dados de validação da viagem: Nome da Embarcação, Número do Assento/Poltrona, Porto de Origem, Porto de Destino, Data e Horário de Embarque.
+- **CR05**: O layout do bilhete deve ser projetado para validação estritamente visual, utilizando fontes de alta legibilidade e cores contrastantes para que o proprietário ou comandante consiga conferir os dados e liberar o embarque sem a necessidade de escaneamento de QR Code.
+- **CR06**: O sistema deve disponibilizar um botão para gerar e abrir a versão em formato PDF do bilhete, mantendo a mesma estrutura de dados para conferência.
+
+**Regras de Negócio:**
+
+- **RN01**: O aplicativo está proibido de ocultar, bloquear ou exigir autenticação online para a exibição de bilhetes que já foram previamente baixados e armazenados no cache local do dispositivo.
+- **RN02**: Os dados de identificação impressos no bilhete (Nome, CPF e RG) devem ser um reflexo exato dos dados inseridos e validados no formulário de compra, impedindo alterações posteriores pelo usuário após a emissão do bilhete.
+- **RN03**: Toda a renderização de dados de acessibilidade (como o Modo de Alto Contraste da US06) deve persistir localmente,axing que a cédula de embarque offline mantenha as preferências visuais do usuário sem depender do servidor.
 
 ## Classes de Equivalência
 
@@ -445,6 +687,32 @@ Esta seção apresenta as classes de equivalência e os casos de teste definidas
 # Cadastro de Viajante
 
 **US16**: Como viajante, desejo me cadastrar na plataforma informando meus dados, para que eu possa ter acesso às funcionalidades do aplicativo.
+
+**Critérios de Aceitação:**
+
+- **CR01**: O sistema deve permitir que o usuário insira o e-mail ou o telefone em um campo de texto único, identificando automaticamente o tipo de dado inserido (máscara de e-mail ou máscara de telefone com DDD) para direcionar o método de envio do código.
+- **CR02**: O sistema deve exibir uma mensagem de erro clara em tela caso o formato do e-mail seja inválido ou o número de telefone não possua o padrão nacional de dígitos (DDD + 9 dígitos).
+- **CR03**: O sistema deve verificar em tempo real se o e-mail ou telefone inseridos já possuem cadastro ativo. Caso sim, deve bloquear o avanço e sugerir o redirecionamento para a tela de recuperação de senha.
+- **CR04**: Após inserir o e-mail ou telefone e avançar, o sistema deve direcionar o usuário para uma tela exclusiva de inserção do código de verificação de 4 dígitos.
+- **CR05**: A tela de verificação deve disponibilizar um botão de "Reenviar código", que só fica ativo após uma contagem regressiva de 60 segundos.
+- **CR06**: O sistema deve exibir um alerta visual de "Código incorreto ou expirado" caso o token digitado não seja idêntico ao enviado.
+- **CR07**: A tela de inserção de dados pessoais (Nome, Sobrenome e Idade) só deve ser exibida ao usuário após a validação do código de verificação com sucesso.
+- **CR08**: O sistema deve impedir a finalização do cadastro caso a idade inserida seja menor que 18 anos, exibindo um alerta sobre a restrição de idade da plataforma.
+- **CR09**: O sistema deve disponibilizar campos para "Senha" e "Confirmar Senha" na mesma tela de inserção de dados pessoais.
+- **CR10**: Os campos de senha devem possuir a opção visual de alternar visibilidade (ícone de "olho") para permitir que o usuário verifique o que digitou.
+- **CR11**: O sistema deve exibir indicadores visuais em tempo real (checklists coloridos) apontando quais critérios de complexidade de senha foram atingidos.
+- **CR12**: O sistema deve exibir uma mensagem de erro clara e impedir a submissão caso as senhas digitadas nos dois campos sejam diferentes.
+
+**Regras de Negócio:**
+
+- **RN01**: O e-mail e o número de telefone fornecidos devem ser chaves únicas no banco de dados. O sistema não pode permitir duas contas ativas utilizando o mesmo e-mail ou o mesmo número de telefone.
+- **RN02**: Um número de telefone só pode estar ativado e vinculado a uma única conta de viajante por vez. Caso o usuário tente cadastrar um número já existente, o sistema deve bloquear a ação e oferecer um fluxo de recuperação de conta.
+- **RN03**: O código de verificação enviado por SMS ou E-mail deve ter uma validade estrita de 5 minutos. Após esse período, o código expira e o usuário é obrigado a solicitar um novo envio.
+- **RN04**: O sistema deve impor um intervalo mínimo de 60 segundos para que o usuário possa clicar em "Reenviar Código". Além disso, deve haver um limite máximo de 3 tentativas de reenvio por hora para o mesmo número/e-mail.
+- **RN05**: A idade inserida pelo usuário deve ser maior ou igual a 18 anos. Caso a idade informada seja inferior a 18 anos, o sistema deve bloquear o avanço do cadastro e exibir uma mensagem informando que a plataforma é restrita para maiores de idade.
+- **RN06**: O cadastro só poderá ser persistido se os campos Nome, Sobrenome, Idade e pelo menos um canal de contato verificado (E-mail ou Telefone) estiverem completamente preenchidos. O salvamento de dados em branco é proibido.
+- **RN07**: A senha fornecida pelo usuário deve conter, obrigatoriamente: no mínimo 8 caracteres, pelo menos uma letra maiúscula, uma letra minúscula, um caractere numérico e um caractere especial (ex: `@`, `#`, `$`, `%`, `&`, `*`).
+- **RN08**: Sob nenhuma circunstância a senha do usuário deve ser transmitida ou armazenada em formato de texto limpo (plano). O servidor deve aplicar um algoritmo de hash criptográfico forte com geração de *salt* (como BCrypt ou Argon2) antes de persistir o dado na base de dados.
 
 ## Classes de Equivalência
 
@@ -483,6 +751,31 @@ Esta seção apresenta as classes de equivalência e os casos de teste definidas
 # Cadastro de Proprietário
 
 **US17**: Como Proprietário, desejo me cadastrar na plataforma informando meus dados, para que eu possa ter acesso às funcionalidades do aplicativo.
+
+**Critérios de Aceitação:**
+
+- **CR01**: O sistema deve permitir que o usuário insira o e-mail ou o telefone em um campo de texto único, identificando automaticamente o tipo de dado inserido para direcionar o método de envio do código.
+- **CR02**: O sistema deve permitir que o usuário insira o CNPJ em um campo de texto dedicado com aplicação automática de máscara padrão de mercado (`00.000.000/0000-00`).
+- **CR03**: O sistema deve validar a estrutura matemática do CNPJ (dígitos verificadores) e exibir uma mensagem de erro clara caso o formato do e-mail, telefone ou CNPJ sejam inválidos.
+- **CR04**: O sistema deve verificar em tempo real se o e-mail, telefone ou CNPJ inseridos já possuem cadastro ativo. Caso sim, deve bloquear o avanço.
+- **CR05**: Após validar o e-mail/telefone, o sistema deve direcionar o usuário para uma tela exclusiva de inserção do código de verificação de 4 dígitos.
+- **CR06**: A tela de verificação deve disponibilizar um botão de "Reenviar código", ativo após contagem regressiva de 60 segundos.
+- **CR07**: O sistema deve exibir um alerta visual de "Código incorreto ou expirado" caso o token digitado seja inválido.
+- **CR08**: A tela de dados corporativos e do responsável (Razão Social, Nome Fantasia, Nome do Responsável e CPF) só deve ser exibida após a validação do código de verificação com sucesso.
+- **CR09**: A tela de dados corporativos e do responsável deve conter campos para criação e confirmação da senha de acesso do administrador da conta.
+- **CR10**: O sistema deve validar a correspondência exata entre os campos "Senha" e "Confirmar Senha", exibindo um alerta imediato de incompatibilidade se divergirem.
+- **CR11**: O sistema deve impedir o clique no botão de conclusão enquanto todos os requisitos de segurança e complexidade da senha corporativa não forem atendidos.
+
+**Regras de Negócio:**
+
+- **RN01**: E-mail, Telefone e CNPJ são chaves únicas e imutáveis na base de dados, proibindo qualquer duplicidade.
+- **RN02**: O sistema deve rejeitar cadastros de CNPJs que não estejam com a situação cadastral "Ativa" na Receita Federal.
+- **RN03**: O código de verificação expira estritamente em 5 minutos. O reenvio possui cooldown de 60 segundos e limite de 3 tentativas por hora.
+- **RN04**: Todo novo cadastro de Proprietário assume o status de "Em Análise", impedindo a publicação de rotas ou gerenciamento de viagens até que ocorra a validação cadastral pela plataforma.
+- **RN05**: O cadastro comercial só é persistido se Razão Social, CNPJ, Nome do Responsável, CPF e um canal de contato validado estiverem preenchidos. Salvamentos parciais são proibidos.
+- **RN06**: A senha do proprietário deve seguir os critérios estritos de segurança: mínimo de 8 caracteres, mesclando letras maiúsculas, minúsculas, números e caracteres especiais.
+- **RN07**: O backend deve barrar a criação de senhas baseadas em sequências óbvias (ex: `12345678`) ou que contenham fragmentos explícitos dos dados cadastrados, como o próprio nome do responsável, a Razão Social ou os dígitos numéricos do CNPJ/CPF.
+- **RN08**: Garantia de segurança em nível de banco de dados por meio de algoritmos de hash unidirecionais não reversíveis com *salt*, impossibilitando a leitura ou descriptografia da credencial por terceiros ou administradores da infraestrutura.
 
 ## Classes de Equivalência
 
