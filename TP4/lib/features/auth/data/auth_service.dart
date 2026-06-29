@@ -6,6 +6,8 @@ class AuthService {
 
   final FirebaseAuth _firebaseAuth;
 
+  User? get currentUser => _firebaseAuth.currentUser;
+
   Future<UserCredential> signIn({
     required String email,
     required String password,
@@ -32,6 +34,10 @@ class AuthService {
 
   Future<void> deleteCurrentUser() async {
     await _firebaseAuth.currentUser?.delete();
+  }
+
+  Future<void> signOut() {
+    return _firebaseAuth.signOut();
   }
 
   Future<String> currentIdToken() async {
