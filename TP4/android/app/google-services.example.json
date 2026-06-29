@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "646910646187",
-    "project_id": "porto-certo-dev",
-    "storage_bucket": "porto-certo-dev.firebasestorage.app"
+    "project_number": "SEU_PROJECT_NUMBER",
+    "project_id": "SEU_PROJECT_ID",
+    "storage_bucket": "SEU_PROJECT_ID.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:646910646187:android:5207a76450fdbf52c564ee",
+        "mobilesdk_app_id": "SEU_MOBILE_SDK_APP_ID",
         "android_client_info": {
           "package_name": "br.com.portocerto.viajante"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBMEnB1cUvUyQELvfVRKzoD0W9Aqn9sBuo"
+          "current_key": "SUA_FIREBASE_ANDROID_API_KEY"
         }
       ],
       "services": {

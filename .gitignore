@@ -24,6 +24,10 @@ key.properties
 *.keystore
 *.jks
 
+# Firebase client configuration is generated per environment.
+google-services.json
+GoogleService-Info.plist
+
 # Dependencies and generated build output
 node_modules/
 dist/
