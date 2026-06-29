@@ -206,7 +206,7 @@ class MockData {
 
   static const notifications = [
     NotificationItem(
-      id: 1,
+      id: 'mock-1',
       type: 'embarque',
       title: 'Embarque em 2 horas',
       body: 'Viagem Manaus -> Parintins embarca as 08:30.',
@@ -215,7 +215,7 @@ class MockData {
       read: false,
     ),
     NotificationItem(
-      id: 2,
+      id: 'mock-2',
       type: 'atraso',
       title: 'Atraso na embarcacao',
       body:
@@ -225,7 +225,7 @@ class MockData {
       read: false,
     ),
     NotificationItem(
-      id: 3,
+      id: 'mock-3',
       type: 'confirmacao',
       title: 'Reserva confirmada',
       body: 'Sua reserva #PCB-20260625-4721 foi confirmada com sucesso.',
@@ -234,7 +234,7 @@ class MockData {
       read: true,
     ),
     NotificationItem(
-      id: 4,
+      id: 'mock-4',
       type: 'cancelamento',
       title: 'Cancelamento',
       body: 'Uma viagem foi cancelada. Reembolso em ate 3 dias uteis.',

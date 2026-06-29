@@ -45,6 +45,14 @@ type ReviewSeed = {
   helpfulCount: number;
 };
 
+type NotificationSeed = {
+  routeKey?: string;
+  type: string;
+  title: string;
+  body: string;
+  sentAt: string;
+};
+
 const ports: PortSeed[] = [
   {
     key: 'manaus',
@@ -334,6 +342,40 @@ const reviews: ReviewSeed[] = [
   },
 ];
 
+const notifications: NotificationSeed[] = [
+  {
+    routeKey: 'amazonas-expresso:manaus:santarem',
+    type: 'embarque',
+    title: 'Embarque confirmado',
+    body:
+      'Amazonas Expresso inicia embarque em Manaus com paradas em Itacoatiara, Parintins e Obidos.',
+    sentAt: '2026-06-29T08:10:00-04:00',
+  },
+  {
+    routeKey: 'tapajos-norte:santarem:belem',
+    type: 'atraso',
+    title: 'Ajuste no horario de saida',
+    body:
+      'Tapajos Norte teve ajuste operacional. A saida Santarem -> Belem pode atrasar ate 30 minutos.',
+    sentAt: '2026-06-29T07:40:00-04:00',
+  },
+  {
+    routeKey: 'marajo-atlantico:belem:santana',
+    type: 'confirmacao',
+    title: 'Rota Belem -> Santana/Macapa disponivel',
+    body:
+      'Novas vagas foram confirmadas para a travessia fluvial ate o Amapa.',
+    sentAt: '2026-06-28T16:20:00-04:00',
+  },
+  {
+    type: 'system',
+    title: 'Documentos para embarque',
+    body:
+      'Lembre-se de levar documento oficial com foto e chegar ao porto com antecedencia.',
+    sentAt: '2026-06-27T10:30:00-04:00',
+  },
+];
+
 async function main() {
   const ownerUser = await prisma.user.upsert({
     where: { email: 'operacao@portocerto.com' },
@@ -478,6 +520,9 @@ async function main() {
     });
   }
 
+  await prisma.notification.deleteMany({});
+
+  const tripIds = new Map<string, string>();
   for (const trip of trips) {
     const vesselId = requireValue(vesselIds, trip.vesselKey);
     const originPortId = requireValue(portIds, trip.originKey);
@@ -515,6 +560,7 @@ async function main() {
         status: TripStatus.SCHEDULED,
       },
     });
+    tripIds.set(routeKeyFor(trip), savedTrip.id);
 
     await prisma.tripStop.deleteMany({
       where: { tripId: savedTrip.id },
@@ -554,8 +600,22 @@ async function main() {
     });
   }
 
+  for (const notification of notifications) {
+    await prisma.notification.create({
+      data: {
+        tripId: notification.routeKey
+          ? requireValue(tripIds, notification.routeKey)
+          : null,
+        type: notification.type,
+        title: notification.title,
+        body: notification.body,
+        sentAt: new Date(notification.sentAt),
+      },
+    });
+  }
+
   console.log(
-    'Seed de portos, embarcacoes, viagens, paradas, posicoes e avaliacoes concluido.',
+    'Seed de portos, embarcacoes, viagens, paradas, posicoes, avaliacoes e notificacoes concluido.',
   );
 }
 
@@ -601,6 +661,10 @@ function simulatedPositionForTrip(trip: TripSeed) {
       segmentProgress,
     ).toFixed(7),
   };
+}
+
+function routeKeyFor(trip: TripSeed) {
+  return `${trip.vesselKey}:${trip.originKey}:${trip.destinationKey}`;
 }
 
 function coordinatesForStop(portKey: string) {

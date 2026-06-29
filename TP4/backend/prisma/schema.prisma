@@ -288,11 +288,13 @@ model TripPosition {
 model Notification {
   id        String    @id @default(uuid())
   tripId    String?
+  type      String    @default("system")
   title     String
   body      String
   sentAt    DateTime?
   trip      Trip?     @relation(fields: [tripId], references: [id], onDelete: SetNull)
   createdAt DateTime  @default(now())
 
+  @@index([sentAt, createdAt])
   @@map("notifications")
 }

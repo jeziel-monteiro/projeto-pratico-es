@@ -22,6 +22,7 @@ import '../../models/review.dart';
 import '../../models/trip.dart';
 import '../../models/trip_tracking.dart';
 import 'data/my_trips_repository.dart';
+import 'data/notifications_repository.dart';
 import 'data/reviews_repository.dart';
 import 'data/travel_repository.dart';
 
@@ -2113,12 +2114,43 @@ class NotificationsScreen extends StatefulWidget {
 }
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
-  late List<NotificationItem> _items;
+  final _repository = NotificationsRepository();
+  List<NotificationItem> _items = const [];
+  bool _loading = true;
+  String? _error;
 
   @override
   void initState() {
     super.initState();
-    _items = List<NotificationItem>.from(MockData.notifications);
+    _loadNotifications();
+  }
+
+  @override
+  void dispose() {
+    _repository.close();
+    super.dispose();
+  }
+
+  Future<void> _loadNotifications() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+
+    try {
+      final items = await _repository.listNotifications();
+      if (!mounted) return;
+      setState(() {
+        _items = items;
+        _loading = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _error = 'Não foi possível carregar suas notificações.';
+        _loading = false;
+      });
+    }
   }
 
   @override
@@ -2153,75 +2185,95 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   ),
           ),
           Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(16),
-              children: groups.entries.map((entry) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 4,
-                        bottom: 8,
-                        top: 4,
-                      ),
-                      child: Text(
-                        entry.key.toUpperCase(),
-                        style: const TextStyle(
-                          color: AppColors.muted,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.8,
-                        ),
-                      ),
+            child: _loading
+                ? const Center(child: CircularProgressIndicator())
+                : _error != null
+                ? _VesselTripsMessage(
+                    icon: Icons.notifications_off_outlined,
+                    title: 'Notificações indisponíveis',
+                    message: _error!,
+                    onRetry: _loadNotifications,
+                  )
+                : _items.isEmpty
+                ? _VesselTripsMessage(
+                    icon: Icons.notifications_none_outlined,
+                    title: 'Sem notificações',
+                    message:
+                        'Avisos sobre embarque, atrasos e reservas aparecerão aqui.',
+                    onRetry: _loadNotifications,
+                  )
+                : RefreshIndicator(
+                    onRefresh: _loadNotifications,
+                    child: ListView(
+                      padding: const EdgeInsets.all(16),
+                      children: groups.entries.map((entry) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 4,
+                                bottom: 8,
+                                top: 4,
+                              ),
+                              child: Text(
+                                entry.key.toUpperCase(),
+                                style: const TextStyle(
+                                  color: AppColors.muted,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 0.8,
+                                ),
+                              ),
+                            ),
+                            PcCard(
+                              padding: EdgeInsets.zero,
+                              margin: const EdgeInsets.only(bottom: 14),
+                              child: Column(
+                                children: entry.value.map((item) {
+                                  return ListTile(
+                                    onTap: () => setState(() {
+                                      final index = _items.indexWhere(
+                                        (candidate) => candidate.id == item.id,
+                                      );
+                                      _items[index] = _items[index].copyWith(
+                                        read: true,
+                                      );
+                                    }),
+                                    leading: CircleAvatar(
+                                      backgroundColor: _notificationColor(
+                                        item.type,
+                                      ).withValues(alpha: 0.12),
+                                      child: Icon(
+                                        _notificationIcon(item.type),
+                                        color: _notificationColor(item.type),
+                                      ),
+                                    ),
+                                    title: Text(
+                                      item.title,
+                                      style: TextStyle(
+                                        fontWeight: item.read
+                                            ? FontWeight.w700
+                                            : FontWeight.w900,
+                                      ),
+                                    ),
+                                    subtitle: Text(item.body),
+                                    trailing: Text(
+                                      item.time,
+                                      style: const TextStyle(
+                                        color: AppColors.muted,
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ],
+                        );
+                      }).toList(),
                     ),
-                    PcCard(
-                      padding: EdgeInsets.zero,
-                      margin: const EdgeInsets.only(bottom: 14),
-                      child: Column(
-                        children: entry.value.map((item) {
-                          return ListTile(
-                            onTap: () => setState(() {
-                              final index = _items.indexWhere(
-                                (candidate) => candidate.id == item.id,
-                              );
-                              _items[index] = _items[index].copyWith(
-                                read: true,
-                              );
-                            }),
-                            leading: CircleAvatar(
-                              backgroundColor: _notificationColor(
-                                item.type,
-                              ).withValues(alpha: 0.12),
-                              child: Icon(
-                                _notificationIcon(item.type),
-                                color: _notificationColor(item.type),
-                              ),
-                            ),
-                            title: Text(
-                              item.title,
-                              style: TextStyle(
-                                fontWeight: item.read
-                                    ? FontWeight.w700
-                                    : FontWeight.w900,
-                              ),
-                            ),
-                            subtitle: Text(item.body),
-                            trailing: Text(
-                              item.time,
-                              style: const TextStyle(
-                                color: AppColors.muted,
-                                fontSize: 11,
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ],
-                );
-              }).toList(),
-            ),
+                  ),
           ),
         ],
       ),
@@ -3173,6 +3225,7 @@ IconData _notificationIcon(String type) {
     'atraso' => Icons.schedule,
     'confirmacao' => Icons.check_circle_outline,
     'cancelamento' => Icons.cancel_outlined,
+    'system' => Icons.info_outline,
     _ => Icons.notifications_outlined,
   };
 }
@@ -3183,6 +3236,7 @@ Color _notificationColor(String type) {
     'atraso' => AppColors.accent,
     'confirmacao' => AppColors.success,
     'cancelamento' => AppColors.danger,
+    'system' => AppColors.teal,
     _ => AppColors.teal,
   };
 }
