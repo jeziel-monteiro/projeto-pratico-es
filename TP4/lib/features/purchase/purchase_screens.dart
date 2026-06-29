@@ -1068,7 +1068,7 @@ class _PixScreenState extends State<PixScreen> {
                       PcButton(
                         label: _confirming
                             ? 'Confirmando reserva...'
-                            : 'Simular Pagamento Aprovado',
+                            : 'Confirmar pagamento PIX',
                         full: true,
                         loading: _confirming,
                         variant: PcButtonVariant.ghost,
@@ -1200,7 +1200,10 @@ class _BoletoScreenState extends State<BoletoScreen> {
                               label: 'PDF',
                               icon: Icons.download_outlined,
                               variant: PcButtonVariant.teal,
-                              onPressed: () {},
+                              onPressed: () => _showFeaturePending(
+                                context,
+                                'Boleto em PDF será disponibilizado em breve.',
+                              ),
                             ),
                           ),
                         ],
@@ -1238,7 +1241,7 @@ class _BoletoScreenState extends State<BoletoScreen> {
                       child: PcButton(
                         label: _confirming
                             ? 'Confirmando...'
-                            : 'Simular Aprovação',
+                            : 'Confirmar pagamento do boleto',
                         small: true,
                         loading: _confirming,
                         variant: PcButtonVariant.ghost,
@@ -1486,7 +1489,7 @@ class _CreditCardScreenState extends State<CreditCardScreen> {
                 ),
                 const SizedBox(height: 10),
                 PcButton(
-                  label: 'Simular Recusa',
+                  label: 'Informar problema no pagamento',
                   full: true,
                   variant: PcButtonVariant.outline,
                   onPressed: () => widget.nav(AppScreen.rejected),
@@ -1742,7 +1745,10 @@ class _TicketScreenState extends State<TicketScreen> {
                         label: 'Baixar PDF',
                         icon: Icons.download_outlined,
                         variant: PcButtonVariant.outline,
-                        onPressed: () {},
+                        onPressed: () => _showFeaturePending(
+                          context,
+                          'PDF do bilhete será disponibilizado em breve.',
+                        ),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -1751,7 +1757,10 @@ class _TicketScreenState extends State<TicketScreen> {
                         label: 'Compartilhar',
                         icon: Icons.share_outlined,
                         variant: PcButtonVariant.teal,
-                        onPressed: () {},
+                        onPressed: () => _showFeaturePending(
+                          context,
+                          'Compartilhamento do bilhete será disponibilizado em breve.',
+                        ),
                       ),
                     ),
                   ],
@@ -2160,6 +2169,10 @@ String _reservationActionErrorMessage(Object error) {
   if (error is MyTripsRepositoryException) return error.message;
   if (error is ApiException) return error.message;
   return 'Não foi possível completar esta operação.';
+}
+
+void _showFeaturePending(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
 }
 
 class _PaymentMethod {
@@ -2792,7 +2805,10 @@ class _BookingTicketScreenState extends State<_BookingTicketScreen> {
                         label: 'Baixar PDF',
                         icon: Icons.download_outlined,
                         variant: PcButtonVariant.outline,
-                        onPressed: () {},
+                        onPressed: () => _showFeaturePending(
+                          context,
+                          'PDF do bilhete será disponibilizado em breve.',
+                        ),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -2801,7 +2817,10 @@ class _BookingTicketScreenState extends State<_BookingTicketScreen> {
                         label: 'Compartilhar',
                         icon: Icons.share_outlined,
                         variant: PcButtonVariant.teal,
-                        onPressed: () {},
+                        onPressed: () => _showFeaturePending(
+                          context,
+                          'Compartilhamento do bilhete será disponibilizado em breve.',
+                        ),
                       ),
                     ),
                   ],
