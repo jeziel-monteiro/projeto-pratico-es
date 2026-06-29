@@ -230,7 +230,10 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
         selectedTrip: _selectedTrip,
         onTripSelected: _selectTrip,
       ),
-      AppScreen.vesselReviews => VesselReviewsScreen(nav: _nav),
+      AppScreen.vesselReviews => VesselReviewsScreen(
+        nav: _nav,
+        selectedTrip: _selectedTrip,
+      ),
       AppScreen.purchase => PurchaseScreen(
         nav: _nav,
         draft: _activePurchaseDraft,

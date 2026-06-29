@@ -76,6 +76,7 @@ model TravelerProfile {
   user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   bookings     Booking[]
   favorites    Favorite[]
+  reviews      Review[]
 
   @@map("traveler_profiles")
 }
@@ -124,6 +125,7 @@ model Vessel {
   owner             OwnerProfile  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   photos            VesselPhoto[]
   trips             Trip[]
+  reviews           Review[]
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
 
@@ -253,6 +255,23 @@ model Favorite {
 
   @@id([travelerId, tripId])
   @@map("favorites")
+}
+
+model Review {
+  id           String          @id @default(uuid())
+  vesselId     String
+  travelerId   String
+  rating       Int
+  comment      String
+  helpfulCount Int             @default(0)
+  vessel       Vessel          @relation(fields: [vesselId], references: [id], onDelete: Cascade)
+  traveler     TravelerProfile @relation(fields: [travelerId], references: [id], onDelete: Cascade)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@unique([vesselId, travelerId])
+  @@index([vesselId, createdAt])
+  @@map("reviews")
 }
 
 model TripPosition {

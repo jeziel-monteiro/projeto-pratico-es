@@ -83,7 +83,7 @@ class MockData {
 
   static const reviews = [
     Review(
-      id: 1,
+      id: 'mock-1',
       user: 'Pedro Henrique L.',
       avatar: 'P',
       rating: 5,
@@ -93,7 +93,7 @@ class MockData {
       helpful: 12,
     ),
     Review(
-      id: 2,
+      id: 'mock-2',
       user: 'Juliana Ferreira',
       avatar: 'J',
       rating: 4,
@@ -103,7 +103,7 @@ class MockData {
       helpful: 7,
     ),
     Review(
-      id: 3,
+      id: 'mock-3',
       user: 'Roberto Costa',
       avatar: 'R',
       rating: 5,
