@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "646910646187",
+    "project_id": "porto-certo-dev",
+    "storage_bucket": "porto-certo-dev.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:646910646187:android:5207a76450fdbf52c564ee",
+        "android_client_info": {
+          "package_name": "br.com.portocerto.viajante"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMEnB1cUvUyQELvfVRKzoD0W9Aqn9sBuo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

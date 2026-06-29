@@ -1,0 +1,279 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  TRAVELER
+  OWNER
+  ADMIN
+}
+
+enum VesselStatus {
+  PENDING_REVIEW
+  VALIDATED
+  REJECTED
+}
+
+enum AccommodationType {
+  HAMMOCK
+  CABIN
+  SEAT
+}
+
+enum TripStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+enum TicketStatus {
+  RESERVED
+  ISSUED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  REFUNDED
+}
+
+model User {
+  id              String           @id @default(uuid())
+  firebaseUid     String?          @unique
+  email           String?          @unique
+  phone           String?          @unique
+  fullName        String
+  cpf             String?          @unique
+  role            UserRole
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  travelerProfile TravelerProfile?
+  ownerProfile    OwnerProfile?
+
+  @@map("users")
+}
+
+model TravelerProfile {
+  id           String     @id @default(uuid())
+  userId       String     @unique
+  highContrast Boolean    @default(false)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bookings     Booking[]
+  favorites    Favorite[]
+
+  @@map("traveler_profiles")
+}
+
+model OwnerProfile {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  companyName     String
+  cnpj            String   @unique
+  responsibleName String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vessels         Vessel[]
+
+  @@map("owner_profiles")
+}
+
+model Port {
+  id           String     @id @default(uuid())
+  name         String
+  city         String
+  state        String
+  latitude     Decimal?   @db.Decimal(10, 7)
+  longitude    Decimal?   @db.Decimal(10, 7)
+  originTrips  Trip[]     @relation("TripOrigin")
+  destinyTrips Trip[]     @relation("TripDestiny")
+  tripStops    TripStop[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@unique([city, state])
+  @@map("ports")
+}
+
+model Vessel {
+  id                String        @id @default(uuid())
+  ownerId           String
+  name              String
+  officialRegistry  String        @unique
+  passengerCapacity Int
+  averageSpeed      Decimal?      @db.Decimal(6, 2)
+  rating            Decimal?      @db.Decimal(2, 1)
+  amenities         String[]      @default([])
+  status            VesselStatus  @default(PENDING_REVIEW)
+  owner             OwnerProfile  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  photos            VesselPhoto[]
+  trips             Trip[]
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  @@map("vessels")
+}
+
+model VesselPhoto {
+  id        String   @id @default(uuid())
+  vesselId  String
+  url       String
+  altText   String?
+  vessel    Vessel   @relation(fields: [vesselId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([vesselId, url])
+  @@map("vessel_photos")
+}
+
+model Trip {
+  id                String         @id @default(uuid())
+  vesselId          String
+  originPortId      String
+  destinyPortId     String
+  departureAt       DateTime
+  arrivalEstimateAt DateTime?
+  basePrice         Decimal        @db.Decimal(10, 2)
+  seatsTotal        Int
+  seatsAvailable    Int
+  status            TripStatus     @default(SCHEDULED)
+  vessel            Vessel         @relation(fields: [vesselId], references: [id])
+  originPort        Port           @relation("TripOrigin", fields: [originPortId], references: [id])
+  destinyPort       Port           @relation("TripDestiny", fields: [destinyPortId], references: [id])
+  stops             TripStop[]
+  bookings          Booking[]
+  favorites         Favorite[]
+  position          TripPosition?
+  notifications     Notification[]
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  @@unique([vesselId, originPortId, destinyPortId, departureAt])
+  @@index([originPortId, destinyPortId, departureAt])
+  @@map("trips")
+}
+
+model TripStop {
+  id                  String    @id @default(uuid())
+  tripId              String
+  portId              String
+  stopOrder           Int
+  arrivalEstimateAt   DateTime?
+  departureEstimateAt DateTime?
+  priceMultiplier     Decimal   @default(0) @db.Decimal(5, 4)
+  trip                Trip      @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  port                Port      @relation(fields: [portId], references: [id])
+  originBookings      Booking[] @relation("BookingOriginStop")
+  destinationBookings Booking[] @relation("BookingDestinationStop")
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@unique([tripId, stopOrder])
+  @@unique([tripId, portId])
+  @@index([portId])
+  @@map("trip_stops")
+}
+
+model Booking {
+  id                String            @id @default(uuid())
+  travelerId        String
+  tripId            String
+  originStopId      String?
+  destinationStopId String?
+  passengerName     String            @default("")
+  passengerCpf      String            @default("")
+  accommodationType AccommodationType @default(HAMMOCK)
+  status            BookingStatus     @default(PENDING)
+  totalAmount       Decimal           @db.Decimal(10, 2)
+  traveler          TravelerProfile   @relation(fields: [travelerId], references: [id])
+  trip              Trip              @relation(fields: [tripId], references: [id])
+  originStop        TripStop?         @relation("BookingOriginStop", fields: [originStopId], references: [id], onDelete: SetNull)
+  destinationStop   TripStop?         @relation("BookingDestinationStop", fields: [destinationStopId], references: [id], onDelete: SetNull)
+  tickets           Ticket[]
+  payment           Payment?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  @@index([travelerId, status])
+  @@index([tripId, status])
+  @@index([originStopId, destinationStopId])
+  @@map("bookings")
+}
+
+model Ticket {
+  id        String       @id @default(uuid())
+  bookingId String
+  code      String       @unique
+  seatLabel String?
+  pdfUrl    String?
+  status    TicketStatus @default(RESERVED)
+  booking   Booking      @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@map("tickets")
+}
+
+model Payment {
+  id                String        @id @default(uuid())
+  bookingId         String        @unique
+  method            String
+  providerPaymentId String?
+  amount            Decimal       @db.Decimal(10, 2)
+  status            PaymentStatus @default(PENDING)
+  booking           Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  @@map("payments")
+}
+
+model Favorite {
+  travelerId String
+  tripId     String
+  traveler   TravelerProfile @relation(fields: [travelerId], references: [id], onDelete: Cascade)
+  trip       Trip            @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  createdAt  DateTime        @default(now())
+
+  @@id([travelerId, tripId])
+  @@map("favorites")
+}
+
+model TripPosition {
+  id        String   @id @default(uuid())
+  tripId    String   @unique
+  latitude  Decimal  @db.Decimal(10, 7)
+  longitude Decimal  @db.Decimal(10, 7)
+  updatedAt DateTime @updatedAt
+  trip      Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+  @@map("trip_positions")
+}
+
+model Notification {
+  id        String    @id @default(uuid())
+  tripId    String?
+  title     String
+  body      String
+  sentAt    DateTime?
+  trip      Trip?     @relation(fields: [tripId], references: [id], onDelete: SetNull)
+  createdAt DateTime  @default(now())
+
+  @@map("notifications")
+}
