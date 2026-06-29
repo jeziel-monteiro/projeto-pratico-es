@@ -9,7 +9,21 @@ class NotificationItem {
     required this.read,
   });
 
-  final int id;
+  factory NotificationItem.fromApi(Map<String, Object?> json) {
+    final sentAt = DateTime.parse(json['sentAt'] as String).toLocal();
+
+    return NotificationItem(
+      id: json['id'] as String,
+      type: json['type'] as String,
+      title: json['title'] as String,
+      body: json['body'] as String,
+      time: _formatTime(sentAt),
+      date: _dateLabel(sentAt),
+      read: false,
+    );
+  }
+
+  final String id;
   final String type;
   final String title;
   final String body;
@@ -28,4 +42,19 @@ class NotificationItem {
       read: read ?? this.read,
     );
   }
+}
+
+String _formatTime(DateTime value) {
+  return '${value.hour.toString().padLeft(2, '0')}:${value.minute.toString().padLeft(2, '0')}';
+}
+
+String _dateLabel(DateTime value) {
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+  final date = DateTime(value.year, value.month, value.day);
+  final diff = today.difference(date).inDays;
+
+  if (diff == 0) return 'Hoje';
+  if (diff == 1) return 'Ontem';
+  return '${value.day.toString().padLeft(2, '0')}/${value.month.toString().padLeft(2, '0')}';
 }

@@ -3,7 +3,10 @@ import { UserRole } from '@prisma/client';
 import { prisma } from '../../database/prisma.js';
 import { HttpError } from '../../http/http-error.js';
 import type { AuthenticatedUser } from '../auth/auth.middleware.js';
-import type { UpsertTravelerInput } from './traveler.schemas.js';
+import type {
+  TravelerPreferencesInput,
+  UpsertTravelerInput,
+} from './traveler.schemas.js';
 
 export async function upsertTravelerProfile(
   auth: AuthenticatedUser,
@@ -58,4 +61,30 @@ export async function getTravelerProfile(auth: AuthenticatedUser) {
   }
 
   return user;
+}
+
+export async function updateTravelerPreferences(
+  auth: AuthenticatedUser,
+  input: TravelerPreferencesInput,
+) {
+  const user = await prisma.user.findUnique({
+    where: { firebaseUid: auth.uid },
+    include: { travelerProfile: true },
+  });
+
+  if (!user || !user.travelerProfile) {
+    throw new HttpError(404, 'Perfil de viajante nao encontrado.');
+  }
+
+  await prisma.travelerProfile.update({
+    where: { id: user.travelerProfile.id },
+    data: {
+      highContrast: input.highContrast,
+    },
+  });
+
+  return prisma.user.findUniqueOrThrow({
+    where: { id: user.id },
+    include: { travelerProfile: true },
+  });
 }

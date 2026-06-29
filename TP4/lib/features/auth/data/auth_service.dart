@@ -6,6 +6,8 @@ class AuthService {
 
   final FirebaseAuth _firebaseAuth;
 
+  User? get currentUser => _firebaseAuth.currentUser;
+
   Future<UserCredential> signIn({
     required String email,
     required String password,
@@ -30,8 +32,31 @@ class AuthService {
     return _firebaseAuth.sendPasswordResetEmail(email: email);
   }
 
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    final user = _firebaseAuth.currentUser;
+    final email = user?.email;
+
+    if (user == null || email == null || email.isEmpty) {
+      throw const AuthServiceException('Sessao de autenticacao invalida.');
+    }
+
+    final credential = EmailAuthProvider.credential(
+      email: email,
+      password: currentPassword,
+    );
+    await user.reauthenticateWithCredential(credential);
+    await user.updatePassword(newPassword);
+  }
+
   Future<void> deleteCurrentUser() async {
     await _firebaseAuth.currentUser?.delete();
+  }
+
+  Future<void> signOut() {
+    return _firebaseAuth.signOut();
   }
 
   Future<String> currentIdToken() async {

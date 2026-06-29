@@ -35,6 +35,24 @@ type TripSeed = {
   stops: TripStopSeed[];
 };
 
+type ReviewSeed = {
+  vesselKey: string;
+  email: string;
+  fullName: string;
+  cpf: string;
+  rating: number;
+  comment: string;
+  helpfulCount: number;
+};
+
+type NotificationSeed = {
+  routeKey?: string;
+  type: string;
+  title: string;
+  body: string;
+  sentAt: string;
+};
+
 const ports: PortSeed[] = [
   {
     key: 'manaus',
@@ -281,6 +299,83 @@ const trips: TripSeed[] = [
   },
 ];
 
+const reviews: ReviewSeed[] = [
+  {
+    vesselKey: 'amazonas-expresso',
+    email: 'pedro.henrique@portocerto.com',
+    fullName: 'Pedro Henrique L.',
+    cpf: '72145698010',
+    rating: 5,
+    comment:
+      'Viagem excelente. Embarcacao limpa, tripulacao atenciosa e chegada dentro do previsto.',
+    helpfulCount: 12,
+  },
+  {
+    vesselKey: 'amazonas-expresso',
+    email: 'juliana.ferreira@portocerto.com',
+    fullName: 'Juliana Ferreira',
+    cpf: '84257913004',
+    rating: 4,
+    comment:
+      'Boa experiencia. O camarote era confortavel e a equipe orientou bem as paradas.',
+    helpfulCount: 7,
+  },
+  {
+    vesselKey: 'tapajos-norte',
+    email: 'roberto.costa@portocerto.com',
+    fullName: 'Roberto Costa',
+    cpf: '96314725071',
+    rating: 5,
+    comment:
+      'Organizacao muito boa, comida honesta e uma vista incrivel do rio ao amanhecer.',
+    helpfulCount: 19,
+  },
+  {
+    vesselKey: 'marajo-atlantico',
+    email: 'ana.clara@portocerto.com',
+    fullName: 'Ana Clara Souza',
+    cpf: '15478963028',
+    rating: 4,
+    comment:
+      'Embarque tranquilo em Belem, poltronas confortaveis e boa comunicacao da tripulacao.',
+    helpfulCount: 8,
+  },
+];
+
+const notifications: NotificationSeed[] = [
+  {
+    routeKey: 'amazonas-expresso:manaus:santarem',
+    type: 'embarque',
+    title: 'Embarque confirmado',
+    body:
+      'Amazonas Expresso inicia embarque em Manaus com paradas em Itacoatiara, Parintins e Obidos.',
+    sentAt: '2026-06-29T08:10:00-04:00',
+  },
+  {
+    routeKey: 'tapajos-norte:santarem:belem',
+    type: 'atraso',
+    title: 'Ajuste no horario de saida',
+    body:
+      'Tapajos Norte teve ajuste operacional. A saida Santarem -> Belem pode atrasar ate 30 minutos.',
+    sentAt: '2026-06-29T07:40:00-04:00',
+  },
+  {
+    routeKey: 'marajo-atlantico:belem:santana',
+    type: 'confirmacao',
+    title: 'Rota Belem -> Santana/Macapa disponivel',
+    body:
+      'Novas vagas foram confirmadas para a travessia fluvial ate o Amapa.',
+    sentAt: '2026-06-28T16:20:00-04:00',
+  },
+  {
+    type: 'system',
+    title: 'Documentos para embarque',
+    body:
+      'Lembre-se de levar documento oficial com foto e chegar ao porto com antecedencia.',
+    sentAt: '2026-06-27T10:30:00-04:00',
+  },
+];
+
 async function main() {
   const ownerUser = await prisma.user.upsert({
     where: { email: 'operacao@portocerto.com' },
@@ -373,6 +468,61 @@ async function main() {
     vesselIds.set(vessel.key, savedVessel.id);
   }
 
+  const reviewerIds = new Map<string, string>();
+  for (const review of reviews) {
+    const reviewerUser = await prisma.user.upsert({
+      where: { email: review.email },
+      update: {
+        fullName: review.fullName,
+        cpf: review.cpf,
+        role: UserRole.TRAVELER,
+      },
+      create: {
+        email: review.email,
+        fullName: review.fullName,
+        cpf: review.cpf,
+        role: UserRole.TRAVELER,
+      },
+    });
+
+    const reviewerProfile = await prisma.travelerProfile.upsert({
+      where: { userId: reviewerUser.id },
+      update: {},
+      create: {
+        userId: reviewerUser.id,
+        highContrast: false,
+      },
+    });
+
+    reviewerIds.set(review.email, reviewerProfile.id);
+  }
+
+  for (const review of reviews) {
+    await prisma.review.upsert({
+      where: {
+        vesselId_travelerId: {
+          vesselId: requireValue(vesselIds, review.vesselKey),
+          travelerId: requireValue(reviewerIds, review.email),
+        },
+      },
+      update: {
+        rating: review.rating,
+        comment: review.comment,
+        helpfulCount: review.helpfulCount,
+      },
+      create: {
+        vesselId: requireValue(vesselIds, review.vesselKey),
+        travelerId: requireValue(reviewerIds, review.email),
+        rating: review.rating,
+        comment: review.comment,
+        helpfulCount: review.helpfulCount,
+      },
+    });
+  }
+
+  await prisma.notification.deleteMany({});
+
+  const tripIds = new Map<string, string>();
   for (const trip of trips) {
     const vesselId = requireValue(vesselIds, trip.vesselKey);
     const originPortId = requireValue(portIds, trip.originKey);
@@ -410,6 +560,7 @@ async function main() {
         status: TripStatus.SCHEDULED,
       },
     });
+    tripIds.set(routeKeyFor(trip), savedTrip.id);
 
     await prisma.tripStop.deleteMany({
       where: { tripId: savedTrip.id },
@@ -449,8 +600,22 @@ async function main() {
     });
   }
 
+  for (const notification of notifications) {
+    await prisma.notification.create({
+      data: {
+        tripId: notification.routeKey
+          ? requireValue(tripIds, notification.routeKey)
+          : null,
+        type: notification.type,
+        title: notification.title,
+        body: notification.body,
+        sentAt: new Date(notification.sentAt),
+      },
+    });
+  }
+
   console.log(
-    'Seed de portos, embarcacoes, viagens, paradas e posicoes concluido.',
+    'Seed de portos, embarcacoes, viagens, paradas, posicoes, avaliacoes e notificacoes concluido.',
   );
 }
 
@@ -496,6 +661,10 @@ function simulatedPositionForTrip(trip: TripSeed) {
       segmentProgress,
     ).toFixed(7),
   };
+}
+
+function routeKeyFor(trip: TripSeed) {
+  return `${trip.vesselKey}:${trip.originKey}:${trip.destinationKey}`;
 }
 
 function coordinatesForStop(portKey: string) {

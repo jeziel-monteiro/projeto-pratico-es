@@ -3,9 +3,13 @@ import { Router } from 'express';
 import { asyncRoute } from '../../http/async-route.js';
 import { authenticate } from '../auth/auth.middleware.js';
 import { presentTraveler } from './traveler.presenter.js';
-import { upsertTravelerSchema } from './traveler.schemas.js';
+import {
+  travelerPreferencesSchema,
+  upsertTravelerSchema,
+} from './traveler.schemas.js';
 import {
   getTravelerProfile,
+  updateTravelerPreferences,
   upsertTravelerProfile,
 } from './traveler.service.js';
 
@@ -38,6 +42,17 @@ travelerRoutes.put(
   asyncRoute(async (request, response) => {
     const input = upsertTravelerSchema.parse(request.body);
     const traveler = await upsertTravelerProfile(request.auth!, input);
+
+    return response.json({ data: presentTraveler(traveler) });
+  }),
+);
+
+travelerRoutes.patch(
+  '/me/preferences',
+  authenticate,
+  asyncRoute(async (request, response) => {
+    const input = travelerPreferencesSchema.parse(request.body);
+    const traveler = await updateTravelerPreferences(request.auth!, input);
 
     return response.json({ data: presentTraveler(traveler) });
   }),

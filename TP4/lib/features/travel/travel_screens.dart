@@ -22,6 +22,8 @@ import '../../models/review.dart';
 import '../../models/trip.dart';
 import '../../models/trip_tracking.dart';
 import 'data/my_trips_repository.dart';
+import 'data/notifications_repository.dart';
+import 'data/reviews_repository.dart';
 import 'data/travel_repository.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -826,18 +828,24 @@ class VesselScreen extends StatefulWidget {
 
 class _VesselScreenState extends State<VesselScreen> {
   final _repository = TravelRepository();
+  final _reviewsRepository = ReviewsRepository();
   late Trip _trip = widget.selectedTrip ?? MockData.trips.first;
   List<Trip> _relatedTrips = const [];
+  List<Review> _reviewPreview = const [];
+  ReviewSummary _reviewSummary = ReviewSummary.empty;
   bool _loading = false;
   bool _loadingRelatedTrips = true;
+  bool _loadingReviews = true;
   String? _error;
   String? _relatedTripsError;
+  String? _reviewsError;
 
   @override
   void initState() {
     super.initState();
     _loadSelectedTrip();
     _loadRelatedTrips();
+    _loadReviews();
   }
 
   @override
@@ -847,12 +855,14 @@ class _VesselScreenState extends State<VesselScreen> {
       _trip = widget.selectedTrip ?? MockData.trips.first;
       _loadSelectedTrip();
       _loadRelatedTrips();
+      _loadReviews();
     }
   }
 
   @override
   void dispose() {
     _repository.close();
+    _reviewsRepository.close();
     super.dispose();
   }
 
@@ -911,6 +921,41 @@ class _VesselScreenState extends State<VesselScreen> {
         _relatedTripsError =
             'Não foi possível carregar as próximas viagens desta embarcação.';
         _loadingRelatedTrips = false;
+      });
+    }
+  }
+
+  Future<void> _loadReviews() async {
+    final selectedTrip = widget.selectedTrip;
+    if (selectedTrip == null || selectedTrip.id.startsWith('mock-')) {
+      setState(() {
+        _reviewPreview = const [];
+        _reviewSummary = ReviewSummary.empty;
+        _loadingReviews = false;
+        _reviewsError = null;
+      });
+      return;
+    }
+
+    setState(() {
+      _loadingReviews = true;
+      _reviewsError = null;
+    });
+
+    try {
+      final bundle = await _reviewsRepository.listTripReviews(selectedTrip.id);
+      if (!mounted) return;
+      setState(() {
+        _reviewSummary = bundle.summary;
+        _reviewPreview = bundle.reviews.take(2).toList();
+        _loadingReviews = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _reviewsError =
+            'Não foi possível carregar as avaliações desta embarcação.';
+        _loadingReviews = false;
       });
     }
   }
@@ -1098,45 +1143,73 @@ class _VesselScreenState extends State<VesselScreen> {
                         onAction: () => widget.nav(AppScreen.vesselReviews),
                       ),
                       const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Column(
-                            children: [
-                              Text(
-                                '4.8',
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.titleLarge?.copyWith(fontSize: 34),
-                              ),
-                              const StarRating(value: 5, size: 14),
-                              const SizedBox(height: 3),
-                              const Text(
-                                '127 avaliações',
-                                style: TextStyle(
-                                  color: AppColors.muted,
-                                  fontSize: 11,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(width: 18),
-                          Expanded(
-                            child: Column(
+                      if (_loadingReviews)
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 18),
+                          child: Center(child: CircularProgressIndicator()),
+                        )
+                      else if (_reviewsError != null)
+                        _HomeTripsMessage(
+                          icon: Icons.cloud_off_outlined,
+                          title: 'Avaliações indisponíveis',
+                          message: _reviewsError!,
+                          onRetry: _loadReviews,
+                        )
+                      else if (_reviewSummary.total == 0)
+                        _HomeTripsMessage(
+                          icon: Icons.star_outline,
+                          title: 'Ainda sem avaliações',
+                          message:
+                              'As avaliações dos passageiros aparecerão aqui.',
+                          onRetry: _loadReviews,
+                        )
+                      else ...[
+                        Row(
+                          children: [
+                            Column(
                               children: [
-                                5,
-                                4,
-                                3,
-                                2,
-                                1,
-                              ].map((star) => _RatingLine(star: star)).toList(),
+                                Text(
+                                  _reviewSummary.average.toStringAsFixed(1),
+                                  style: Theme.of(context).textTheme.titleLarge
+                                      ?.copyWith(fontSize: 34),
+                                ),
+                                StarRating(
+                                  value: _reviewSummary.roundedAverage,
+                                  size: 14,
+                                ),
+                                const SizedBox(height: 3),
+                                Text(
+                                  '${_reviewSummary.total} avaliações',
+                                  style: const TextStyle(
+                                    color: AppColors.muted,
+                                    fontSize: 11,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      ...MockData.reviews
-                          .take(2)
-                          .map((review) => ReviewCard(review: review)),
+                            const SizedBox(width: 18),
+                            Expanded(
+                              child: Column(
+                                children: [5, 4, 3, 2, 1]
+                                    .map(
+                                      (star) => _RatingLine(
+                                        star: star,
+                                        count:
+                                            _reviewSummary.distribution[star] ??
+                                            0,
+                                        total: _reviewSummary.total,
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        ..._reviewPreview.map(
+                          (review) => ReviewCard(review: review),
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -1297,164 +1370,307 @@ class _VesselTripsScreenState extends State<VesselTripsScreen> {
 }
 
 class VesselReviewsScreen extends StatefulWidget {
-  const VesselReviewsScreen({super.key, required this.nav});
+  const VesselReviewsScreen({
+    super.key,
+    required this.nav,
+    required this.selectedTrip,
+  });
 
   final AppNavigator nav;
+  final Trip? selectedTrip;
 
   @override
   State<VesselReviewsScreen> createState() => _VesselReviewsScreenState();
 }
 
 class _VesselReviewsScreenState extends State<VesselReviewsScreen> {
+  final _repository = ReviewsRepository();
   bool _showForm = false;
+  bool _loading = true;
+  bool _publishing = false;
   int _rating = 0;
   final _comment = TextEditingController();
-  final List<Review> _reviews = List<Review>.from(MockData.reviews);
+  List<Review> _reviews = const [];
+  ReviewSummary _summary = ReviewSummary.empty;
+  String? _error;
+  String? _formError;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadReviews();
+  }
+
+  @override
+  void didUpdateWidget(covariant VesselReviewsScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedTrip?.id != widget.selectedTrip?.id) {
+      _loadReviews();
+    }
+  }
 
   @override
   void dispose() {
     _comment.dispose();
+    _repository.close();
     super.dispose();
   }
 
-  void _publish() {
-    if (_rating == 0 || _comment.text.trim().length < 12) return;
+  Future<void> _loadReviews() async {
+    final selectedTrip = widget.selectedTrip;
+    if (selectedTrip == null || selectedTrip.id.startsWith('mock-')) {
+      setState(() {
+        _reviews = const [];
+        _summary = ReviewSummary.empty;
+        _error = 'Selecione uma viagem real para ver avaliações.';
+        _loading = false;
+      });
+      return;
+    }
+
     setState(() {
-      _reviews.insert(
-        0,
-        Review(
-          id: _reviews.length + 1,
-          user: 'Você',
-          avatar: 'V',
-          rating: _rating,
-          date: '26/06/2026',
-          comment: _comment.text.trim(),
-          helpful: 0,
-        ),
+      _loading = true;
+      _error = null;
+      _formError = null;
+    });
+
+    try {
+      final bundle = await _repository.listTripReviews(selectedTrip.id);
+      if (!mounted) return;
+      setState(() {
+        _reviews = bundle.reviews;
+        _summary = bundle.summary;
+        _loading = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _error = 'Não foi possível carregar as avaliações desta embarcação.';
+        _loading = false;
+      });
+    }
+  }
+
+  Future<void> _publish() async {
+    final selectedTrip = widget.selectedTrip;
+    final comment = _comment.text.trim();
+
+    if (selectedTrip == null || selectedTrip.id.startsWith('mock-')) {
+      setState(() => _formError = 'Selecione uma viagem real para avaliar.');
+      return;
+    }
+    if (_rating == 0) {
+      setState(() => _formError = 'Selecione uma nota para publicar.');
+      return;
+    }
+    if (comment.length < 12) {
+      setState(
+        () => _formError = 'A avaliação deve ter pelo menos 12 caracteres.',
       );
+      return;
+    }
+
+    setState(() {
+      _publishing = true;
+      _formError = null;
+    });
+
+    try {
+      final submission = await _repository.publishReview(
+        tripId: selectedTrip.id,
+        rating: _rating,
+        comment: comment,
+      );
+      if (!mounted) return;
+      final nextReviews = [
+        submission.review,
+        ..._reviews.where((review) => review.id != submission.review.id),
+      ];
+      setState(() {
+        _reviews = nextReviews;
+        _summary = submission.summary;
+        _publishing = false;
+        _showForm = false;
+        _rating = 0;
+        _comment.clear();
+      });
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _formError = _reviewErrorMessage(error);
+        _publishing = false;
+      });
+    }
+  }
+
+  String _reviewErrorMessage(Object error) {
+    if (error is ReviewsRepositoryException) return error.message;
+    if (error is ApiException) return error.message;
+    return 'Não foi possível publicar sua avaliação.';
+  }
+
+  void _closeForm() {
+    setState(() {
       _showForm = false;
       _rating = 0;
+      _formError = null;
       _comment.clear();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final avg =
-        _reviews.fold<double>(0, (sum, review) => sum + review.rating) /
-        _reviews.length;
+    final selectedTrip = widget.selectedTrip;
     return Scaffold(
       backgroundColor: AppColors.surface,
       body: Column(
         children: [
           AppHeader(
             title: 'Avaliações',
-            subtitle: 'Barco Amazonas I',
+            subtitle: selectedTrip?.vessel ?? 'Embarcação',
             backTo: AppScreen.vessel,
             nav: widget.nav,
           ),
           Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                PcCard(
-                  child: Row(
-                    children: [
-                      Column(
-                        children: [
-                          Text(
-                            avg.toStringAsFixed(1),
-                            style: Theme.of(
-                              context,
-                            ).textTheme.titleLarge?.copyWith(fontSize: 42),
-                          ),
-                          StarRating(value: avg.round(), size: 17),
-                          Text(
-                            '${_reviews.length} avaliações',
-                            style: const TextStyle(
-                              color: AppColors.muted,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(width: 20),
-                      Expanded(
-                        child: Column(
-                          children: [
-                            5,
-                            4,
-                            3,
-                            2,
-                            1,
-                          ].map((star) => _RatingLine(star: star)).toList(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                if (!_showForm)
-                  PcButton(
-                    label: 'Escrever uma avaliação',
+            child: _loading
+                ? const Center(child: CircularProgressIndicator())
+                : _error != null
+                ? _VesselTripsMessage(
                     icon: Icons.star_outline,
-                    full: true,
-                    variant: PcButtonVariant.outline,
-                    onPressed: () => setState(() => _showForm = true),
+                    title: 'Avaliações indisponíveis',
+                    message: _error!,
+                    onRetry: _loadReviews,
                   )
-                else
-                  PcCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                : RefreshIndicator(
+                    onRefresh: _loadReviews,
+                    child: ListView(
+                      padding: const EdgeInsets.all(16),
                       children: [
-                        const SectionTitle(title: 'Sua avaliação'),
-                        const SizedBox(height: 8),
-                        StarRating(
-                          value: _rating,
-                          size: 28,
-                          onChanged: (value) => setState(() => _rating = value),
-                        ),
-                        const SizedBox(height: 12),
-                        TextField(
-                          controller: _comment,
-                          maxLines: 4,
-                          decoration: const InputDecoration(
-                            hintText: 'Conte sua experiência a bordo...',
+                        PcCard(
+                          child: Row(
+                            children: [
+                              Column(
+                                children: [
+                                  Text(
+                                    _summary.average.toStringAsFixed(1),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge
+                                        ?.copyWith(fontSize: 42),
+                                  ),
+                                  StarRating(
+                                    value: _summary.roundedAverage,
+                                    size: 17,
+                                  ),
+                                  Text(
+                                    '${_summary.total} avaliações',
+                                    style: const TextStyle(
+                                      color: AppColors.muted,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(width: 20),
+                              Expanded(
+                                child: Column(
+                                  children: [5, 4, 3, 2, 1]
+                                      .map(
+                                        (star) => _RatingLine(
+                                          star: star,
+                                          count:
+                                              _summary.distribution[star] ?? 0,
+                                          total: _summary.total,
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
+                        const SizedBox(height: 8),
+                        if (!_showForm)
+                          PcButton(
+                            label: 'Escrever uma avaliação',
+                            icon: Icons.star_outline,
+                            full: true,
+                            variant: PcButtonVariant.outline,
+                            onPressed: () => setState(() => _showForm = true),
+                          )
+                        else
+                          PcCard(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SectionTitle(title: 'Sua avaliação'),
+                                if (_formError != null) ...[
+                                  const SizedBox(height: 8),
+                                  _WarningBox(message: _formError!),
+                                ],
+                                const SizedBox(height: 8),
+                                StarRating(
+                                  value: _rating,
+                                  size: 28,
+                                  onChanged: (value) =>
+                                      setState(() => _rating = value),
+                                ),
+                                const SizedBox(height: 12),
+                                TextField(
+                                  controller: _comment,
+                                  maxLines: 4,
+                                  decoration: const InputDecoration(
+                                    hintText:
+                                        'Conte sua experiência a bordo...',
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: PcButton(
+                                        label: 'Cancelar',
+                                        variant: PcButtonVariant.outline,
+                                        onPressed: _publishing
+                                            ? null
+                                            : _closeForm,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: PcButton(
+                                        label: 'Publicar',
+                                        loading: _publishing,
+                                        onPressed: _publish,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
                         const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: PcButton(
-                                label: 'Cancelar',
-                                variant: PcButtonVariant.outline,
-                                onPressed: () =>
-                                    setState(() => _showForm = false),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: PcButton(
-                                label: 'Publicar',
-                                onPressed: _publish,
-                              ),
-                            ),
-                          ],
+                        PcCard(
+                          child: _reviews.isEmpty
+                              ? const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 18),
+                                  child: Text(
+                                    'Ainda não há avaliações publicadas para esta embarcação.',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: AppColors.muted),
+                                  ),
+                                )
+                              : Column(
+                                  children: _reviews
+                                      .map(
+                                        (review) => ReviewCard(review: review),
+                                      )
+                                      .toList(),
+                                ),
                         ),
                       ],
                     ),
                   ),
-                const SizedBox(height: 12),
-                PcCard(
-                  child: Column(
-                    children: _reviews
-                        .map((review) => ReviewCard(review: review))
-                        .toList(),
-                  ),
-                ),
-              ],
-            ),
           ),
         ],
       ),
@@ -1898,12 +2114,43 @@ class NotificationsScreen extends StatefulWidget {
 }
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
-  late List<NotificationItem> _items;
+  final _repository = NotificationsRepository();
+  List<NotificationItem> _items = const [];
+  bool _loading = true;
+  String? _error;
 
   @override
   void initState() {
     super.initState();
-    _items = List<NotificationItem>.from(MockData.notifications);
+    _loadNotifications();
+  }
+
+  @override
+  void dispose() {
+    _repository.close();
+    super.dispose();
+  }
+
+  Future<void> _loadNotifications() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+
+    try {
+      final items = await _repository.listNotifications();
+      if (!mounted) return;
+      setState(() {
+        _items = items;
+        _loading = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _error = 'Não foi possível carregar suas notificações.';
+        _loading = false;
+      });
+    }
   }
 
   @override
@@ -1938,75 +2185,95 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   ),
           ),
           Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(16),
-              children: groups.entries.map((entry) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 4,
-                        bottom: 8,
-                        top: 4,
-                      ),
-                      child: Text(
-                        entry.key.toUpperCase(),
-                        style: const TextStyle(
-                          color: AppColors.muted,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.8,
-                        ),
-                      ),
+            child: _loading
+                ? const Center(child: CircularProgressIndicator())
+                : _error != null
+                ? _VesselTripsMessage(
+                    icon: Icons.notifications_off_outlined,
+                    title: 'Notificações indisponíveis',
+                    message: _error!,
+                    onRetry: _loadNotifications,
+                  )
+                : _items.isEmpty
+                ? _VesselTripsMessage(
+                    icon: Icons.notifications_none_outlined,
+                    title: 'Sem notificações',
+                    message:
+                        'Avisos sobre embarque, atrasos e reservas aparecerão aqui.',
+                    onRetry: _loadNotifications,
+                  )
+                : RefreshIndicator(
+                    onRefresh: _loadNotifications,
+                    child: ListView(
+                      padding: const EdgeInsets.all(16),
+                      children: groups.entries.map((entry) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 4,
+                                bottom: 8,
+                                top: 4,
+                              ),
+                              child: Text(
+                                entry.key.toUpperCase(),
+                                style: const TextStyle(
+                                  color: AppColors.muted,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 0.8,
+                                ),
+                              ),
+                            ),
+                            PcCard(
+                              padding: EdgeInsets.zero,
+                              margin: const EdgeInsets.only(bottom: 14),
+                              child: Column(
+                                children: entry.value.map((item) {
+                                  return ListTile(
+                                    onTap: () => setState(() {
+                                      final index = _items.indexWhere(
+                                        (candidate) => candidate.id == item.id,
+                                      );
+                                      _items[index] = _items[index].copyWith(
+                                        read: true,
+                                      );
+                                    }),
+                                    leading: CircleAvatar(
+                                      backgroundColor: _notificationColor(
+                                        item.type,
+                                      ).withValues(alpha: 0.12),
+                                      child: Icon(
+                                        _notificationIcon(item.type),
+                                        color: _notificationColor(item.type),
+                                      ),
+                                    ),
+                                    title: Text(
+                                      item.title,
+                                      style: TextStyle(
+                                        fontWeight: item.read
+                                            ? FontWeight.w700
+                                            : FontWeight.w900,
+                                      ),
+                                    ),
+                                    subtitle: Text(item.body),
+                                    trailing: Text(
+                                      item.time,
+                                      style: const TextStyle(
+                                        color: AppColors.muted,
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ],
+                        );
+                      }).toList(),
                     ),
-                    PcCard(
-                      padding: EdgeInsets.zero,
-                      margin: const EdgeInsets.only(bottom: 14),
-                      child: Column(
-                        children: entry.value.map((item) {
-                          return ListTile(
-                            onTap: () => setState(() {
-                              final index = _items.indexWhere(
-                                (candidate) => candidate.id == item.id,
-                              );
-                              _items[index] = _items[index].copyWith(
-                                read: true,
-                              );
-                            }),
-                            leading: CircleAvatar(
-                              backgroundColor: _notificationColor(
-                                item.type,
-                              ).withValues(alpha: 0.12),
-                              child: Icon(
-                                _notificationIcon(item.type),
-                                color: _notificationColor(item.type),
-                              ),
-                            ),
-                            title: Text(
-                              item.title,
-                              style: TextStyle(
-                                fontWeight: item.read
-                                    ? FontWeight.w700
-                                    : FontWeight.w900,
-                              ),
-                            ),
-                            subtitle: Text(item.body),
-                            trailing: Text(
-                              item.time,
-                              style: const TextStyle(
-                                color: AppColors.muted,
-                                fontSize: 11,
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ],
-                );
-              }).toList(),
-            ),
+                  ),
           ),
         ],
       ),
@@ -2849,19 +3116,15 @@ class _VesselTripRow extends StatelessWidget {
 }
 
 class _RatingLine extends StatelessWidget {
-  const _RatingLine({required this.star});
+  const _RatingLine({required this.star, this.count = 0, this.total = 0});
 
   final int star;
+  final int count;
+  final int total;
 
   @override
   Widget build(BuildContext context) {
-    final pct = switch (star) {
-      5 => 0.72,
-      4 => 0.20,
-      3 => 0.06,
-      2 => 0.02,
-      _ => 0.02,
-    };
+    final pct = total == 0 ? 0.0 : count / total;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
@@ -2962,6 +3225,7 @@ IconData _notificationIcon(String type) {
     'atraso' => Icons.schedule,
     'confirmacao' => Icons.check_circle_outline,
     'cancelamento' => Icons.cancel_outlined,
+    'system' => Icons.info_outline,
     _ => Icons.notifications_outlined,
   };
 }
@@ -2972,6 +3236,7 @@ Color _notificationColor(String type) {
     'atraso' => AppColors.accent,
     'confirmacao' => AppColors.success,
     'cancelamento' => AppColors.danger,
+    'system' => AppColors.teal,
     _ => AppColors.teal,
   };
 }

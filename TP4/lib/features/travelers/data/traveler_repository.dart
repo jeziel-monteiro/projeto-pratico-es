@@ -1,4 +1,5 @@
 import '../../../core/network/api_client.dart';
+import 'traveler_profile.dart';
 
 class TravelerRepository {
   TravelerRepository({ApiClient? apiClient})
@@ -8,7 +9,7 @@ class TravelerRepository {
 
   final ApiClient _apiClient;
 
-  Future<void> createProfile({
+  Future<TravelerProfile> createProfile({
     required String firebaseUid,
     required String idToken,
     required String fullName,
@@ -16,30 +17,58 @@ class TravelerRepository {
     required String email,
     String? phone,
   }) async {
-    await _apiClient.postJson(
-      'travelers',
-      bearerToken: _useDevAuth ? null : idToken,
-      headers: _devHeaders(firebaseUid, email, phone),
-      body: {
-        'fullName': fullName,
-        'cpf': cpf,
-        'email': email,
-        'phone': phone,
-        'highContrast': false,
-      },
-    );
+    final response =
+        await _apiClient.postJson(
+              'travelers',
+              bearerToken: _useDevAuth ? null : idToken,
+              headers: _devHeaders(firebaseUid, email, phone),
+              body: {
+                'fullName': fullName,
+                'cpf': cpf,
+                'email': email,
+                'phone': phone,
+                'highContrast': false,
+              },
+            )
+            as Map<String, Object?>;
+
+    return TravelerProfile.fromJson(response['data'] as Map<String, Object?>);
   }
 
-  Future<void> fetchMe({
+  Future<TravelerProfile> fetchMe({
     required String firebaseUid,
     required String idToken,
     String? email,
   }) async {
-    await _apiClient.getJson(
-      'travelers/me',
-      bearerToken: _useDevAuth ? null : idToken,
-      headers: _devHeaders(firebaseUid, email, null),
-    );
+    final response =
+        await _apiClient.getJson(
+              'travelers/me',
+              bearerToken: _useDevAuth ? null : idToken,
+              headers: _devHeaders(firebaseUid, email, null),
+            )
+            as Map<String, Object?>;
+
+    return TravelerProfile.fromJson(response['data'] as Map<String, Object?>);
+  }
+
+  Future<TravelerProfile> updatePreferences({
+    required String firebaseUid,
+    required String idToken,
+    String? email,
+    required bool highContrast,
+  }) async {
+    final response =
+        await _apiClient.patchJson(
+              'travelers/me/preferences',
+              bearerToken: _useDevAuth ? null : idToken,
+              headers: _devHeaders(firebaseUid, email, null),
+              body: {
+                'highContrast': highContrast,
+              },
+            )
+            as Map<String, Object?>;
+
+    return TravelerProfile.fromJson(response['data'] as Map<String, Object?>);
   }
 
   void close() {
