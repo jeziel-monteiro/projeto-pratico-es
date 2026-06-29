@@ -13,7 +13,6 @@ import '../../core/widgets/network_image_box.dart';
 import '../../core/widgets/pc_badge.dart';
 import '../../core/widgets/pc_button.dart';
 import '../../core/widgets/pc_card.dart';
-import '../../core/widgets/pc_chip.dart';
 import '../../core/widgets/pc_text_field.dart';
 import '../../core/widgets/progress_steps.dart';
 import '../../core/widgets/section_title.dart';
@@ -21,6 +20,7 @@ import '../../models/my_trip.dart';
 import '../../models/route_stop.dart';
 import 'data/booking_repository.dart';
 import 'data/purchase_draft.dart';
+import '../travel/data/my_trips_repository.dart';
 
 class PurchaseScreen extends StatefulWidget {
   const PurchaseScreen({
@@ -1541,8 +1541,6 @@ class RejectedScreen extends StatelessWidget {
   }
 }
 
-enum CancelScenario { normal, late, boletoPending, ownerCancel }
-
 class TicketScreen extends StatefulWidget {
   const TicketScreen({
     super.key,
@@ -1560,8 +1558,16 @@ class TicketScreen extends StatefulWidget {
 }
 
 class _TicketScreenState extends State<TicketScreen> {
-  CancelScenario _scenario = CancelScenario.normal;
+  final _myTripsRepository = MyTripsRepository();
   bool _cancelled = false;
+  bool _cancelling = false;
+  String? _cancelError;
+
+  @override
+  void dispose() {
+    _myTripsRepository.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1570,7 +1576,7 @@ class _TicketScreenState extends State<TicketScreen> {
       return _BookingTicketScreen(nav: widget.nav, booking: booking);
     }
 
-    final policy = _policyFor(_scenario);
+    final policy = _policyFor();
 
     if (_cancelled) {
       return Scaffold(
@@ -1622,9 +1628,9 @@ class _TicketScreenState extends State<TicketScreen> {
                         const SectionTitle(
                           title: 'Comprovante de Cancelamento',
                         ),
-                        const _InfoLine(
+                        _InfoLine(
                           label: 'Protocolo',
-                          value: '#CNC-20260626-8823',
+                          value: _cancellationProtocol,
                         ),
                         _InfoLine(
                           label: 'Reserva',
@@ -1681,18 +1687,15 @@ class _TicketScreenState extends State<TicketScreen> {
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                if (_scenario == CancelScenario.ownerCancel) ...[
-                  const _DangerNotice(
-                    message:
-                        'Viagem cancelada pelo proprietário. Você tem direito a reembolso integral automático.',
-                  ),
-                  const SizedBox(height: 12),
-                ],
                 _TicketCard(
                   draft: widget.draft,
                   payment: widget.draft.paymentLabel,
                 ),
                 const SizedBox(height: 12),
+                if (_cancelError != null) ...[
+                  _DangerNotice(message: _cancelError!),
+                  const SizedBox(height: 12),
+                ],
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
@@ -1763,10 +1766,11 @@ class _TicketScreenState extends State<TicketScreen> {
                 ),
                 const SizedBox(height: 10),
                 PcButton(
-                  label: 'Cancelar Reserva',
+                  label: _cancelling ? 'Cancelando...' : 'Cancelar Reserva',
                   icon: Icons.cancel_outlined,
                   full: true,
                   variant: PcButtonVariant.danger,
+                  loading: _cancelling,
                   onPressed: () => _confirmCancel(policy),
                 ),
                 const SizedBox(height: 12),
@@ -1783,49 +1787,6 @@ class _TicketScreenState extends State<TicketScreen> {
                             fontWeight: FontWeight.w700,
                             fontSize: 12,
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                PcCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Demo - Simular cenário de cancelamento',
-                        style: TextStyle(
-                          color: AppColors.muted,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 11,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      _ScenarioButton(
-                        label: '>24h (reembolso total)',
-                        active: _scenario == CancelScenario.normal,
-                        onTap: () =>
-                            setState(() => _scenario = CancelScenario.normal),
-                      ),
-                      _ScenarioButton(
-                        label: '<24h (multa de 20%)',
-                        active: _scenario == CancelScenario.late,
-                        onTap: () =>
-                            setState(() => _scenario = CancelScenario.late),
-                      ),
-                      _ScenarioButton(
-                        label: 'Boleto não compensado',
-                        active: _scenario == CancelScenario.boletoPending,
-                        onTap: () => setState(
-                          () => _scenario = CancelScenario.boletoPending,
-                        ),
-                      ),
-                      _ScenarioButton(
-                        label: 'Cancelamento pelo proprietário',
-                        active: _scenario == CancelScenario.ownerCancel,
-                        onTap: () => setState(
-                          () => _scenario = CancelScenario.ownerCancel,
                         ),
                       ),
                     ],
@@ -1893,12 +1854,13 @@ class _TicketScreenState extends State<TicketScreen> {
               _InfoLine(label: 'Prazo de estorno', value: policy.deadline),
               const SizedBox(height: 14),
               PcButton(
-                label: 'Confirmar Cancelamento',
+                label: _cancelling ? 'Cancelando...' : 'Confirmar Cancelamento',
                 full: true,
                 variant: PcButtonVariant.danger,
+                loading: _cancelling,
                 onPressed: () {
                   Navigator.pop(context);
-                  setState(() => _cancelled = true);
+                  _cancelDraftBooking();
                 },
               ),
               const SizedBox(height: 10),
@@ -1915,40 +1877,55 @@ class _TicketScreenState extends State<TicketScreen> {
     );
   }
 
-  _CancelPolicy _policyFor(CancelScenario scenario) {
+  Future<void> _cancelDraftBooking() async {
+    final bookingId = widget.draft.bookingId;
+    if (bookingId == null || bookingId.isEmpty) {
+      setState(() {
+        _cancelError =
+            'Não foi possível identificar a reserva para cancelamento.';
+      });
+      return;
+    }
+
+    setState(() {
+      _cancelling = true;
+      _cancelError = null;
+    });
+
+    try {
+      await _myTripsRepository.cancelBooking(bookingId);
+      if (!mounted) return;
+      setState(() {
+        _cancelled = true;
+        _cancelling = false;
+      });
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _cancelError = _reservationActionErrorMessage(error);
+        _cancelling = false;
+      });
+    }
+  }
+
+  String get _cancellationProtocol {
+    final source = widget.draft.bookingId ?? widget.draft.reservationCode;
+    final normalized = source.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
+    final suffix = normalized.length > 8
+        ? normalized.substring(normalized.length - 8)
+        : normalized.padLeft(8, '0');
+    return '#CNC-${suffix.toUpperCase()}';
+  }
+
+  _CancelPolicy _policyFor() {
     final total = widget.draft.paidTotal;
-    final fee = (total * 0.2).round();
-    final refundWithFee = total - fee;
-    return switch (scenario) {
-      CancelScenario.normal => _CancelPolicy(
-        true,
-        'Solicitado com +24h de antecedência - reembolso integral.',
-        'Nenhuma',
-        formatMoney(total),
-        'até 5 dias úteis',
-      ),
-      CancelScenario.late => _CancelPolicy(
-        false,
-        'Solicitado com menos de 24h do embarque - multa de 20% aplicada.',
-        '20% (${formatMoney(fee)})',
-        formatMoney(refundWithFee),
-        '7 a 14 dias úteis',
-      ),
-      CancelScenario.boletoPending => _CancelPolicy(
-        true,
-        'Boleto ainda não compensado - cancelamento imediato sem ônus.',
-        'Nenhuma',
-        formatMoney(total),
-        'imediato',
-      ),
-      CancelScenario.ownerCancel => _CancelPolicy(
-        true,
-        'Cancelamento originado pelo proprietário - reembolso integral automático.',
-        'Nenhuma',
-        formatMoney(total),
-        'até 5 dias úteis',
-      ),
-    };
+    return _CancelPolicy(
+      true,
+      'Cancelamento disponível pelo app. Após confirmar, a reserva será cancelada e o pagamento ficará como reembolsado.',
+      'Nenhuma',
+      formatMoney(total),
+      'até 5 dias úteis',
+    );
   }
 }
 
@@ -2177,6 +2154,12 @@ String _bookingErrorMessage(Object error) {
   if (error is BookingRepositoryException) return error.message;
   if (error is ApiException) return error.message;
   return 'Nao foi possivel confirmar a reserva. Tente novamente.';
+}
+
+String _reservationActionErrorMessage(Object error) {
+  if (error is MyTripsRepositoryException) return error.message;
+  if (error is ApiException) return error.message;
+  return 'Não foi possível completar esta operação.';
 }
 
 class _PaymentMethod {
@@ -2561,14 +2544,38 @@ class _PaymentResultScreen extends StatelessWidget {
   }
 }
 
-class _BookingTicketScreen extends StatelessWidget {
+class _BookingTicketScreen extends StatefulWidget {
   const _BookingTicketScreen({required this.nav, required this.booking});
 
   final AppNavigator nav;
   final MyTrip booking;
 
   @override
+  State<_BookingTicketScreen> createState() => _BookingTicketScreenState();
+}
+
+class _BookingTicketScreenState extends State<_BookingTicketScreen> {
+  final _repository = MyTripsRepository();
+  late MyTrip _booking;
+  bool _cancelling = false;
+  bool _cancelledNow = false;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _booking = widget.booking;
+  }
+
+  @override
+  void dispose() {
+    _repository.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final booking = _booking;
     final routeParts = booking.route.split(' -> ');
     final origin = routeParts.isNotEmpty ? routeParts.first : 'Origem';
     final destination = routeParts.length > 1 ? routeParts.last : 'Destino';
@@ -2581,12 +2588,16 @@ class _BookingTicketScreen extends StatelessWidget {
           AppHeader(
             title: 'Bilhete Digital',
             backTo: AppScreen.myTrips,
-            nav: nav,
+            nav: widget.nav,
           ),
           Expanded(
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
+                if (_error != null) ...[
+                  _DangerNotice(message: _error!),
+                  const SizedBox(height: 12),
+                ],
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -2714,7 +2725,12 @@ class _BookingTicketScreen extends StatelessWidget {
                               label: 'Embarcação',
                               value: booking.vessel,
                             ),
-                            _InfoLine(label: 'Reserva', value: booking.id),
+                            _InfoLine(label: 'Bilhete', value: booking.id),
+                            if (booking.bookingId != null)
+                              _InfoLine(
+                                label: 'Reserva',
+                                value: booking.bookingId!,
+                              ),
                             if (booking.paymentMethod != null)
                               _InfoLine(
                                 label: 'Pagamento',
@@ -2746,6 +2762,29 @@ class _BookingTicketScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
+                if (_cancelledNow) ...[
+                  const PcCard(
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.check_circle_outline,
+                          color: AppColors.success,
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            'Reserva cancelada com sucesso. O pagamento foi marcado como reembolsado.',
+                            style: TextStyle(
+                              color: AppColors.success,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                ],
                 Row(
                   children: [
                     Expanded(
@@ -2768,20 +2807,86 @@ class _BookingTicketScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 10),
-                if (confirmed)
+                if (confirmed) ...[
                   PcButton(
                     label: 'Rastrear Embarcação em Tempo Real',
                     icon: Icons.navigation_outlined,
                     full: true,
                     variant: PcButtonVariant.secondary,
-                    onPressed: () => nav(AppScreen.tracking),
+                    onPressed: () => widget.nav(AppScreen.tracking),
                   ),
+                  const SizedBox(height: 10),
+                  PcButton(
+                    label: _cancelling ? 'Cancelando...' : 'Cancelar Reserva',
+                    icon: Icons.cancel_outlined,
+                    full: true,
+                    variant: PcButtonVariant.danger,
+                    loading: _cancelling,
+                    onPressed: _confirmCancel,
+                  ),
+                ],
               ],
             ),
           ),
         ],
       ),
     );
+  }
+
+  Future<void> _confirmCancel() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Cancelar reserva?'),
+          content: const Text(
+            'A reserva será cancelada e a vaga voltará a ficar disponível para outros passageiros.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Manter'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Cancelar reserva'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed != true) return;
+
+    final bookingId = _booking.bookingId;
+    if (bookingId == null || bookingId.isEmpty) {
+      setState(() {
+        _error = 'Não foi possível identificar a reserva para cancelamento.';
+      });
+      return;
+    }
+
+    setState(() {
+      _cancelling = true;
+      _cancelledNow = false;
+      _error = null;
+    });
+
+    try {
+      final updated = await _repository.cancelBooking(bookingId);
+      if (!mounted) return;
+      setState(() {
+        _booking = updated;
+        _cancelling = false;
+        _cancelledNow = true;
+      });
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _error = _reservationActionErrorMessage(error);
+        _cancelling = false;
+      });
+    }
   }
 }
 
@@ -2997,26 +3102,6 @@ class _DangerNotice extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _ScenarioButton extends StatelessWidget {
-  const _ScenarioButton({
-    required this.label,
-    required this.active,
-    required this.onTap,
-  });
-
-  final String label;
-  final bool active;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: PcChip(label: label, active: active, onTap: onTap),
     );
   }
 }
