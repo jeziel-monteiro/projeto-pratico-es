@@ -13,7 +13,7 @@ O Diagrama de Código representa o quarto e mais profundo nível do Modelo C4. O
 
 ## Explicação geral do diagrama modelado
 
-O diagrama modelado para o sistema Porto Certo ilustra a estrutura das coleções de dados e as regras de negócio centrais da aplicação com base no ecossistema Firebase. O fluxo demonstra a separação de responsabilidades em domínios específicos, destacando o uso de herança para reaproveitamento de código, o encapsulamento rígido para a segurança dos atributos e a padronização de estados através de Enumerações para evitar falhas no banco de dados. Além disso, a modelagem foi construída para atender estritamente aos requisitos mapeados no Backlog do produto.
+O diagrama modelado para o sistema Porto Certo ilustra a estrutura das entidades de domínio e as regras de negócio centrais da aplicação com persistência principal em PostgreSQL. O fluxo demonstra a separação de responsabilidades em domínios específicos, destacando o uso de herança para reaproveitamento de código, o encapsulamento rígido para a segurança dos atributos e a padronização de estados através de Enumerações para evitar falhas no banco de dados. Além disso, a modelagem foi construída para atender estritamente aos requisitos mapeados no Backlog do produto.
 
 ---
 
@@ -26,7 +26,7 @@ O diagrama modelado para o sistema Porto Certo ilustra a estrutura das coleçõe
 
 </div>
 
-Esta modelagem reflete o componente de Serviço de Autenticação e as Regras de Segurança do Firebase. Isolamos os dados cadastrais comuns (como `#nomeCompleto` e `#cpf`) na superclasse abstrata `Usuario`, que detém a operação `+autenticar()` para validação de tokens.
+Esta modelagem reflete o componente de Serviço de Autenticação e as regras de autorização aplicadas pela API Backend. Isolamos os dados cadastrais comuns (como `#nomeCompleto` e `#cpf`) na superclasse abstrata `Usuario`, que detém a operação `+autenticar()` para validação de tokens.
 As propriedades específicas ficam nas subclasses: 
 * A classe `Viajante` abriga propriedades do aplicativo móvel, como o atributo `-modoAltoContraste` (atendendo à **US06** de acessibilidade) e o método `+favoritarTrecho()` (referente à **US01**). 
 * A classe `Proprietario` guarda dados para o painel web, como faturamento e CNPJ, através do método `+visualizarFaturamento()`.
@@ -68,8 +68,8 @@ Uma viagem comercializa vários assentos, gerando múltiplos bilhetes (`0..*`). 
 
 </div>
 
-Reflete a integração rigorosa entre o Checkout de Passagem e a Cloud Function conectada ao Gateway de Pagamento.
-De acordo com a **US02 (Processo de Compra)**, a emissão oficial do bilhete em PDF só ocorre após a transação financeira ser dada como concluída. Por isso, existe uma relação estrita de `1 para 1`: cada passagem emitida corresponde a exatamente uma transação financeira processada pelo ecossistema BaaS através do método `+processarCheckout()`.
+Reflete a integração rigorosa entre o Checkout de Passagem e o serviço de pagamento do backend conectado ao Gateway de Pagamento.
+De acordo com a **US02 (Processo de Compra)**, a emissão oficial do bilhete em PDF só ocorre após a transação financeira ser dada como concluída. Por isso, existe uma relação estrita de `1 para 1`: cada passagem emitida corresponde a exatamente uma transação financeira processada pelo backend através do método `+processarCheckout()`.
 
 #### 6. Notificações e Engajamento
 <div align="center"> 
@@ -79,7 +79,7 @@ De acordo com a **US02 (Processo de Compra)**, a emissão oficial do bilhete em 
 </div>
 
 Atende diretamente ao requisito da **US04 (Notificações em massa disparadas pelo proprietário)**.
-Como o Firebase utiliza funções reativas baseadas em eventos, quando um proprietário emite um alerta de atraso ou mudança climática, esse disparo é indexado e amarrado diretamente ao identificador daquela `Viagem`. A operação `+dispararEmMassa()` permite que a Cloud Function encaminhe a mensagem de alerta estritamente aos passageiros com passagens ativas para aquela rota específica.
+Quando um proprietário emite um alerta de atraso ou mudança climática, esse disparo é indexado no PostgreSQL e amarrado diretamente ao identificador daquela `Viagem`. A operação `+dispararEmMassa()` permite que o serviço de mensageria do backend encaminhe a mensagem de alerta estritamente aos passageiros com passagens ativas para aquela rota específica.
 
 #### 7. Padronização de Estados (Enumerações)
 <div align="center"> 

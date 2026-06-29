@@ -1,0 +1,53 @@
+import 'package:firebase_auth/firebase_auth.dart';
+
+class AuthService {
+  AuthService({FirebaseAuth? firebaseAuth})
+    : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
+
+  final FirebaseAuth _firebaseAuth;
+
+  Future<UserCredential> signIn({
+    required String email,
+    required String password,
+  }) {
+    return _firebaseAuth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+  }
+
+  Future<UserCredential> register({
+    required String email,
+    required String password,
+  }) {
+    return _firebaseAuth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+  }
+
+  Future<void> sendPasswordResetEmail(String email) {
+    return _firebaseAuth.sendPasswordResetEmail(email: email);
+  }
+
+  Future<void> deleteCurrentUser() async {
+    await _firebaseAuth.currentUser?.delete();
+  }
+
+  Future<String> currentIdToken() async {
+    final user = _firebaseAuth.currentUser;
+    final idToken = await user?.getIdToken();
+
+    if (idToken == null || idToken.isEmpty) {
+      throw const AuthServiceException('Sessao de autenticacao invalida.');
+    }
+
+    return idToken;
+  }
+}
+
+class AuthServiceException implements Exception {
+  const AuthServiceException(this.message);
+
+  final String message;
+}
