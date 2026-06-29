@@ -41,7 +41,6 @@ class PortoCertoShell extends StatefulWidget {
 
 class _PortoCertoShellState extends State<PortoCertoShell> {
   AppScreen _screen = AppScreen.splash;
-  final _authService = AuthService();
   final _favoritesRepository = FavoritesRepository();
   final _travelerRepository = TravelerRepository();
   final List<String> _favorites = [];
@@ -160,10 +159,10 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
     bool enabled,
     bool previousValue,
   ) async {
-    final user = _authService.currentUser;
-    if (user == null) return;
-
     try {
+      final user = AuthService().currentUser;
+      if (user == null) return;
+
       final idToken = await user.getIdToken();
       if (idToken == null || idToken.isEmpty) return;
 
