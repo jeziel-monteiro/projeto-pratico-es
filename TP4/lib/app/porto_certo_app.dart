@@ -225,9 +225,17 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSwitcher(
+    final screen = AnimatedSwitcher(
       duration: const Duration(milliseconds: 220),
       child: KeyedSubtree(key: ValueKey(_screen), child: _buildScreen()),
+    );
+
+    if (!_highContrast) return screen;
+
+    final mediaQuery = MediaQuery.of(context);
+    return MediaQuery(
+      data: mediaQuery.copyWith(boldText: true, highContrast: true),
+      child: Theme(data: AppTheme.light(highContrast: true), child: screen),
     );
   }
 
