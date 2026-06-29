@@ -46,6 +46,23 @@ class ApiClient {
     return _decode(response);
   }
 
+  Future<Object?> patchJson(
+    String path, {
+    Object? body,
+    String? bearerToken,
+    Map<String, String>? headers,
+  }) async {
+    final response = await _send(
+      () => _httpClient.patch(
+        config.endpoint(path),
+        headers: _headers(bearerToken, headers),
+        body: jsonEncode(body ?? <String, Object?>{}),
+      ),
+    );
+
+    return _decode(response);
+  }
+
   Future<Object?> deleteJson(
     String path, {
     String? bearerToken,

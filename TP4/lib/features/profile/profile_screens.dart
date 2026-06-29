@@ -12,13 +12,20 @@ import '../../core/widgets/pc_card.dart';
 import '../../core/widgets/pc_text_field.dart';
 import '../../core/widgets/section_title.dart';
 import '../auth/data/auth_service.dart';
+import '../travel/data/favorites_repository.dart';
+import '../travel/data/my_trips_repository.dart';
 import '../travelers/data/traveler_profile.dart';
 import '../travelers/data/traveler_repository.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key, required this.nav});
+  const ProfileScreen({
+    super.key,
+    required this.nav,
+    this.applyHighContrast,
+  });
 
   final AppNavigator nav;
+  final ContrastSetter? applyHighContrast;
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -27,7 +34,11 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final _authService = AuthService();
   final _travelerRepository = TravelerRepository();
+  final _favoritesRepository = FavoritesRepository();
+  final _myTripsRepository = MyTripsRepository();
   TravelerProfile? _profile;
+  int? _activeTripsCount;
+  int? _favoriteTripsCount;
   bool _loading = true;
   bool _signingOut = false;
   String? _error;
@@ -41,6 +52,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void dispose() {
     _travelerRepository.close();
+    _favoritesRepository.close();
+    _myTripsRepository.close();
     super.dispose();
   }
 
@@ -63,11 +76,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
         idToken: idToken,
         email: user.email,
       );
+      final summary = await _loadProfileSummary();
       if (!mounted) return;
       setState(() {
         _profile = profile;
+        _activeTripsCount = summary.activeTripsCount;
+        _favoriteTripsCount = summary.favoriteTripsCount;
         _loading = false;
       });
+      widget.applyHighContrast?.call(profile.highContrast);
     } catch (error) {
       if (!mounted) return;
       setState(() {
@@ -75,6 +92,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _loading = false;
       });
     }
+  }
+
+  Future<_ProfileSummary> _loadProfileSummary() async {
+    var activeTripsCount = _activeTripsCount;
+    var favoriteTripsCount = _favoriteTripsCount;
+
+    try {
+      final trips = await _myTripsRepository.listMyTrips();
+      activeTripsCount = trips
+          .where((trip) => trip.status == 'confirmada')
+          .length;
+    } catch (_) {
+      activeTripsCount = null;
+    }
+
+    try {
+      final favorites = await _favoritesRepository.listFavorites();
+      favoriteTripsCount = favorites.length;
+    } catch (_) {
+      favoriteTripsCount = null;
+    }
+
+    return _ProfileSummary(
+      activeTripsCount: activeTripsCount,
+      favoriteTripsCount: favoriteTripsCount,
+    );
   }
 
   Future<void> _signOut() async {
@@ -147,11 +190,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ),
                           const SizedBox(height: 8),
-                          const Row(
+                          Row(
                             children: [
-                              _ProfileStat(label: 'Viagens', value: '--'),
-                              SizedBox(width: 12),
-                              _ProfileStat(label: 'Favoritos', value: '--'),
+                              _ProfileStat(
+                                label: 'Viagens',
+                                value: _activeTripsCount?.toString() ?? '--',
+                              ),
+                              const SizedBox(width: 12),
+                              _ProfileStat(
+                                label: 'Favoritos',
+                                value: _favoriteTripsCount?.toString() ?? '--',
+                              ),
                             ],
                           ),
                         ],
@@ -257,6 +306,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
+}
+
+class _ProfileSummary {
+  const _ProfileSummary({
+    required this.activeTripsCount,
+    required this.favoriteTripsCount,
+  });
+
+  final int? activeTripsCount;
+  final int? favoriteTripsCount;
 }
 
 String _initials(String name) {

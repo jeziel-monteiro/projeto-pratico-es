@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../core/network/api_exception.dart';
 import '../core/theme/app_theme.dart';
+import '../features/auth/data/auth_service.dart';
 import '../features/auth/auth_screens.dart';
 import '../features/onboarding/onboarding_screens.dart';
 import '../features/owner/owner_panel_screen.dart';
@@ -11,6 +12,7 @@ import '../features/purchase/purchase_screens.dart';
 import '../features/travel/data/favorites_repository.dart';
 import '../features/travel/data/travel_repository.dart';
 import '../features/travel/travel_screens.dart';
+import '../features/travelers/data/traveler_repository.dart';
 import '../data/mock_data.dart';
 import '../models/my_trip.dart';
 import '../models/trip.dart';
@@ -39,7 +41,9 @@ class PortoCertoShell extends StatefulWidget {
 
 class _PortoCertoShellState extends State<PortoCertoShell> {
   AppScreen _screen = AppScreen.splash;
+  final _authService = AuthService();
   final _favoritesRepository = FavoritesRepository();
+  final _travelerRepository = TravelerRepository();
   final List<String> _favorites = [];
   final List<Trip> _favoriteTrips = [];
   TripSearchCriteria _searchCriteria = TripSearchCriteria(
@@ -62,6 +66,7 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
   @override
   void dispose() {
     _favoritesRepository.close();
+    _travelerRepository.close();
     super.dispose();
   }
 
@@ -141,8 +146,38 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
     return 'Não foi possível atualizar seus favoritos.';
   }
 
-  void _setHighContrast(bool enabled) {
+  void _applyHighContrast(bool enabled) {
     setState(() => _highContrast = enabled);
+  }
+
+  void _setHighContrast(bool enabled) {
+    final previousValue = _highContrast;
+    _applyHighContrast(enabled);
+    _saveHighContrastPreference(enabled, previousValue);
+  }
+
+  Future<void> _saveHighContrastPreference(
+    bool enabled,
+    bool previousValue,
+  ) async {
+    final user = _authService.currentUser;
+    if (user == null) return;
+
+    try {
+      final idToken = await user.getIdToken();
+      if (idToken == null || idToken.isEmpty) return;
+
+      await _travelerRepository.updatePreferences(
+        firebaseUid: user.uid,
+        idToken: idToken,
+        email: user.email,
+        highContrast: enabled,
+      );
+    } catch (_) {
+      if (!mounted) return;
+      _applyHighContrast(previousValue);
+      _showMessage('Não foi possível salvar a preferência de acessibilidade.');
+    }
   }
 
   void _setSearchCriteria(TripSearchCriteria criteria) {
@@ -294,7 +329,10 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
         tripId: _selectedTrackingTripId ?? _selectedTrip?.id,
       ),
       AppScreen.notifications => NotificationsScreen(nav: _nav),
-      AppScreen.profile => ProfileScreen(nav: _nav),
+      AppScreen.profile => ProfileScreen(
+        nav: _nav,
+        applyHighContrast: _applyHighContrast,
+      ),
       AppScreen.settings => SettingsScreen(nav: _nav),
       AppScreen.changePassword => ChangePasswordScreen(nav: _nav),
       AppScreen.accessibility => AccessibilityScreen(

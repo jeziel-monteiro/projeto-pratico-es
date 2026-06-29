@@ -19,4 +19,11 @@ export const upsertTravelerSchema = z.object({
   highContrast: z.boolean().optional().default(false),
 });
 
+export const travelerPreferencesSchema = z.object({
+  highContrast: z.boolean(),
+});
+
 export type UpsertTravelerInput = z.infer<typeof upsertTravelerSchema>;
+export type TravelerPreferencesInput = z.infer<
+  typeof travelerPreferencesSchema
+>;

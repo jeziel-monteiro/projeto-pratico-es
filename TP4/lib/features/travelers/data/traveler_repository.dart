@@ -51,6 +51,26 @@ class TravelerRepository {
     return TravelerProfile.fromJson(response['data'] as Map<String, Object?>);
   }
 
+  Future<TravelerProfile> updatePreferences({
+    required String firebaseUid,
+    required String idToken,
+    String? email,
+    required bool highContrast,
+  }) async {
+    final response =
+        await _apiClient.patchJson(
+              'travelers/me/preferences',
+              bearerToken: _useDevAuth ? null : idToken,
+              headers: _devHeaders(firebaseUid, email, null),
+              body: {
+                'highContrast': highContrast,
+              },
+            )
+            as Map<String, Object?>;
+
+    return TravelerProfile.fromJson(response['data'] as Map<String, Object?>);
+  }
+
   void close() {
     _apiClient.close();
   }
