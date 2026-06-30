@@ -104,32 +104,33 @@ class _LoginScreenState extends State<LoginScreen> {
                   colors: [AppColors.primary, AppColors.secondary],
                 ),
               ),
-              child: SafeArea(
-                bottom: false,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 20, 24, 42),
-                  child: Column(
-                    children: [
-                      Image.asset(
-                        AppAssets.logo,
-                        width: 142,
-                        height: 142,
-                        fit: BoxFit.contain,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Bem-vindo de volta',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: Colors.white,
-                          fontSize: 22,
+              child: SizedBox(
+                width: double.infinity,
+                child: SafeArea(
+                  bottom: false,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 20, 24, 42),
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          AppAssets.logo,
+                          width: 142,
+                          height: 142,
+                          fit: BoxFit.contain,
                         ),
-                      ),
-                      const SizedBox(height: 6),
-                      const Text(
-                        'Entre na sua conta para continuar',
-                        style: TextStyle(color: Colors.white70, fontSize: 13),
-                      ),
-                    ],
+                        const SizedBox(height: 8),
+                        Text(
+                          'Bem-vindo de volta',
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(color: Colors.white, fontSize: 22),
+                        ),
+                        const SizedBox(height: 6),
+                        const Text(
+                          'Entre na sua conta para continuar',
+                          style: TextStyle(color: Colors.white70, fontSize: 13),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
