@@ -46,7 +46,7 @@ O Componente de Busca e Rotas processa a pesquisa por datas e portos de origem/d
 <br> 
 <br>
 
-Esta seção destaca o diferencial arquitetural pensado para o contexto amazônico. O componente Meus Bilhetes (Carteira) renderiza os QR Codes de embarque. Para garantir que o passageiro consiga abrir essa carteira em portos remotos sem conexão de internet, tanto a Camada de Repositório quanto a Carteira interagem com o cache local do dispositivo, que atua como uma persistência temporária para os dados essenciais baixados previamente da API.
+Esta seção destaca o diferencial arquitetural pensado para o contexto amazônico. O componente Meus Bilhetes (Carteira) renderiza os QR Codes de embarque. Para garantir que o passageiro consiga abrir essa carteira em portos remotos sem conexão de internet, tanto a Camada de Repositório quanto a Carteira interagem com a Persistência Offline do Firestore, que atua como um banco de dados local temporário, armazenando os dados essenciais baixados previamente.
 
 ### Comunicação com Sistemas Externos e Repositório Central
 
@@ -57,7 +57,7 @@ Esta seção destaca o diferencial arquitetural pensado para o contexto amazôni
 
 O detalhamento final evidencia como o aplicativo delega responsabilidades especializadas para infraestruturas externas:
 
-- A Camada de Repositório age como o canal único de comunicação com o ecossistema principal do Porto Certo, consumindo a API Backend por HTTP e sincronizando os dados persistidos no PostgreSQL.
+- A Camada de Repositório age como o canal único de comunicação com o ecossistema principal do Porto Certo (o Firebase na nuvem), sincronizando leituras e escritas via SDK.
 
 - O componente de busca envia coordenadas diretamente para o Serviço de Mapas (Mapbox) para renderizar o trajeto de forma visual.
 
@@ -79,7 +79,7 @@ Este diagrama de componentes mapeia o ecossistema interno do Painel Web do Propr
 <br>
 <br>
 
-O diagrama ilustra o Proprietário como o ator principal interagindo com uma aplicação desenvolvida em Flutter Web. A arquitetura divide a aplicação em cinco controladores e componentes principais (Autenticação, Gestão de Embarcações, Agendamento de Viagens, Relatórios e Repositório). O fluxo demonstra que a interface web não armazena dados complexos localmente, mas atua como um painel de comando que envia e requisita informações operacionais através da sua Camada de Repositório Web. Esta camada, por sua vez, é a única responsável por cruzar a fronteira do sistema e comunicar-se de forma segura com a API Backend.
+O diagrama ilustra o Proprietário como o ator principal interagindo com uma aplicação desenvolvida em Flutter Web. A arquitetura divide a aplicação em cinco controladores e componentes principais (Autenticação, Gestão de Embarcações, Agendamento de Viagens, Relatórios e Repositório). O fluxo demonstra que a interface web não armazena dados complexos localmente, mas atua como um painel de comando que envia e requisita informações operacionais através da sua Camada de Repositório Web. Esta camada, por sua vez, é a única responsável por cruzar a fronteira do sistema e comunicar-se de forma segura com o backend na nuvem (Firebase).
 
 ## Detalhamento por Partes
 <br>
@@ -121,12 +121,12 @@ Responsável pelo acompanhamento do sucesso do negócio, este componente funcion
 <br>
 <br>
 
-Para finalizar o fluxo do Painel Web, a Camada de Repositório Web atua como o maestro de todas as requisições geradas pelos componentes acima. Ela unifica as chamadas e comunica-se com a API Backend, enviando cadastros, lendo faturamentos e solicitando envios de alertas em massa para os passageiros.
+Para finalizar o fluxo do Painel Web, a Camada de Repositório Web atua como o maestro de todas as requisições geradas pelos componentes acima. Ela unifica as chamadas e comunica-se através dos SDKs oficiais com a infraestrutura principal do Firebase, enviando cadastros, lendo faturamentos e solicitando envios de alertas em massa para os passageiros.
 
 <br>
 <br>
 
-## **Container: API Backend Porto Certo (Node.js, TypeScript & PostgreSQL)**
+## **Container: API Backend Porto Certo (Firebase & Node.js)**
 
 ## Visão geral do diagrama
 
@@ -139,7 +139,7 @@ O diagrama de componentes do Backend ilustra o "motor" central do Porto Certo. D
 <br>
 <br>
 
-A arquitetura do Backend do Porto Certo baseia-se em uma API Node.js/TypeScript hospedada em nuvem, integrada ao PostgreSQL e aos serviços auxiliares do Firebase. O diagrama demonstra as aplicações cliente (App Mobile e Painel Web) a acessarem os serviços internos do backend: Serviço de Autenticação, Banco de Dados PostgreSQL, Armazenamento de Arquivos, módulos de pagamento e Serviço de Mensageria (FCM). Notoriamente, o modelo evidencia que lógicas sensíveis, como a atualização de um bilhete para "Pago" ou o disparo de e-mails com PDFs, não ocorrem no telefone do usuário, mas sim em ambiente controlado e isolado através da API Backend, que recebe webhooks do Gateway de Pagamento.
+A arquitetura do Backend do Porto Certo baseia-se numa topologia nativa de nuvem utilizando o ecossistema Firebase e instâncias Node.js. O diagrama demonstra as aplicações cliente (App Mobile e Painel Web) a acederem aos serviços internos do backend: Serviço de Autenticação, Banco de Dados (Firestore) com as suas Regras de Segurança, o Armazenamento de Arquivos, as Cloud Functions e o Serviço de Mensageria (FCM). Notoriamente, o modelo evidencia que lógicas sensíveis – como a atualização de um bilhete para "Pago" ou o disparo de e-mails com PDFs – não ocorrem no telemóvel do utilizador, mas sim em ambiente controlado e isolado através das Cloud Functions, as quais recebem webhooks do Gateway de Pagamento.
 
 ## Detelhamento por Partes
 
@@ -150,7 +150,7 @@ A arquitetura do Backend do Porto Certo baseia-se em uma API Node.js/TypeScript 
 <br>
 <br>
 
-Nesta primeira secção, detalha-se o acesso à informação estruturada. Os clientes solicitam um token seguro ao Serviço de Autenticação (Firebase Auth). Com este token, chamam a API Backend, que valida os privilégios do usuário, aplica as regras de negócio e lê ou grava no Banco de Dados PostgreSQL. A transação só ocorre porque a autorização do backend intercepta o pedido, avalia os privilégios do token (ex: garantindo que um viajante não possa apagar o barco de um proprietário) e bloqueia ou libera a persistência no banco.
+Nesta primeira secção, detalha-se o acesso à informação estruturada. Os clientes solicitam um token seguro ao Serviço de Autenticação (Firebase Auth). Com este token, tentam ler ou gravar no Banco de Dados (Cloud Firestore). A transação só ocorre porque as Regras de Segurança (Security Rules) interpcetam o pedido, avaliam os privilégios do token (ex: garantindo que um viajante não possa apagar o barco de um proprietário) e bloqueiam ou liberam a persistência no banco.
 
 ### Processamento Financeiro e Lógica de Servidor
 

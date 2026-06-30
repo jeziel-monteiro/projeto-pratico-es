@@ -16,10 +16,10 @@ O Diagrama de Containers é o segundo nível do modelo C4 e apresenta a arquitet
 | Container                            | Tecnologia                     | Responsabilidade                                                                                                                                       |
 | :------------------------------------: | :------------------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | App Mobile do Viajante               | Flutter (Dart)                 | Permite ao viajante cadastrar-se, buscar viagens, comprar passagens, consultar bilhetes, acompanhar embarcações em tempo real e utilizar recursos de acessibilidade. |
-| Cache Local do Dispositivo           | Persistência local do app / SQLite | Armazena bilhetes digitais, favoritos e preferências do usuário para acesso offline e melhor experiência de uso.                                       |
+| Cache Local do Dispositivo           | Persistência offline do Firebase Cloud Firestore | Armazena bilhetes digitais, favoritos e preferências do usuário para acesso offline e melhor experiência de uso.                                       |
 | Painel Web/App do Proprietário       | Flutter Web (Dart)             | Permite ao proprietário cadastrar embarcações, gerenciar viagens, enviar notificações, acompanhar faturamento e operar a frota.                        |
-| API Backend Porto Certo              | Render / Node.js / TypeScript | Centraliza as regras de negócio da plataforma, gerencia cadastro de usuários, viagens, reservas, pagamentos, notificações, webhooks e integrações externas. |
-| Banco de Dados Principal             | PostgreSQL       | Armazena dados estruturados da plataforma em tabelas relacionais, incluindo usuários, dados de cadastro, embarcações, viagens, reservas, pagamentos e notificações. |
+| API Backend Porto Certo              | Render / Firebase Cloud Functions | Centraliza as regras de negócio da plataforma, gerencia cadastro de usuários, viagens, reservas, pagamentos, notificações, webhooks e integrações externas. |
+| Banco de Dados Principal             | Firebase Cloud Firestore       | Armazena dados estruturados da plataforma em coleções NoSQL, incluindo usuários, dados de cadastro, embarcações, viagens, reservas, pagamentos e notificações. |
 | Armazenamento de Arquivos            | Firebase Cloud Storage         | Armazena fotos das embarcações, bilhetes eletrônicos em PDF, boletos e demais documentos utilizados pelo sistema.                                      |
 | Gateway de Pagamento                 | Mercado Pago                   | Processa pagamentos via cartão, PIX e boleto, realizando validações, compensações e operações de estorno.                                              |
 | Serviço de Mensageria                | Firebase Cloud Messaging (FCM) | Envia notificações push e comunicações eletrônicas aos usuários sobre compras, alterações de viagens e avisos operacionais.                            |
@@ -47,7 +47,7 @@ O Viajante interage com o aplicativo para cadastrar-se, buscar viagens, reservar
 </div>
 
 
-O aplicativo armazena localmente bilhetes digitais, favoritos e preferências de acessibilidade por meio de uma camada de cache local no dispositivo, permitindo o uso offline de funcionalidades essenciais.
+O aplicativo armazena localmente bilhetes digitais, favoritos e preferências de acessibilidade por meio da persistência offline do Firebase Cloud Firestore, permitindo o uso offline de funcionalidades essenciais.
 
 <br>
 
@@ -100,7 +100,7 @@ O painel utiliza o serviço de autenticação para validar a identidade do propr
   <img width="400" alt="viajante" src="https://github.com/user-attachments/assets/14a6f2df-a3e7-4ad0-b5f1-ab63aff66745" />
 </div>
 
-A API lê e grava dados estruturados do sistema no PostgreSQL, como usuários, dados de cadastro, embarcações, viagens, reservas, pagamentos, notificações e histórico operacional.
+A API lê e grava dados estruturados do sistema no Firebase Cloud Firestore, como usuários, dados de cadastro, embarcações, viagens, reservas, pagamentos, notificações e histórico operacional.
 
 <br>
 

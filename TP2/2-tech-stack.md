@@ -19,9 +19,8 @@ Para garantir eficiência e organização, a pilha tecnológica é comumente est
 
 ### Back-End e Banco de Dados 
 
-* **Render:** Funciona como o provedor de hospedagem em nuvem para o back-end. Na plataforma, ele abriga a API Porto Certo, responsável por centralizar as regras de negócio, validar requisições do aplicativo e processar integrações externas como webhooks de pagamento.
-* **API Backend Porto Certo (Node.js/TypeScript):** Atua como a camada de aplicação entre os clientes Flutter e o banco de dados. Ela expõe endpoints HTTP seguros, valida permissões, aplica regras críticas de negócio e impede que o aplicativo móvel acesse diretamente a base relacional.
-* **PostgreSQL:** É o banco de dados relacional principal da plataforma. Ele centraliza perfis de usuários, embarcações, rotas, viagens, reservas, pagamentos, bilhetes e notificações, garantindo integridade referencial, transações consistentes e consultas estruturadas para relatórios operacionais.
+* **Render:** Funciona como o provedor de hospedagem em nuvem para serviços de back-end. Na plataforma, ele abriga o servidor responsável por gerenciar integrações externas contínuas de forma isolada, atuando principalmente na escuta e processamento seguro dos avisos de pagamento enviados pelo gateway financeiro.
+* **Firebase Cloud Firestore:** É o banco de dados NoSQL estruturado em documentos e coleções. Ele centraliza todas as informações dinâmicas da operação, como perfis de usuários, cadastros de frotas, rotas e registros de viagens. Fornece também o recurso de persistência offline nativo, garantindo que os passageiros acessem seus bilhetes digitais no celular mesmo em áreas portuárias sem conexão à internet.
 
 ### Segurança e Armazenamento
 
@@ -56,8 +55,7 @@ Para garantir eficiência e organização, a pilha tecnológica é comumente est
 | Tecnologia | Camada | Justificativa |
 | :--- | :--- | :--- |
 | **Flutter (Dart)** | Frontend Mobile | Permite o desenvolvimento nativo para Android e iOS com um único código-base, entregando alta performance na renderização da interface do usuário. |
-| **API Backend Porto Certo** | Integração de Dados | Fornece endpoints HTTP para cadastro, busca de viagens, emissão de bilhetes e sincronização dos dados persistidos no PostgreSQL. |
-| **Cache Local do App** | Persistência Offline | Armazena bilhetes digitais, favoritos e preferências do usuário no dispositivo para permitir consulta mesmo em locais sem conectividade com a internet. |
+| **Firebase Cloud Firestore** | Banco de Dados e Cache Local | Armazena os dados em coleções NoSQL, utilizando o recurso nativo de persistência offline para permitir a consulta de informações mesmo em locais sem conectividade com a internet. |
 | **Firebase Authentication** | Autenticação | Controla o acesso seguro e mantém o estado da sessão do usuário ativo no aplicativo móvel de forma persistente e integrada. |
 | **Firebase Cloud Messaging** | Notificações Push | Recebe alertas automáticos vindos do servidor e os exibe instantaneamente na tela do smartphone, mantendo o usuário atualizado em tempo real. |
 | **Mercado Pago** | Processamento de Pagamentos | Viabiliza a integração direta com métodos de pagamento no aplicativo, processando transações financeiras de forma segura e padronizada. |
@@ -69,8 +67,8 @@ Para garantir eficiência e organização, a pilha tecnológica é comumente est
 | Tecnologia | Camada | Justificativa |
 | :--- | :--- | :--- |
 | **Flutter (Dart)** | Frontend Web | Viabiliza a construção do painel administrativo para navegadores utilizando a mesma linguagem do aplicativo mobile, facilitando o desenvolvimento de interfaces de gestão. |
-| **Render** | Hospagem Web e Servidor | Hospeda a API backend e fornece o ambiente de servidores em nuvem contínuo necessário para a execução de integrações, como o recebimento de webhooks. |
-| **PostgreSQL** | Banco de Dados Relacional | Centraliza os dados estruturados e registros operacionais com integridade referencial, transações e consultas relacionais. |
+| **Render** | Hospagem Web e Servidor | Hospeda a plataforma web e fornece o ambiente de servidores em nuvem contínuo necessário para a execução de integrações de back-end, como o recebimento de webhooks. |
+| **Firebase Cloud Firestore** | Banco de Dados NoSQL | Centraliza os dados estruturados e registros operacionais em uma arquitetura escalável e distribuída em tempo real. |
 | **Firebase Authentication** | Autenticação | Fornece a validação de identidade e o controle de acesso ao painel administrativo web de maneira unificada com o ecossistema mobile. |
 | **Firebase Cloud Messaging** | Central de Comunicação | Serve de ponte técnica para o disparo de mensagens informativas e alertas operacionais em massa para os usuários da plataforma. |
 | **Firebase Cloud Storage** | Armazenamento de Arquivos | Armazena de forma isolada e segura os documentos e arquivos de mídia necessários para a operação do sistema. |
