@@ -138,7 +138,10 @@ Widget buildPortoCertoScreen({
     AppScreen.help => HelpScreen(nav: nav),
     AppScreen.terms => TermsScreen(nav: nav),
     AppScreen.privacy => PrivacyScreen(nav: nav),
-    AppScreen.guidePurchase => GuideScreen(nav: nav, topic: GuideTopic.purchase),
+    AppScreen.guidePurchase => GuideScreen(
+      nav: nav,
+      topic: GuideTopic.purchase,
+    ),
     AppScreen.guidePayment => GuideScreen(nav: nav, topic: GuideTopic.payment),
     AppScreen.guideAccommodation => GuideScreen(
       nav: nav,

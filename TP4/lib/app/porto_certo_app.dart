@@ -226,7 +226,7 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
     );
   }
 
-Widget _buildScreen() {
+  Widget _buildScreen() {
     return buildPortoCertoScreen(
       screen: _screen,
       nav: _nav,
@@ -248,4 +248,4 @@ Widget _buildScreen() {
       selectedTrackingTripId: _selectedTrackingTripId,
     );
   }
-  }
+}
