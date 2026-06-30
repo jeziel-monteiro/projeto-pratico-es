@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../app/app_routes.dart';
 import '../../../app/app_state.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_header.dart';
 import '../../../core/widgets/pc_card.dart';
 import '../../../core/widgets/section_title.dart';
@@ -25,7 +24,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(

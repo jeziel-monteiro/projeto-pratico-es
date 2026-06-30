@@ -62,7 +62,7 @@ class _HelpScreenState extends State<HelpScreen> {
         .toList();
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -217,10 +217,14 @@ class _GuideScreenState extends State<GuideScreen> {
     final last = _index == content.steps.length - 1;
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
-          AppHeader(title: content.title, backTo: AppScreen.help, nav: widget.nav),
+          AppHeader(
+            title: content.title,
+            backTo: AppScreen.help,
+            nav: widget.nav,
+          ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16),
@@ -236,7 +240,9 @@ class _GuideScreenState extends State<GuideScreen> {
                         height: 7,
                         margin: const EdgeInsets.symmetric(horizontal: 3),
                         decoration: BoxDecoration(
-                          color: i <= _index ? AppColors.primary : AppColors.border,
+                          color: i <= _index
+                              ? AppColors.primary
+                              : AppColors.border,
                           borderRadius: BorderRadius.circular(99),
                         ),
                       ),
@@ -250,8 +256,9 @@ class _GuideScreenState extends State<GuideScreen> {
                         children: [
                           CircleAvatar(
                             radius: 38,
-                            backgroundColor:
-                                AppColors.primary.withValues(alpha: 0.10),
+                            backgroundColor: AppColors.primary.withValues(
+                              alpha: 0.10,
+                            ),
                             child: Icon(
                               step.icon,
                               color: AppColors.primary,
@@ -262,10 +269,9 @@ class _GuideScreenState extends State<GuideScreen> {
                           Text(
                             step.title,
                             textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
-                                ?.copyWith(fontSize: 20),
+                            style: Theme.of(
+                              context,
+                            ).textTheme.titleLarge?.copyWith(fontSize: 20),
                           ),
                           const SizedBox(height: 12),
                           Text(
@@ -332,10 +338,22 @@ class TermsScreen extends StatelessWidget {
       title: 'Termos de Uso',
       subtitle: 'Última atualização: 01/06/2026',
       sections: const [
-        ('1. Aceitação dos Termos', 'Ao utilizar o aplicativo Porto Certo Viagens, você concorda integralmente com estes Termos de Uso.'),
-        ('2. Uso do Serviço', 'O aplicativo destina-se à compra de passagens fluviais, consulta de itinerários e rastreamento de embarcações.'),
-        ('3. Cadastro e Responsabilidades', 'O usuário é responsável pela veracidade das informações fornecidas no cadastro e no embarque.'),
-        ('4. Pagamentos e Cancelamentos', 'Cancelamentos solicitados com mais de 24h de antecedência têm reembolso integral.'),
+        (
+          '1. Aceitação dos Termos',
+          'Ao utilizar o aplicativo Porto Certo Viagens, você concorda integralmente com estes Termos de Uso.',
+        ),
+        (
+          '2. Uso do Serviço',
+          'O aplicativo destina-se à compra de passagens fluviais, consulta de itinerários e rastreamento de embarcações.',
+        ),
+        (
+          '3. Cadastro e Responsabilidades',
+          'O usuário é responsável pela veracidade das informações fornecidas no cadastro e no embarque.',
+        ),
+        (
+          '4. Pagamentos e Cancelamentos',
+          'Cancelamentos solicitados com mais de 24h de antecedência têm reembolso integral.',
+        ),
         ('5. Contato', 'Dúvidas: suporte@portocerto.com.br - (92) 3000-0000.'),
       ],
     );
@@ -354,11 +372,26 @@ class PrivacyScreen extends StatelessWidget {
       title: 'Política de Privacidade',
       subtitle: 'LGPD Conforme - Última atualização: 01/06/2026',
       sections: const [
-        ('1. Dados Coletados', 'Coletamos nome, CPF, email, telefone, dados de pagamento tokenizados, localização durante uso e histórico de viagens.'),
-        ('2. Finalidade', 'Os dados são usados para reservas, bilhetes, rastreamento, recomendações e cumprimento de obrigações legais.'),
-        ('3. Compartilhamento', 'Podemos compartilhar dados com operadores parceiros, gateways de pagamento e autoridades quando exigido por lei.'),
-        ('4. Seus Direitos', 'Você pode acessar, corrigir, excluir ou solicitar portabilidade dos seus dados.'),
-        ('5. Segurança', 'Utilizamos criptografia, autenticação segura e controles de acesso para proteger seus dados.'),
+        (
+          '1. Dados Coletados',
+          'Coletamos nome, CPF, email, telefone, dados de pagamento tokenizados, localização durante uso e histórico de viagens.',
+        ),
+        (
+          '2. Finalidade',
+          'Os dados são usados para reservas, bilhetes, rastreamento, recomendações e cumprimento de obrigações legais.',
+        ),
+        (
+          '3. Compartilhamento',
+          'Podemos compartilhar dados com operadores parceiros, gateways de pagamento e autoridades quando exigido por lei.',
+        ),
+        (
+          '4. Seus Direitos',
+          'Você pode acessar, corrigir, excluir ou solicitar portabilidade dos seus dados.',
+        ),
+        (
+          '5. Segurança',
+          'Utilizamos criptografia, autenticação segura e controles de acesso para proteger seus dados.',
+        ),
       ],
     );
   }
@@ -381,7 +414,7 @@ class LegalScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(title: title, backTo: AppScreen.login, nav: nav),
@@ -408,7 +441,10 @@ class LegalScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(section.$1, style: Theme.of(context).textTheme.titleSmall),
+                              Text(
+                                section.$1,
+                                style: Theme.of(context).textTheme.titleSmall,
+                              ),
                               const SizedBox(height: 5),
                               Text(
                                 section.$2,
@@ -492,30 +528,85 @@ class _GuideStep {
 _GuideContent _guideContent(GuideTopic topic) {
   return switch (topic) {
     GuideTopic.purchase => const _GuideContent(
-        title: 'Como Comprar uma Passagem',
-        steps: [
-          _GuideStep(icon: Icons.search, title: '1. Busque a viagem', description: 'Informe origem, destino e data. Datas passadas são bloqueadas automaticamente.'),
-          _GuideStep(icon: Icons.directions_boat, title: '2. Escolha a embarcação', description: 'Compare preços, horários, avaliações e comodidades antes de comprar.'),
-          _GuideStep(icon: Icons.place_outlined, title: '3. Selecione o trecho', description: 'Escolha o ponto de embarque e desembarque. O preço é ajustado conforme a distância.'),
-          _GuideStep(icon: Icons.payment, title: '4. Confirme e pague', description: 'Revise o resumo e escolha PIX, cartão ou boleto para concluir a compra.'),
-        ],
-      ),
+      title: 'Como Comprar uma Passagem',
+      steps: [
+        _GuideStep(
+          icon: Icons.search,
+          title: '1. Busque a viagem',
+          description:
+              'Informe origem, destino e data. Datas passadas são bloqueadas automaticamente.',
+        ),
+        _GuideStep(
+          icon: Icons.directions_boat,
+          title: '2. Escolha a embarcação',
+          description:
+              'Compare preços, horários, avaliações e comodidades antes de comprar.',
+        ),
+        _GuideStep(
+          icon: Icons.place_outlined,
+          title: '3. Selecione o trecho',
+          description:
+              'Escolha o ponto de embarque e desembarque. O preço é ajustado conforme a distância.',
+        ),
+        _GuideStep(
+          icon: Icons.payment,
+          title: '4. Confirme e pague',
+          description:
+              'Revise o resumo e escolha PIX, cartão ou boleto para concluir a compra.',
+        ),
+      ],
+    ),
     GuideTopic.payment => const _GuideContent(
-        title: 'Guia de Pagamentos',
-        steps: [
-          _GuideStep(icon: Icons.qr_code_2, title: 'PIX', description: 'Pagamento instantâneo, sem taxa adicional e com confirmação em segundos.'),
-          _GuideStep(icon: Icons.credit_card, title: 'Cartão de Crédito', description: 'Aceita cartões principais. Taxa de 2% sobre o valor total.'),
-          _GuideStep(icon: Icons.description_outlined, title: 'Boleto Bancário', description: 'Vencimento em 1 dia útil. A confirmação pode levar algumas horas.'),
-          _GuideStep(icon: Icons.security, title: 'Segurança', description: 'Transações protegidas com criptografia e dados sensíveis tokenizados.'),
-        ],
-      ),
+      title: 'Guia de Pagamentos',
+      steps: [
+        _GuideStep(
+          icon: Icons.qr_code_2,
+          title: 'PIX',
+          description:
+              'Pagamento instantâneo, sem taxa adicional e com confirmação em segundos.',
+        ),
+        _GuideStep(
+          icon: Icons.credit_card,
+          title: 'Cartão de Crédito',
+          description:
+              'Aceita cartões principais. Taxa de 2% sobre o valor total.',
+        ),
+        _GuideStep(
+          icon: Icons.description_outlined,
+          title: 'Boleto Bancário',
+          description:
+              'Vencimento em 1 dia útil. A confirmação pode levar algumas horas.',
+        ),
+        _GuideStep(
+          icon: Icons.security,
+          title: 'Segurança',
+          description:
+              'Transações protegidas com criptografia e dados sensíveis tokenizados.',
+        ),
+      ],
+    ),
     GuideTopic.accommodation => const _GuideContent(
-        title: 'Tipos de Acomodação',
-        steps: [
-          _GuideStep(icon: Icons.airline_seat_flat_angled, title: 'Rede', description: 'Inclusa no bilhete, no convés da embarcação, com ventilação natural.'),
-          _GuideStep(icon: Icons.meeting_room_outlined, title: 'Camarote', description: 'Cabine privativa com cama, ar-condicionado e tomada USB.'),
-          _GuideStep(icon: Icons.luggage_outlined, title: 'Bagagem', description: 'Cada passageiro tem direito a 30kg de bagagem sem custo adicional.'),
-        ],
-      ),
+      title: 'Tipos de Acomodação',
+      steps: [
+        _GuideStep(
+          icon: Icons.airline_seat_flat_angled,
+          title: 'Rede',
+          description:
+              'Inclusa no bilhete, no convés da embarcação, com ventilação natural.',
+        ),
+        _GuideStep(
+          icon: Icons.meeting_room_outlined,
+          title: 'Camarote',
+          description:
+              'Cabine privativa com cama, ar-condicionado e tomada USB.',
+        ),
+        _GuideStep(
+          icon: Icons.luggage_outlined,
+          title: 'Bagagem',
+          description:
+              'Cada passageiro tem direito a 30kg de bagagem sem custo adicional.',
+        ),
+      ],
+    ),
   };
 }

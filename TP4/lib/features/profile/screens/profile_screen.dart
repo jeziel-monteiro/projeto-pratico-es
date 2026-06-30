@@ -17,10 +17,16 @@ import '../../travelers/data/traveler_repository.dart';
 import '../widgets/profile_widgets.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key, required this.nav, this.applyHighContrast});
+  const ProfileScreen({
+    super.key,
+    required this.nav,
+    this.applyHighContrast,
+    this.setTravelerName,
+  });
 
   final AppNavigator nav;
   final ContrastSetter? applyHighContrast;
+  final TravelerNameSetter? setTravelerName;
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -85,6 +91,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       });
 
       widget.applyHighContrast?.call(profile.highContrast);
+      widget.setTravelerName?.call(profile.fullName);
     } catch (error) {
       if (!mounted) return;
 
@@ -101,8 +108,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     try {
       final trips = await _myTripsRepository.listMyTrips();
-      activeTripsCount =
-          trips.where((trip) => trip.status == 'confirmada').length;
+      activeTripsCount = trips
+          .where((trip) => trip.status == 'confirmada')
+          .length;
     } catch (_) {
       activeTripsCount = null;
     }
@@ -140,9 +148,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final profile = _profile;
     final name = profile?.fullName ?? 'Viajante Porto Certo';
     final email = profile?.email ?? _authService.currentUser?.email ?? '';
+    final highContrast = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       bottomNavigationBar: PortoBottomNav(
         active: AppScreen.profile,
         nav: widget.nav,
@@ -150,9 +159,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: Column(
         children: [
           DecoratedBox(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [AppColors.navy, AppColors.primary],
+                colors: highContrast
+                    ? [Colors.black, Colors.black]
+                    : [AppColors.navy, AppColors.primary],
               ),
             ),
             child: SafeArea(

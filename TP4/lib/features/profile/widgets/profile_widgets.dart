@@ -49,7 +49,7 @@ class ProfileSwitchRow extends StatelessWidget {
       contentPadding: EdgeInsets.zero,
       value: value,
       onChanged: onChanged,
-      activeThumbColor: AppColors.primary,
+      activeThumbColor: Theme.of(context).colorScheme.primary,
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.w800)),
       subtitle: Text(subtitle),
     );

@@ -4,6 +4,11 @@ import 'package:flutter/material.dart';
 import '../../../app/app_routes.dart';
 import '../../../app/app_state.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/widgets/app_header.dart';
+import '../../../core/widgets/pc_button.dart';
+import '../../../core/widgets/pc_card.dart';
+import '../../../core/widgets/pc_text_field.dart';
+import '../../auth/data/auth_service.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key, required this.nav});
@@ -109,7 +114,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -125,7 +130,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   const PcCard(
                     child: Row(
                       children: [
-                        Icon(Icons.check_circle_outline, color: AppColors.success),
+                        Icon(
+                          Icons.check_circle_outline,
+                          color: AppColors.success,
+                        ),
                         SizedBox(width: 10),
                         Expanded(
                           child: Text(
@@ -145,7 +153,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   PcCard(
                     child: Row(
                       children: [
-                        const Icon(Icons.error_outline, color: AppColors.danger),
+                        const Icon(
+                          Icons.error_outline,
+                          color: AppColors.danger,
+                        ),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(

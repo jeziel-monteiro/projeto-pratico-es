@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../app/app_routes.dart';
 import '../../../app/app_state.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_header.dart';
 import '../../../core/widgets/pc_card.dart';
 import '../../../core/widgets/section_title.dart';
@@ -32,7 +31,7 @@ class _AccessibilityScreenState extends State<AccessibilityScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -68,8 +67,10 @@ class _AccessibilityScreenState extends State<AccessibilityScreen> {
                           ),
                           Text(
                             '${_fontSize.round()}px',
-                            style: const TextStyle(
-                              color: AppColors.muted,
+                            style: TextStyle(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurfaceVariant,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -110,16 +111,19 @@ class _AccessibilityScreenState extends State<AccessibilityScreen> {
                   ),
                 ),
                 const SizedBox(height: 14),
-                const PcCard(
+                PcCard(
                   child: Row(
                     children: [
-                      Icon(Icons.info_outline, color: AppColors.primary),
-                      SizedBox(width: 10),
+                      Icon(
+                        Icons.info_outline,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      const SizedBox(width: 10),
                       Expanded(
                         child: Text(
                           'Este app segue WCAG 2.1 Nível AA e é compatível com tecnologias assistivas.',
                           style: TextStyle(
-                            color: AppColors.primary,
+                            color: Theme.of(context).colorScheme.primary,
                             fontWeight: FontWeight.w700,
                             fontSize: 12,
                           ),
