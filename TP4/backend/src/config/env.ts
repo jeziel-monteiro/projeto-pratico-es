@@ -15,6 +15,13 @@ const envSchema = z.object({
   FIREBASE_PROJECT_ID: z.string().optional(),
   FIREBASE_CLIENT_EMAIL: z.string().optional(),
   FIREBASE_PRIVATE_KEY: z.string().optional(),
+  EMAIL_NOTIFICATIONS_ENABLED: z
+    .string()
+    .default('false')
+    .transform((value) => value === 'true'),
+  EMAIL_FROM: z.string().default('Porto Certo <noreply@portocerto.local>'),
+  EMAIL_REPLY_TO: z.string().optional(),
+  RESEND_API_KEY: z.string().optional(),
 });
 
 export const env = envSchema.parse(process.env);
