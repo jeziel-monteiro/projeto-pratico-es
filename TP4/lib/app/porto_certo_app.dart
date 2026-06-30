@@ -60,6 +60,7 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
   void initState() {
     super.initState();
     _loadFavorites();
+    _loadHighContrastPreference();
   }
 
   @override
@@ -70,7 +71,35 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
   }
 
   void _nav(AppScreen screen) {
-    setState(() => _screen = screen);
+    setState(() {
+      _screen = screen;
+      if (screen == AppScreen.login && AuthService().currentUser == null) {
+        _highContrast = false;
+      }
+    });
+    if (screen == AppScreen.home) {
+      _loadHighContrastPreference();
+    }
+  }
+
+  Future<void> _loadHighContrastPreference() async {
+    try {
+      final user = AuthService().currentUser;
+      if (user == null) return;
+
+      final idToken = await user.getIdToken();
+      if (idToken == null || idToken.isEmpty) return;
+
+      final profile = await _travelerRepository.fetchMe(
+        firebaseUid: user.uid,
+        idToken: idToken,
+        email: user.email,
+      );
+      if (!mounted) return;
+      _applyHighContrast(profile.highContrast);
+    } catch (_) {
+      // A preferência será carregada novamente ao entrar ou abrir o perfil.
+    }
   }
 
   void _toggleFavorite(String tripId) {
@@ -225,9 +254,17 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSwitcher(
+    final screen = AnimatedSwitcher(
       duration: const Duration(milliseconds: 220),
       child: KeyedSubtree(key: ValueKey(_screen), child: _buildScreen()),
+    );
+
+    if (!_highContrast) return screen;
+
+    final mediaQuery = MediaQuery.of(context);
+    return MediaQuery(
+      data: mediaQuery.copyWith(boldText: true, highContrast: true),
+      child: Theme(data: AppTheme.light(highContrast: true), child: screen),
     );
   }
 

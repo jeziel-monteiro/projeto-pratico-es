@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../theme/app_colors.dart';
-
 class NetworkImageBox extends StatelessWidget {
   const NetworkImageBox({
     super.key,
@@ -28,13 +26,14 @@ class NetworkImageBox extends StatelessWidget {
         width: width,
         fit: fit,
         errorBuilder: (context, error, stackTrace) {
+          final colors = Theme.of(context).colorScheme;
           return Container(
             height: height,
             width: width,
-            color: AppColors.primary.withValues(alpha: 0.10),
-            child: const Icon(
+            color: colors.primary.withValues(alpha: 0.10),
+            child: Icon(
               Icons.directions_boat_filled_outlined,
-              color: AppColors.primary,
+              color: colors.primary,
               size: 34,
             ),
           );

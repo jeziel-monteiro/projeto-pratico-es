@@ -28,7 +28,7 @@ class _OwnerPanelScreenState extends State<OwnerPanelScreen> {
     final wide = MediaQuery.sizeOf(context).width >= 820;
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Row(
         children: [
           if (wide)
