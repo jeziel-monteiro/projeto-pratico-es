@@ -54,6 +54,7 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
   PurchaseDraft? _purchaseDraft;
   MyTrip? _selectedBooking;
   String? _selectedTrackingTripId;
+  String? _travelerName;
   bool _highContrast = false;
 
   @override
@@ -70,7 +71,19 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
   }
 
   void _nav(AppScreen screen) {
-    setState(() => _screen = screen);
+    setState(() {
+      _screen = screen;
+      if (screen == AppScreen.login && AuthService().currentUser == null) {
+        _travelerName = null;
+      }
+    });
+  }
+
+  void _setTravelerName(String fullName) {
+    final normalizedName = fullName.trim();
+    setState(() {
+      _travelerName = normalizedName.isEmpty ? null : normalizedName;
+    });
   }
 
   void _toggleFavorite(String tripId) {
@@ -236,11 +249,18 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
       AppScreen.splash => SplashScreen(nav: _nav),
       AppScreen.onboarding => OnboardingScreen(nav: _nav),
       AppScreen.assistant => AssistantScreen(nav: _nav),
-      AppScreen.login => LoginScreen(nav: _nav),
-      AppScreen.register => RegisterScreen(nav: _nav),
+      AppScreen.login => LoginScreen(
+        nav: _nav,
+        onTravelerNameLoaded: _setTravelerName,
+      ),
+      AppScreen.register => RegisterScreen(
+        nav: _nav,
+        onTravelerNameLoaded: _setTravelerName,
+      ),
       AppScreen.forgot => ForgotScreen(nav: _nav),
       AppScreen.home => HomeScreen(
         nav: _nav,
+        travelerName: _travelerName ?? 'Viajante',
         favoriteIds: _favorites,
         toggleFavorite: _toggleFavorite,
         onTripSelected: _selectTrip,

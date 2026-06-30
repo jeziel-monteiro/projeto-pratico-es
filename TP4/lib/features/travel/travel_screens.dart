@@ -30,24 +30,28 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({
     super.key,
     required this.nav,
+    required this.travelerName,
     required this.favoriteIds,
     required this.toggleFavorite,
     required this.onTripSelected,
     required this.onSearch,
+    this.repository,
   });
 
   final AppNavigator nav;
+  final String travelerName;
   final List<String> favoriteIds;
   final FavoriteToggle toggleFavorite;
   final TripSelector onTripSelected;
   final ValueChanged<TripSearchCriteria> onSearch;
+  final TravelRepository? repository;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final _repository = TravelRepository();
+  late final TravelRepository _repository;
   List<Trip> _featuredTrips = const [];
   bool _loadingFeaturedTrips = true;
   String? _featuredTripsError;
@@ -55,6 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _repository = widget.repository ?? TravelRepository();
     _loadFeaturedTrips();
   }
 
@@ -132,7 +137,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                               Text(
-                                'Ana Carolina',
+                                widget.travelerName,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                                 style: Theme.of(context).textTheme.titleMedium
                                     ?.copyWith(
                                       color: Colors.white,

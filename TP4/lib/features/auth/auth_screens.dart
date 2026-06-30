@@ -15,9 +15,14 @@ import 'data/auth_error_mapper.dart';
 import 'data/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key, required this.nav});
+  const LoginScreen({
+    super.key,
+    required this.nav,
+    required this.onTravelerNameLoaded,
+  });
 
   final AppNavigator nav;
+  final ValueChanged<String> onTravelerNameLoaded;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -73,13 +78,15 @@ class _LoginScreenState extends State<LoginScreen> {
         throw const AuthServiceException('Sessao de autenticacao invalida.');
       }
 
-      await _travelerRepository.fetchMe(
+      final profile = await _travelerRepository.fetchMe(
         firebaseUid: user.uid,
         idToken: idToken,
         email: user.email,
       );
 
-      if (mounted) widget.nav(AppScreen.home);
+      if (!mounted) return;
+      widget.onTravelerNameLoaded(profile.fullName);
+      widget.nav(AppScreen.home);
     } catch (error) {
       if (!mounted) return;
       setState(() {
@@ -274,9 +281,14 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key, required this.nav});
+  const RegisterScreen({
+    super.key,
+    required this.nav,
+    required this.onTravelerNameLoaded,
+  });
 
   final AppNavigator nav;
+  final ValueChanged<String> onTravelerNameLoaded;
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -344,7 +356,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       await user.updateDisplayName(_name.text.trim());
       final phone = onlyDigits(_phone.text);
-      await _travelerRepository.createProfile(
+      final profile = await _travelerRepository.createProfile(
         firebaseUid: user.uid,
         idToken: idToken,
         fullName: _name.text.trim(),
@@ -353,7 +365,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
         phone: phone.isEmpty ? null : phone,
       );
 
-      if (mounted) widget.nav(AppScreen.home);
+      if (!mounted) return;
+      widget.onTravelerNameLoaded(profile.fullName);
+      widget.nav(AppScreen.home);
     } catch (error) {
       if (createdFirebaseUser) {
         try {
