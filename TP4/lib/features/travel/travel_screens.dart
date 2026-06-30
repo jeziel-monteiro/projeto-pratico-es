@@ -54,6 +54,15 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _loadingFeaturedTrips = true;
   String? _featuredTripsError;
 
+  String _buildGreetingName(String? fullName) {
+    final normalizedName = fullName?.trim();
+    if (normalizedName == null || normalizedName.isEmpty) {
+      return 'Viajante Porto Certo';
+    }
+
+    return normalizedName.split(RegExp(r'\s+')).first;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -100,10 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     final highContrast = Theme.of(context).brightness == Brightness.dark;
-    final travelerName = widget.travelerName?.trim();
-    final greetingName = travelerName == null || travelerName.isEmpty
-        ? 'Viajante Porto Certo'
-        : travelerName;
+    final greetingName = _buildGreetingName(widget.travelerName);
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
