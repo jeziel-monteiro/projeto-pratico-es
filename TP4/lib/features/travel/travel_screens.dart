@@ -488,17 +488,30 @@ class _SearchScreenState extends State<SearchScreen> {
                         const SizedBox(height: 14),
                       ],
                       Stack(
+                        clipBehavior: Clip.none,
                         children: [
-                          PcTextField(
-                            label: 'Origem',
-                            hint: 'De onde você sai?',
-                            icon: Icons.place_outlined,
-                            controller: _origin,
+                          Column(
+                            children: [
+                              PcTextField(
+                                label: 'Origem',
+                                hint: 'De onde você sai?',
+                                icon: Icons.place_outlined,
+                                controller: _origin,
+                              ),
+                              const SizedBox(height: 14),
+                              PcTextField(
+                                label: 'Destino',
+                                hint: 'Para onde vai?',
+                                icon: Icons.location_on_outlined,
+                                controller: _destination,
+                              ),
+                            ],
                           ),
                           Positioned(
-                            right: 10,
-                            top: 38,
+                            right: -24,
+                            top: 73,
                             child: IconButton.filledTonal(
+                              tooltip: 'Inverter origem e destino',
                               onPressed: () {
                                 final temp = _origin.text;
                                 _origin.text = _destination.text;
@@ -508,13 +521,6 @@ class _SearchScreenState extends State<SearchScreen> {
                             ),
                           ),
                         ],
-                      ),
-                      const SizedBox(height: 14),
-                      PcTextField(
-                        label: 'Destino',
-                        hint: 'Para onde vai?',
-                        icon: Icons.location_on_outlined,
-                        controller: _destination,
                       ),
                       const SizedBox(height: 14),
                       PcTextField(
