@@ -16,19 +16,26 @@ class PcCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    final highContrast = theme.brightness == Brightness.dark;
+
     return Container(
       margin: margin,
       padding: padding,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colors.surfaceContainer,
         borderRadius: BorderRadius.circular(24),
-        border: border,
+        border:
+            border ??
+            (highContrast ? Border.all(color: colors.outline, width: 2) : null),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.045),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
-          ),
+          if (!highContrast)
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.045),
+              blurRadius: 18,
+              offset: const Offset(0, 8),
+            ),
         ],
       ),
       child: child,

@@ -151,7 +151,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
     final arr = stops[_arrivalIndex];
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -390,7 +390,7 @@ class _AccommodationScreenState extends State<AccommodationScreen> {
     final total = widget.draft.fare + selected.price + widget.draft.serviceFee;
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -612,7 +612,7 @@ class SummaryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final trip = draft.trip;
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -759,7 +759,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     ];
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -927,7 +927,7 @@ class _PixScreenState extends State<PixScreen> {
     final ss = (_seconds % 60).toString().padLeft(2, '0');
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -1142,7 +1142,7 @@ class _BoletoScreenState extends State<BoletoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -1344,7 +1344,7 @@ class _CreditCardScreenState extends State<CreditCardScreen> {
   Widget build(BuildContext context) {
     if (_processing) return const _ProcessingPaymentScreen();
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -1583,7 +1583,7 @@ class _TicketScreenState extends State<TicketScreen> {
 
     if (_cancelled) {
       return Scaffold(
-        backgroundColor: AppColors.surface,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: Column(
           children: [
             AppHeader(
@@ -1678,7 +1678,7 @@ class _TicketScreenState extends State<TicketScreen> {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -1813,7 +1813,7 @@ class _TicketScreenState extends State<TicketScreen> {
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
@@ -2446,22 +2446,24 @@ class _ProcessingPaymentScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Colors.white,
+    final colors = Theme.of(context).colorScheme;
+
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CircularProgressIndicator(color: AppColors.primary),
-            SizedBox(height: 18),
-            Text(
+            CircularProgressIndicator(color: colors.primary),
+            const SizedBox(height: 18),
+            const Text(
               'Processando pagamento...',
               style: TextStyle(fontWeight: FontWeight.w900),
             ),
-            SizedBox(height: 6),
+            const SizedBox(height: 6),
             Text(
               'Aguarde, estamos verificando seus dados.',
-              style: TextStyle(color: AppColors.muted),
+              style: TextStyle(color: colors.onSurfaceVariant),
             ),
           ],
         ),
@@ -2494,7 +2496,7 @@ class _PaymentResultScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -2516,7 +2518,10 @@ class _PaymentResultScreen extends StatelessWidget {
               Text(
                 message,
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: AppColors.muted, height: 1.4),
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  height: 1.4,
+                ),
               ),
               const SizedBox(height: 18),
               if (draft != null)
@@ -2595,7 +2600,7 @@ class _BookingTicketScreenState extends State<_BookingTicketScreen> {
     final confirmed = booking.status == 'confirmada';
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(

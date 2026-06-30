@@ -96,8 +96,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final highContrast = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       bottomNavigationBar: PortoBottomNav(
         active: AppScreen.home,
         nav: widget.nav,
@@ -105,11 +108,13 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           DecoratedBox(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [AppColors.navy, AppColors.primary],
+                colors: highContrast
+                    ? [Colors.black, Colors.black]
+                    : [AppColors.navy, AppColors.primary],
               ),
             ),
             child: SafeArea(
@@ -156,26 +161,31 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 18),
                     Material(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(18),
-                      elevation: 8,
-                      shadowColor: AppColors.primary.withValues(alpha: 0.25),
+                      color: colors.surfaceContainer,
+                      elevation: highContrast ? 0 : 8,
+                      shadowColor: colors.primary.withValues(alpha: 0.25),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
+                        side: highContrast
+                            ? BorderSide(color: colors.outline, width: 2)
+                            : BorderSide.none,
+                      ),
                       child: InkWell(
                         onTap: () => widget.nav(AppScreen.search),
                         borderRadius: BorderRadius.circular(18),
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
                             horizontal: 16,
                             vertical: 14,
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.search, color: AppColors.muted),
-                              SizedBox(width: 12),
+                              Icon(Icons.search, color: colors.primary),
+                              const SizedBox(width: 12),
                               Text(
                                 'Para onde você vai?',
                                 style: TextStyle(
-                                  color: AppColors.muted,
+                                  color: colors.onSurfaceVariant,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -464,7 +474,7 @@ class _SearchScreenState extends State<SearchScreen> {
         : _ports.map((port) => port.city).toSet().toList();
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       bottomNavigationBar: PortoBottomNav(
         active: AppScreen.search,
         nav: widget.nav,
@@ -687,7 +697,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
     }).toList();
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -964,7 +974,7 @@ class _VesselScreenState extends State<VesselScreen> {
   Widget build(BuildContext context) {
     final trip = _trip;
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -1313,7 +1323,7 @@ class _VesselTripsScreenState extends State<VesselTripsScreen> {
   Widget build(BuildContext context) {
     final selectedTrip = widget.selectedTrip;
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -1522,7 +1532,7 @@ class _VesselReviewsScreenState extends State<VesselReviewsScreen> {
   Widget build(BuildContext context) {
     final selectedTrip = widget.selectedTrip;
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -1700,7 +1710,7 @@ class FavoritesScreen extends StatelessWidget {
         .where((trip) => favoriteIds.contains(trip.id))
         .toList();
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       bottomNavigationBar: PortoBottomNav(
         active: AppScreen.favorites,
         nav: nav,
@@ -1843,7 +1853,7 @@ class _TrackingScreenState extends State<TrackingScreen> {
     final tracking = _tracking;
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -2162,7 +2172,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -2352,7 +2362,7 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
     final list = _active ? activeTrips : history;
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
