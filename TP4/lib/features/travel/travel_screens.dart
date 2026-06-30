@@ -508,8 +508,8 @@ class _SearchScreenState extends State<SearchScreen> {
                             ],
                           ),
                           Positioned(
-                            right: 10,
-                            top: 68,
+                            right: -16,
+                            top: 73,
                             child: IconButton.filledTonal(
                               tooltip: 'Inverter origem e destino',
                               onPressed: () {
