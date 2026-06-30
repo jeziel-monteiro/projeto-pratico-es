@@ -16,6 +16,7 @@ import 'app_state.dart';
 Widget buildPortoCertoScreen({
   required AppScreen screen,
   required AppNavigator nav,
+  required String? travelerName,
   required List<String> favoriteIds,
   required List<Trip> favoriteTrips,
   required TripSearchCriteria searchCriteria,
@@ -29,6 +30,7 @@ Widget buildPortoCertoScreen({
   required ValueChanged<MyTrip> onTrackingSelected,
   required ContrastSetter setHighContrast,
   required ContrastSetter applyHighContrast,
+  required TravelerNameSetter setTravelerName,
   Trip? selectedTrip,
   MyTrip? selectedBooking,
   String? selectedTrackingTripId,
@@ -37,11 +39,15 @@ Widget buildPortoCertoScreen({
     AppScreen.splash => SplashScreen(nav: nav),
     AppScreen.onboarding => OnboardingScreen(nav: nav),
     AppScreen.assistant => AssistantScreen(nav: nav),
-    AppScreen.login => LoginScreen(nav: nav),
-    AppScreen.register => RegisterScreen(nav: nav),
+    AppScreen.login => LoginScreen(nav: nav, setTravelerName: setTravelerName),
+    AppScreen.register => RegisterScreen(
+      nav: nav,
+      setTravelerName: setTravelerName,
+    ),
     AppScreen.forgot => ForgotScreen(nav: nav),
     AppScreen.home => HomeScreen(
       nav: nav,
+      travelerName: travelerName,
       favoriteIds: favoriteIds,
       toggleFavorite: toggleFavorite,
       onTripSelected: onTripSelected,
@@ -123,6 +129,7 @@ Widget buildPortoCertoScreen({
     AppScreen.profile => ProfileScreen(
       nav: nav,
       applyHighContrast: applyHighContrast,
+      setTravelerName: setTravelerName,
     ),
     AppScreen.settings => SettingsScreen(nav: nav),
     AppScreen.changePassword => ChangePasswordScreen(nav: nav),

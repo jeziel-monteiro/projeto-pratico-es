@@ -1,17 +1,17 @@
-import 'porto_certo_screen_factory.dart';
 import 'package:flutter/material.dart';
 
 import '../core/network/api_exception.dart';
 import '../core/theme/app_theme.dart';
+import '../data/mock_data.dart';
 import '../features/auth/data/auth_service.dart';
 import '../features/purchase/data/purchase_draft.dart';
 import '../features/travel/data/favorites_repository.dart';
 import '../features/travel/data/travel_repository.dart';
 import '../features/travelers/data/traveler_repository.dart';
-import '../data/mock_data.dart';
 import '../models/my_trip.dart';
 import '../models/trip.dart';
 import 'app_routes.dart';
+import 'porto_certo_screen_factory.dart';
 
 class PortoCertoApp extends StatelessWidget {
   const PortoCertoApp({super.key});
@@ -49,12 +49,14 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
   PurchaseDraft? _purchaseDraft;
   MyTrip? _selectedBooking;
   String? _selectedTrackingTripId;
+  String? _travelerName;
   bool _highContrast = false;
 
   @override
   void initState() {
     super.initState();
     _loadFavorites();
+    _loadHighContrastPreference();
   }
 
   @override
@@ -65,7 +67,47 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
   }
 
   void _nav(AppScreen screen) {
-    setState(() => _screen = screen);
+    setState(() {
+      _screen = screen;
+      if (screen == AppScreen.login && AuthService().currentUser == null) {
+        _travelerName = null;
+        _highContrast = false;
+      }
+    });
+    if (screen == AppScreen.home) {
+      _loadHighContrastPreference();
+    }
+  }
+
+  Future<void> _loadHighContrastPreference() async {
+    try {
+      final user = AuthService().currentUser;
+      if (user == null) return;
+
+      final idToken = await user.getIdToken();
+      if (idToken == null || idToken.isEmpty) return;
+
+      final profile = await _travelerRepository.fetchMe(
+        firebaseUid: user.uid,
+        idToken: idToken,
+        email: user.email,
+      );
+      if (!mounted) return;
+      final normalizedName = profile.fullName.trim();
+      setState(() {
+        _travelerName = normalizedName.isEmpty ? null : normalizedName;
+        _highContrast = profile.highContrast;
+      });
+    } catch (_) {
+      // A preferência será carregada novamente ao entrar ou abrir o perfil.
+    }
+  }
+
+  void _setTravelerName(String fullName) {
+    final normalizedName = fullName.trim();
+    setState(() {
+      _travelerName = normalizedName.isEmpty ? null : normalizedName;
+    });
   }
 
   void _toggleFavorite(String tripId) {
@@ -220,9 +262,17 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSwitcher(
+    final screen = AnimatedSwitcher(
       duration: const Duration(milliseconds: 220),
       child: KeyedSubtree(key: ValueKey(_screen), child: _buildScreen()),
+    );
+
+    if (!_highContrast) return screen;
+
+    final mediaQuery = MediaQuery.of(context);
+    return MediaQuery(
+      data: mediaQuery.copyWith(boldText: true, highContrast: true),
+      child: Theme(data: AppTheme.light(highContrast: true), child: screen),
     );
   }
 
@@ -230,6 +280,7 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
     return buildPortoCertoScreen(
       screen: _screen,
       nav: _nav,
+      travelerName: _travelerName,
       favoriteIds: _favorites,
       favoriteTrips: _favoriteTrips,
       searchCriteria: _searchCriteria,
@@ -243,6 +294,7 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
       onTrackingSelected: _trackBooking,
       setHighContrast: _setHighContrast,
       applyHighContrast: _applyHighContrast,
+      setTravelerName: _setTravelerName,
       selectedTrip: _selectedTrip,
       selectedBooking: _selectedBooking,
       selectedTrackingTripId: _selectedTrackingTripId,

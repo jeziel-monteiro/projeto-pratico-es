@@ -148,7 +148,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     final last = _index == _slides.length - 1;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         top: false,
         child: Column(
@@ -314,7 +314,7 @@ class _AssistantScreenState extends State<AssistantScreen> {
     ];
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           DecoratedBox(

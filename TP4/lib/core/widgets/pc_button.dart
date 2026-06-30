@@ -27,7 +27,7 @@ class PcButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final enabled = onPressed != null && !loading;
-    final style = _styleFor(variant);
+    final style = _styleFor(context, variant);
     final foreground = enabled
         ? style.foreground
         : style.foreground.withValues(alpha: 0.45);
@@ -92,7 +92,30 @@ class PcButton extends StatelessWidget {
     );
   }
 
-  _ButtonStyle _styleFor(PcButtonVariant variant) {
+  _ButtonStyle _styleFor(BuildContext context, PcButtonVariant variant) {
+    final theme = Theme.of(context);
+    if (theme.brightness == Brightness.dark) {
+      final colors = theme.colorScheme;
+      return switch (variant) {
+        PcButtonVariant.primary ||
+        PcButtonVariant.secondary ||
+        PcButtonVariant.teal => _ButtonStyle(
+          colors.primary,
+          colors.onPrimary,
+          colors.primary,
+          2,
+        ),
+        PcButtonVariant.outline ||
+        PcButtonVariant.ghost ||
+        PcButtonVariant.danger => _ButtonStyle(
+          colors.surface,
+          colors.primary,
+          colors.primary,
+          2,
+        ),
+      };
+    }
+
     return switch (variant) {
       PcButtonVariant.primary => const _ButtonStyle(
         AppColors.primary,

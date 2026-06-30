@@ -10,6 +10,9 @@ class ProgressSteps extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final highContrast = Theme.of(context).brightness == Brightness.dark;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: List.generate(labels.length, (index) {
@@ -23,19 +26,21 @@ class ProgressSteps extends StatelessWidget {
                 height: 29,
                 decoration: BoxDecoration(
                   color: active
-                      ? AppColors.primary
+                      ? colors.primary
                       : complete
-                      ? AppColors.success
-                      : const Color(0xFFF3F4F6),
+                      ? (highContrast ? colors.primary : AppColors.success)
+                      : colors.surfaceContainerHighest,
                   shape: BoxShape.circle,
                 ),
                 alignment: Alignment.center,
                 child: complete
-                    ? const Icon(Icons.check, size: 15, color: Colors.white)
+                    ? Icon(Icons.check, size: 15, color: colors.onPrimary)
                     : Text(
                         '${index + 1}',
                         style: TextStyle(
-                          color: active ? Colors.white : AppColors.muted,
+                          color: active
+                              ? colors.onPrimary
+                              : colors.onSurfaceVariant,
                           fontWeight: FontWeight.w900,
                           fontSize: 12,
                         ),
@@ -45,8 +50,8 @@ class ProgressSteps extends StatelessWidget {
               Text(
                 labels[index],
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: AppColors.muted,
+                style: TextStyle(
+                  color: colors.onSurfaceVariant,
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
                 ),

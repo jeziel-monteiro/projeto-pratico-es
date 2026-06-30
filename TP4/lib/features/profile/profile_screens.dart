@@ -19,10 +19,16 @@ import '../travelers/data/traveler_profile.dart';
 import '../travelers/data/traveler_repository.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key, required this.nav, this.applyHighContrast});
+  const ProfileScreen({
+    super.key,
+    required this.nav,
+    this.applyHighContrast,
+    this.setTravelerName,
+  });
 
   final AppNavigator nav;
   final ContrastSetter? applyHighContrast;
+  final TravelerNameSetter? setTravelerName;
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -82,6 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _loading = false;
       });
       widget.applyHighContrast?.call(profile.highContrast);
+      widget.setTravelerName?.call(profile.fullName);
     } catch (error) {
       if (!mounted) return;
       setState(() {
@@ -135,9 +142,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final profile = _profile;
     final name = profile?.fullName ?? 'Viajante Porto Certo';
     final email = profile?.email ?? _authService.currentUser?.email ?? '';
+    final highContrast = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       bottomNavigationBar: PortoBottomNav(
         active: AppScreen.profile,
         nav: widget.nav,
@@ -145,9 +153,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: Column(
         children: [
           DecoratedBox(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [AppColors.navy, AppColors.primary],
+                colors: highContrast
+                    ? [Colors.black, Colors.black]
+                    : [AppColors.navy, AppColors.primary],
               ),
             ),
             child: SafeArea(
@@ -356,7 +366,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -528,7 +538,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -652,7 +662,7 @@ class _AccessibilityScreenState extends State<AccessibilityScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -688,8 +698,10 @@ class _AccessibilityScreenState extends State<AccessibilityScreen> {
                           ),
                           Text(
                             '${_fontSize.round()}px',
-                            style: const TextStyle(
-                              color: AppColors.muted,
+                            style: TextStyle(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurfaceVariant,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -730,16 +742,19 @@ class _AccessibilityScreenState extends State<AccessibilityScreen> {
                   ),
                 ),
                 const SizedBox(height: 14),
-                const PcCard(
+                PcCard(
                   child: Row(
                     children: [
-                      Icon(Icons.info_outline, color: AppColors.primary),
-                      SizedBox(width: 10),
+                      Icon(
+                        Icons.info_outline,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      const SizedBox(width: 10),
                       Expanded(
                         child: Text(
                           'Este app segue WCAG 2.1 Nível AA e é compatível com tecnologias assistivas.',
                           style: TextStyle(
-                            color: AppColors.primary,
+                            color: Theme.of(context).colorScheme.primary,
                             fontWeight: FontWeight.w700,
                             fontSize: 12,
                           ),
@@ -923,7 +938,7 @@ class _HelpScreenState extends State<HelpScreen> {
         .toList();
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -1078,7 +1093,7 @@ class _GuideScreenState extends State<GuideScreen> {
     final last = _index == content.steps.length - 1;
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -1275,7 +1290,7 @@ class LegalScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(title: title, backTo: AppScreen.login, nav: nav),
@@ -1491,7 +1506,7 @@ class _SwitchRow extends StatelessWidget {
       contentPadding: EdgeInsets.zero,
       value: value,
       onChanged: onChanged,
-      activeThumbColor: AppColors.primary,
+      activeThumbColor: Theme.of(context).colorScheme.primary,
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.w800)),
       subtitle: Text(subtitle),
     );
