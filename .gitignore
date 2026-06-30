@@ -1,0 +1,65 @@
+# OS/editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+*.iml
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+*service-account*.json
+*serviceAccount*.json
+*firebase-adminsdk*.json
+*private-key*.json
+*.pem
+*.key
+*.p12
+
+# Mobile signing keys
+key.properties
+*.keystore
+*.jks
+
+# Firebase client configuration is generated per environment.
+google-services.json
+GoogleService-Info.plist
+
+# Dependencies and generated build output
+node_modules/
+dist/
+build/
+.dart_tool/
+.pub/
+.pub-cache/
+.flutter-plugins-dependencies
+.gradle/
+coverage/
+
+# Flutter generated platform files
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/Flutter/ephemeral/
+**/macos/Flutter/ephemeral/
+**/linux/flutter/ephemeral/
+**/android/local.properties
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+
+# Local databases, logs, and temporary files
+.postgres-data/
+*.sqlite
+*.sqlite3
+*.db
+*.log
+*.tmp
+*.temp
+*.bak
+*.orig
+
+# Local assignment guidance, not part of the deliverable
+TP4/atividadeTP4.pdf
