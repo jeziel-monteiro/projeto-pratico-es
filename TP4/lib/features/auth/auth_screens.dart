@@ -15,9 +15,10 @@ import 'data/auth_error_mapper.dart';
 import 'data/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key, required this.nav});
+  const LoginScreen({super.key, required this.nav, this.setTravelerName});
 
   final AppNavigator nav;
+  final TravelerNameSetter? setTravelerName;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -73,13 +74,15 @@ class _LoginScreenState extends State<LoginScreen> {
         throw const AuthServiceException('Sessao de autenticacao invalida.');
       }
 
-      await _travelerRepository.fetchMe(
+      final profile = await _travelerRepository.fetchMe(
         firebaseUid: user.uid,
         idToken: idToken,
         email: user.email,
       );
 
-      if (mounted) widget.nav(AppScreen.home);
+      if (!mounted) return;
+      widget.setTravelerName?.call(profile.fullName);
+      widget.nav(AppScreen.home);
     } catch (error) {
       if (!mounted) return;
       setState(() {
@@ -275,9 +278,10 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key, required this.nav});
+  const RegisterScreen({super.key, required this.nav, this.setTravelerName});
 
   final AppNavigator nav;
+  final TravelerNameSetter? setTravelerName;
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -331,6 +335,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     try {
       final email = _email.text.trim();
+      final fullName = _name.text.trim();
       final credential = await _authService.register(
         email: email,
         password: _password.text,
@@ -343,18 +348,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
         throw const AuthServiceException('Sessao de autenticacao invalida.');
       }
 
-      await user.updateDisplayName(_name.text.trim());
+      await user.updateDisplayName(fullName);
       final phone = onlyDigits(_phone.text);
       await _travelerRepository.createProfile(
         firebaseUid: user.uid,
         idToken: idToken,
-        fullName: _name.text.trim(),
+        fullName: fullName,
         cpf: onlyDigits(_cpf.text),
         email: email,
         phone: phone.isEmpty ? null : phone,
       );
 
-      if (mounted) widget.nav(AppScreen.home);
+      if (!mounted) return;
+      widget.setTravelerName?.call(fullName);
+      widget.nav(AppScreen.home);
     } catch (error) {
       if (createdFirebaseUser) {
         try {

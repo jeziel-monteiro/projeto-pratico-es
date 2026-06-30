@@ -19,10 +19,16 @@ import '../travelers/data/traveler_profile.dart';
 import '../travelers/data/traveler_repository.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key, required this.nav, this.applyHighContrast});
+  const ProfileScreen({
+    super.key,
+    required this.nav,
+    this.applyHighContrast,
+    this.setTravelerName,
+  });
 
   final AppNavigator nav;
   final ContrastSetter? applyHighContrast;
+  final TravelerNameSetter? setTravelerName;
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -82,6 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _loading = false;
       });
       widget.applyHighContrast?.call(profile.highContrast);
+      widget.setTravelerName?.call(profile.fullName);
     } catch (error) {
       if (!mounted) return;
       setState(() {

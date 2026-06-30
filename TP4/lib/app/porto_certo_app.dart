@@ -54,6 +54,7 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
   PurchaseDraft? _purchaseDraft;
   MyTrip? _selectedBooking;
   String? _selectedTrackingTripId;
+  String? _travelerName;
   bool _highContrast = false;
 
   @override
@@ -74,6 +75,7 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
     setState(() {
       _screen = screen;
       if (screen == AppScreen.login && AuthService().currentUser == null) {
+        _travelerName = null;
         _highContrast = false;
       }
     });
@@ -96,10 +98,21 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
         email: user.email,
       );
       if (!mounted) return;
-      _applyHighContrast(profile.highContrast);
+      final normalizedName = profile.fullName.trim();
+      setState(() {
+        _travelerName = normalizedName.isEmpty ? null : normalizedName;
+        _highContrast = profile.highContrast;
+      });
     } catch (_) {
       // A preferência será carregada novamente ao entrar ou abrir o perfil.
     }
+  }
+
+  void _setTravelerName(String fullName) {
+    final normalizedName = fullName.trim();
+    setState(() {
+      _travelerName = normalizedName.isEmpty ? null : normalizedName;
+    });
   }
 
   void _toggleFavorite(String tripId) {
@@ -273,11 +286,18 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
       AppScreen.splash => SplashScreen(nav: _nav),
       AppScreen.onboarding => OnboardingScreen(nav: _nav),
       AppScreen.assistant => AssistantScreen(nav: _nav),
-      AppScreen.login => LoginScreen(nav: _nav),
-      AppScreen.register => RegisterScreen(nav: _nav),
+      AppScreen.login => LoginScreen(
+        nav: _nav,
+        setTravelerName: _setTravelerName,
+      ),
+      AppScreen.register => RegisterScreen(
+        nav: _nav,
+        setTravelerName: _setTravelerName,
+      ),
       AppScreen.forgot => ForgotScreen(nav: _nav),
       AppScreen.home => HomeScreen(
         nav: _nav,
+        travelerName: _travelerName,
         favoriteIds: _favorites,
         toggleFavorite: _toggleFavorite,
         onTripSelected: _selectTrip,
@@ -368,6 +388,7 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
       AppScreen.profile => ProfileScreen(
         nav: _nav,
         applyHighContrast: _applyHighContrast,
+        setTravelerName: _setTravelerName,
       ),
       AppScreen.settings => SettingsScreen(nav: _nav),
       AppScreen.changePassword => ChangePasswordScreen(nav: _nav),

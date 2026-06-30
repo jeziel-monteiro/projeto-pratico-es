@@ -30,6 +30,7 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({
     super.key,
     required this.nav,
+    required this.travelerName,
     required this.favoriteIds,
     required this.toggleFavorite,
     required this.onTripSelected,
@@ -37,6 +38,7 @@ class HomeScreen extends StatefulWidget {
   });
 
   final AppNavigator nav;
+  final String? travelerName;
   final List<String> favoriteIds;
   final FavoriteToggle toggleFavorite;
   final TripSelector onTripSelected;
@@ -98,6 +100,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     final highContrast = Theme.of(context).brightness == Brightness.dark;
+    final travelerName = widget.travelerName?.trim();
+    final greetingName = travelerName == null || travelerName.isEmpty
+        ? 'Viajante Porto Certo'
+        : travelerName;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -137,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                               Text(
-                                'Ana Carolina',
+                                greetingName,
                                 style: Theme.of(context).textTheme.titleMedium
                                     ?.copyWith(
                                       color: Colors.white,
