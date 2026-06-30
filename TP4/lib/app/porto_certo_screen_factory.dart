@@ -144,10 +144,6 @@ Widget buildPortoCertoScreen({
       nav: nav,
       topic: GuideTopic.accommodation,
     ),
-    AppScreen.guideAccommodation => GuideScreen(
-      nav: nav,
-      topic: GuideTopic.accommodation,
-    ),
     AppScreen.ownerPanel => OwnerPanelScreen(nav: nav),
   };
 }

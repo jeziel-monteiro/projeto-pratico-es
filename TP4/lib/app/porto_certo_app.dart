@@ -4,15 +4,9 @@ import 'package:flutter/material.dart';
 import '../core/network/api_exception.dart';
 import '../core/theme/app_theme.dart';
 import '../features/auth/data/auth_service.dart';
-import '../features/auth/auth_screens.dart';
-import '../features/onboarding/onboarding_screens.dart';
-import '../features/owner/owner_panel_screen.dart';
-import '../features/profile/profile_screens.dart';
 import '../features/purchase/data/purchase_draft.dart';
-import '../features/purchase/purchase_screens.dart';
 import '../features/travel/data/favorites_repository.dart';
 import '../features/travel/data/travel_repository.dart';
-import '../features/travel/travel_screens.dart';
 import '../features/travelers/data/traveler_repository.dart';
 import '../data/mock_data.dart';
 import '../models/my_trip.dart';
@@ -255,4 +249,3 @@ Widget _buildScreen() {
     );
   }
   }
-}
