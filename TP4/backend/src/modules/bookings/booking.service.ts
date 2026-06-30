@@ -12,6 +12,7 @@ import {
 import { prisma } from '../../database/prisma.js';
 import { HttpError } from '../../http/http-error.js';
 import type { AuthenticatedUser } from '../auth/auth.middleware.js';
+import { sendBookingConfirmationEmail } from '../notifications/booking-confirmation.service.js';
 import type { CreateBookingInput, PaymentMethodInput } from './booking.schemas.js';
 
 const SERVICE_FEE = 5;
@@ -23,6 +24,11 @@ const accommodationPrices: Record<AccommodationType, number> = {
 };
 
 const bookingInclude = {
+  traveler: {
+    include: {
+      user: true,
+    },
+  },
   originStop: {
     include: {
       port: true,
@@ -50,7 +56,7 @@ export async function createBooking(
   auth: AuthenticatedUser,
   input: CreateBookingInput,
 ) {
-  return prisma.$transaction(async (transaction) => {
+  const booking = await prisma.$transaction(async (transaction) => {
     const traveler = await transaction.user.findUnique({
       where: { firebaseUid: auth.uid },
       include: { travelerProfile: true },
@@ -143,6 +149,15 @@ export async function createBooking(
       include: bookingInclude,
     });
   });
+
+  sendBookingConfirmationEmail(booking).catch((error: unknown) => {
+    console.error(
+      `[email] falha ao enviar confirmacao da reserva ${booking.id}.`,
+      error,
+    );
+  });
+
+  return booking;
 }
 
 export async function listMyBookings(auth: AuthenticatedUser) {
