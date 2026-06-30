@@ -20,7 +20,7 @@ class SummaryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final trip = draft.trip;
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(

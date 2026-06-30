@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../app/app_routes.dart';
 import '../../app/app_state.dart';
-import '../theme/app_colors.dart';
 
 class AppHeader extends StatelessWidget {
   const AppHeader({
@@ -22,10 +21,12 @@ class AppHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return DecoratedBox(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(bottom: BorderSide(color: AppColors.border)),
+      decoration: BoxDecoration(
+        color: colors.surfaceContainer,
+        border: Border(bottom: BorderSide(color: colors.outline)),
       ),
       child: SafeArea(
         bottom: false,
@@ -55,8 +56,8 @@ class AppHeader extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 2),
                         child: Text(
                           subtitle!,
-                          style: const TextStyle(
-                            color: AppColors.muted,
+                          style: TextStyle(
+                            color: colors.onSurfaceVariant,
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
                           ),
@@ -82,8 +83,10 @@ class _CircleIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return Material(
-      color: const Color(0xFFF3F4F6),
+      color: colors.surfaceContainerHighest,
       borderRadius: BorderRadius.circular(999),
       child: InkWell(
         onTap: onTap,
@@ -91,7 +94,7 @@ class _CircleIconButton extends StatelessWidget {
         child: SizedBox(
           width: 36,
           height: 36,
-          child: Icon(icon, size: 22, color: const Color(0xFF374151)),
+          child: Icon(icon, size: 22, color: colors.onSurface),
         ),
       ),
     );

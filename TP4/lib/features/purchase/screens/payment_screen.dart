@@ -62,7 +62,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     ];
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(

@@ -2,21 +2,16 @@ import 'package:flutter/material.dart';
 
 import '../core/network/api_exception.dart';
 import '../core/theme/app_theme.dart';
+import '../data/mock_data.dart';
 import '../features/auth/data/auth_service.dart';
-import '../features/auth/auth_screens.dart';
-import '../features/onboarding/onboarding_screens.dart';
-import '../features/owner/owner_panel_screen.dart';
-import '../features/profile/profile_screens.dart';
 import '../features/purchase/data/purchase_draft.dart';
-import '../features/purchase/purchase_screens.dart';
 import '../features/travel/data/favorites_repository.dart';
 import '../features/travel/data/travel_repository.dart';
-import '../features/travel/travel_screens.dart';
 import '../features/travelers/data/traveler_repository.dart';
-import '../data/mock_data.dart';
 import '../models/my_trip.dart';
 import '../models/trip.dart';
 import 'app_routes.dart';
+import 'porto_certo_screen_factory.dart';
 
 class PortoCertoApp extends StatelessWidget {
   const PortoCertoApp({super.key});
@@ -54,12 +49,14 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
   PurchaseDraft? _purchaseDraft;
   MyTrip? _selectedBooking;
   String? _selectedTrackingTripId;
+  String? _travelerName;
   bool _highContrast = false;
 
   @override
   void initState() {
     super.initState();
     _loadFavorites();
+    _loadHighContrastPreference();
   }
 
   @override
@@ -70,7 +67,47 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
   }
 
   void _nav(AppScreen screen) {
-    setState(() => _screen = screen);
+    setState(() {
+      _screen = screen;
+      if (screen == AppScreen.login && AuthService().currentUser == null) {
+        _travelerName = null;
+        _highContrast = false;
+      }
+    });
+    if (screen == AppScreen.home) {
+      _loadHighContrastPreference();
+    }
+  }
+
+  Future<void> _loadHighContrastPreference() async {
+    try {
+      final user = AuthService().currentUser;
+      if (user == null) return;
+
+      final idToken = await user.getIdToken();
+      if (idToken == null || idToken.isEmpty) return;
+
+      final profile = await _travelerRepository.fetchMe(
+        firebaseUid: user.uid,
+        idToken: idToken,
+        email: user.email,
+      );
+      if (!mounted) return;
+      final normalizedName = profile.fullName.trim();
+      setState(() {
+        _travelerName = normalizedName.isEmpty ? null : normalizedName;
+        _highContrast = profile.highContrast;
+      });
+    } catch (_) {
+      // A preferência será carregada novamente ao entrar ou abrir o perfil.
+    }
+  }
+
+  void _setTravelerName(String fullName) {
+    final normalizedName = fullName.trim();
+    setState(() {
+      _travelerName = normalizedName.isEmpty ? null : normalizedName;
+    });
   }
 
   void _toggleFavorite(String tripId) {
@@ -225,140 +262,42 @@ class _PortoCertoShellState extends State<PortoCertoShell> {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSwitcher(
+    final screen = AnimatedSwitcher(
       duration: const Duration(milliseconds: 220),
       child: KeyedSubtree(key: ValueKey(_screen), child: _buildScreen()),
+    );
+
+    if (!_highContrast) return screen;
+
+    final mediaQuery = MediaQuery.of(context);
+    return MediaQuery(
+      data: mediaQuery.copyWith(boldText: true, highContrast: true),
+      child: Theme(data: AppTheme.light(highContrast: true), child: screen),
     );
   }
 
   Widget _buildScreen() {
-    return switch (_screen) {
-      AppScreen.splash => SplashScreen(nav: _nav),
-      AppScreen.onboarding => OnboardingScreen(nav: _nav),
-      AppScreen.assistant => AssistantScreen(nav: _nav),
-      AppScreen.login => LoginScreen(nav: _nav),
-      AppScreen.register => RegisterScreen(nav: _nav),
-      AppScreen.forgot => ForgotScreen(nav: _nav),
-      AppScreen.home => HomeScreen(
-        nav: _nav,
-        favoriteIds: _favorites,
-        toggleFavorite: _toggleFavorite,
-        onTripSelected: _selectTrip,
-        onSearch: _setSearchCriteria,
-      ),
-      AppScreen.search => SearchScreen(nav: _nav, onSearch: _setSearchCriteria),
-      AppScreen.results => ResultsScreen(
-        nav: _nav,
-        searchCriteria: _searchCriteria,
-        favoriteIds: _favorites,
-        toggleFavorite: _toggleFavorite,
-        onTripSelected: _selectTrip,
-      ),
-      AppScreen.vessel => VesselScreen(
-        nav: _nav,
-        selectedTrip: _selectedTrip,
-        onTripSelected: _selectTrip,
-      ),
-      AppScreen.vesselTrips => VesselTripsScreen(
-        nav: _nav,
-        selectedTrip: _selectedTrip,
-        onTripSelected: _selectTrip,
-      ),
-      AppScreen.vesselReviews => VesselReviewsScreen(
-        nav: _nav,
-        selectedTrip: _selectedTrip,
-      ),
-      AppScreen.purchase => PurchaseScreen(
-        nav: _nav,
-        draft: _activePurchaseDraft,
-        onDraftChanged: _setPurchaseDraft,
-      ),
-      AppScreen.accommodation => AccommodationScreen(
-        nav: _nav,
-        draft: _activePurchaseDraft,
-        onDraftChanged: _setPurchaseDraft,
-      ),
-      AppScreen.summary => SummaryScreen(
-        nav: _nav,
-        draft: _activePurchaseDraft,
-      ),
-      AppScreen.payment => PaymentScreen(
-        nav: _nav,
-        draft: _activePurchaseDraft,
-      ),
-      AppScreen.pix => PixScreen(
-        nav: _nav,
-        draft: _activePurchaseDraft,
-        onDraftChanged: _setPurchaseDraft,
-      ),
-      AppScreen.boleto => BoletoScreen(
-        nav: _nav,
-        draft: _activePurchaseDraft,
-        onDraftChanged: _setPurchaseDraft,
-      ),
-      AppScreen.creditCard => CreditCardScreen(
-        nav: _nav,
-        draft: _activePurchaseDraft,
-        onDraftChanged: _setPurchaseDraft,
-      ),
-      AppScreen.rejected => RejectedScreen(nav: _nav),
-      AppScreen.approved => ApprovedScreen(
-        nav: _nav,
-        draft: _activePurchaseDraft,
-      ),
-      AppScreen.ticket => TicketScreen(
-        nav: _nav,
-        draft: _activePurchaseDraft,
-        booking: _selectedBooking,
-      ),
-      AppScreen.myTrips => MyTripsScreen(
-        nav: _nav,
-        onBookingSelected: _openBookingTicket,
-        onTrackingSelected: _trackBooking,
-      ),
-      AppScreen.favorites => FavoritesScreen(
-        nav: _nav,
-        favoriteIds: _favorites,
-        favoriteTrips: _favoriteTrips,
-        toggleFavorite: _toggleFavorite,
-        onTripSelected: _selectTrip,
-      ),
-      AppScreen.tracking => TrackingScreen(
-        nav: _nav,
-        tripId: _selectedTrackingTripId ?? _selectedTrip?.id,
-      ),
-      AppScreen.notifications => NotificationsScreen(nav: _nav),
-      AppScreen.profile => ProfileScreen(
-        nav: _nav,
-        applyHighContrast: _applyHighContrast,
-      ),
-      AppScreen.settings => SettingsScreen(nav: _nav),
-      AppScreen.changePassword => ChangePasswordScreen(nav: _nav),
-      AppScreen.accessibility => AccessibilityScreen(
-        nav: _nav,
-        highContrast: _highContrast,
-        setHighContrast: _setHighContrast,
-      ),
-      AppScreen.highContrast => HighContrastScreen(
-        nav: _nav,
-        setHighContrast: _setHighContrast,
-      ),
-      AppScreen.help => HelpScreen(nav: _nav),
-      AppScreen.terms => TermsScreen(nav: _nav),
-      AppScreen.privacy => PrivacyScreen(nav: _nav),
-      AppScreen.guidePurchase => GuideScreen(
-        nav: _nav,
-        topic: GuideTopic.purchase,
-      ),
-      AppScreen.guidePayment => GuideScreen(
-        nav: _nav,
-        topic: GuideTopic.payment,
-      ),
-      AppScreen.guideAccommodation => GuideScreen(
-        nav: _nav,
-        topic: GuideTopic.accommodation,
-      ),
-      AppScreen.ownerPanel => OwnerPanelScreen(nav: _nav),
-    };
+    return buildPortoCertoScreen(
+      screen: _screen,
+      nav: _nav,
+      travelerName: _travelerName,
+      favoriteIds: _favorites,
+      favoriteTrips: _favoriteTrips,
+      searchCriteria: _searchCriteria,
+      activePurchaseDraft: _activePurchaseDraft,
+      highContrast: _highContrast,
+      toggleFavorite: _toggleFavorite,
+      onTripSelected: _selectTrip,
+      onSearch: _setSearchCriteria,
+      onDraftChanged: _setPurchaseDraft,
+      onBookingSelected: _openBookingTicket,
+      onTrackingSelected: _trackBooking,
+      setHighContrast: _setHighContrast,
+      applyHighContrast: _applyHighContrast,
+      setTravelerName: _setTravelerName,
+      selectedTrip: _selectedTrip,
+      selectedBooking: _selectedBooking,
+      selectedTrackingTripId: _selectedTrackingTripId,
+    );
   }
 }
