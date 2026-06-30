@@ -2,12 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../../app/app_routes.dart';
+import '../../../app/app_state.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/widgets/app_header.dart';
-import '../../../core/widgets/pc_button.dart';
-import '../../../core/widgets/pc_card.dart';
-import '../../../core/widgets/pc_text_field.dart';
-import '../../auth/data/auth_service.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key, required this.nav});
