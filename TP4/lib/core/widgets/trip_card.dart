@@ -70,30 +70,6 @@ class TripCard extends StatelessWidget {
                   ),
                 ),
               ),
-              Positioned(
-                top: 12,
-                right: 12,
-                child: Material(
-                  color: highContrast
-                      ? colors.surfaceContainerHighest
-                      : Colors.white.withValues(alpha: 0.92),
-                  shape: const CircleBorder(),
-                  child: InkWell(
-                    onTap: onFavorite,
-                    customBorder: const CircleBorder(),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Icon(
-                        isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: isFavorite
-                            ? (highContrast ? colors.primary : Colors.redAccent)
-                            : colors.onSurfaceVariant,
-                        size: 18,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
               if (trip.seats == 0)
                 Positioned.fill(
                   child: DecoratedBox(
@@ -122,6 +98,33 @@ class TripCard extends StatelessWidget {
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: Colors.white,
                     fontSize: 16,
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 12,
+                right: 12,
+                child: IconButton(
+                  onPressed: onFavorite,
+                  tooltip: isFavorite
+                      ? 'Remover dos favoritos'
+                      : 'Adicionar aos favoritos',
+                  constraints: const BoxConstraints.tightFor(
+                    width: 48,
+                    height: 48,
+                  ),
+                  style: IconButton.styleFrom(
+                    backgroundColor: highContrast
+                        ? colors.surfaceContainerHighest
+                        : Colors.white.withValues(alpha: 0.92),
+                    shape: const CircleBorder(),
+                  ),
+                  icon: Icon(
+                    isFavorite ? Icons.favorite : Icons.favorite_border,
+                    color: isFavorite
+                        ? (highContrast ? colors.primary : Colors.redAccent)
+                        : colors.onSurfaceVariant,
+                    size: 22,
                   ),
                 ),
               ),

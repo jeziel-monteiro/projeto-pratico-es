@@ -89,8 +89,6 @@ class MyTripsRepository {
         'x-dev-email': user.email!,
       if (user.phoneNumber != null && user.phoneNumber!.isNotEmpty)
         'x-dev-phone': user.phoneNumber!,
-      if (user.displayName != null && user.displayName!.isNotEmpty)
-        'x-dev-name': user.displayName!,
     };
   }
 }
