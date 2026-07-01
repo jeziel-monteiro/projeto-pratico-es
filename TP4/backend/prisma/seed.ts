@@ -31,6 +31,7 @@ type TripSeed = {
   basePrice: string;
   seatsTotal: number;
   seatsAvailable: number;
+  imageUrl?: string;
   trackingProgress: number;
   stops: TripStopSeed[];
 };
@@ -137,8 +138,7 @@ const vessels = [
     averageSpeed: '22.0',
     rating: '4.7',
     amenities: ['Refeicao', 'Redario', 'Camarote', 'Banheiro', 'Tomadas'],
-    imageUrl:
-      'https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?w=900&h=500&fit=crop',
+    imageUrl: 'assets/images/amazonas_expresso.png',
   },
   {
     key: 'tapajos-norte',
@@ -159,8 +159,7 @@ const vessels = [
     averageSpeed: '24.0',
     rating: '4.6',
     amenities: ['Poltrona', 'Camarote', 'Lanchonete', 'Ar-condicionado'],
-    imageUrl:
-      'https://images.unsplash.com/photo-1528154291023-a6525fabe5b4?w=900&h=500&fit=crop',
+    imageUrl: 'assets/images/marajo_atlantico.png',
   },
 ];
 
@@ -192,6 +191,7 @@ const trips: TripSeed[] = [
     basePrice: '190.00',
     seatsTotal: 120,
     seatsAvailable: 22,
+    imageUrl: 'assets/images/amazonas_expresso_parintins.png',
     trackingProgress: 0.34,
     stops: [
       { portKey: 'manaus', offsetHours: 0, priceMultiplier: '0.0000' },
@@ -448,6 +448,13 @@ async function main() {
       },
     });
 
+    await prisma.vesselPhoto.deleteMany({
+      where: {
+        vesselId: savedVessel.id,
+        url: { not: vessel.imageUrl },
+      },
+    });
+
     await prisma.vesselPhoto.upsert({
       where: {
         vesselId_url: {
@@ -546,6 +553,7 @@ async function main() {
         basePrice: trip.basePrice,
         seatsTotal: trip.seatsTotal,
         seatsAvailable: trip.seatsAvailable,
+        imageUrl: trip.imageUrl ?? null,
         status: TripStatus.SCHEDULED,
       },
       create: {
@@ -557,6 +565,7 @@ async function main() {
         basePrice: trip.basePrice,
         seatsTotal: trip.seatsTotal,
         seatsAvailable: trip.seatsAvailable,
+        imageUrl: trip.imageUrl ?? null,
         status: TripStatus.SCHEDULED,
       },
     });

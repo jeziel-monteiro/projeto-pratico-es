@@ -66,7 +66,7 @@ export function presentTrip(trip: TripWithRelations) {
         : null,
       rating: trip.vessel.rating ? Number(trip.vessel.rating) : null,
       amenities: trip.vessel.amenities,
-      imageUrl: trip.vessel.photos[0]?.url ?? null,
+      imageUrl: trip.imageUrl ?? trip.vessel.photos[0]?.url ?? null,
       photos: trip.vessel.photos.map((photo) => ({
         id: photo.id,
         url: photo.url,

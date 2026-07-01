@@ -61,6 +61,9 @@ flutter:
 
   assets:
     - assets/images/logo_porto_certo.png
+    - assets/images/amazonas_expresso.png
+    - assets/images/amazonas_expresso_parintins.png
+    - assets/images/marajo_atlantico.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
