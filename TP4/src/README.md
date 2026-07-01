@@ -22,10 +22,10 @@ flutter run
 Antes de rodar no Android, baixe o arquivo `google-services.json` no Firebase Console e salve localmente em:
 
 ```text
-TP4/android/app/google-services.json
+TP4/src/android/app/google-services.json
 ```
 
-Esse arquivo fica fora do Git por conter uma chave client-side do Firebase. Use `TP4/android/app/google-services.example.json` apenas como referência de formato.
+Esse arquivo fica fora do Git por conter uma chave client-side do Firebase. Use `TP4/src/android/app/google-services.example.json` apenas como referência de formato.
 
 Para executar no dispositivo Android detectado:
 
