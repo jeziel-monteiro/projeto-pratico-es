@@ -25,6 +25,7 @@ import 'data/my_trips_repository.dart';
 import 'data/notifications_repository.dart';
 import 'data/reviews_repository.dart';
 import 'data/travel_repository.dart';
+import 'validation/trip_search_validator.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -431,35 +432,24 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void _submit() {
-    if (_origin.text.isEmpty ||
-        _destination.text.isEmpty ||
-        _date.text.isEmpty) {
-      setState(() => _error = 'Preencha todos os campos para buscar viagens.');
+    final validation = TripSearchValidator.validate(
+      origin: _origin.text,
+      destination: _destination.text,
+      date: _date.text,
+    );
+    if (!validation.isValid) {
+      setState(() => _error = validation.message);
       return;
     }
-    final parsedDate = _parseDate(_date.text);
-    if (parsedDate == null) {
-      setState(() => _error = 'Informe uma data válida.');
-      return;
-    }
+    setState(() => _error = null);
     widget.onSearch(
       TripSearchCriteria(
         origin: _origin.text.trim(),
         destination: _destination.text.trim(),
-        date: parsedDate,
+        date: validation.date!,
       ),
     );
     widget.nav(AppScreen.results);
-  }
-
-  DateTime? _parseDate(String value) {
-    final parts = value.split('/');
-    if (parts.length != 3) return null;
-    final day = int.tryParse(parts[0]);
-    final month = int.tryParse(parts[1]);
-    final year = int.tryParse(parts[2]);
-    if (day == null || month == null || year == null) return null;
-    return DateTime(year, month, day);
   }
 
   void _quickSearch(String origin, String destination, DateTime date) {

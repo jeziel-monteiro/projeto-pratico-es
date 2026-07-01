@@ -5,6 +5,7 @@ class TravelerProfile {
     required this.fullName,
     required this.email,
     required this.cpf,
+    this.birthDate,
     this.phone,
     required this.highContrast,
   });
@@ -18,6 +19,7 @@ class TravelerProfile {
       fullName: json['fullName'] as String,
       email: json['email'] as String,
       cpf: json['cpf'] as String,
+      birthDate: json['birthDate'] as String?,
       phone: json['phone'] as String?,
       highContrast: travelerProfile?['highContrast'] as bool? ?? false,
     );
@@ -28,6 +30,7 @@ class TravelerProfile {
   final String fullName;
   final String email;
   final String cpf;
+  final String? birthDate;
   final String? phone;
   final bool highContrast;
 }

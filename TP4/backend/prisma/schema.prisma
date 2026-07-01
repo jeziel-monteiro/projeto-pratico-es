@@ -58,6 +58,7 @@ model User {
   phone           String?          @unique
   fullName        String
   cpf             String?          @unique
+  birthDate       DateTime?
   role            UserRole
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt

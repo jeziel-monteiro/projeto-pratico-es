@@ -13,6 +13,7 @@ import '../../core/widgets/pc_text_field.dart';
 import '../travelers/data/traveler_repository.dart';
 import 'data/auth_error_mapper.dart';
 import 'data/auth_service.dart';
+import 'validation/register_validator.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key, required this.nav, this.setTravelerName});
@@ -290,6 +291,7 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final _name = TextEditingController();
   final _cpf = TextEditingController();
+  final _birthDate = TextEditingController();
   final _phone = TextEditingController();
   final _email = TextEditingController();
   final _password = TextEditingController();
@@ -304,6 +306,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void dispose() {
     _name.dispose();
     _cpf.dispose();
+    _birthDate.dispose();
     _phone.dispose();
     _email.dispose();
     _password.dispose();
@@ -315,15 +318,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Future<void> _submit() async {
     _errors.clear();
     _generalError = null;
-    if (_name.text.trim().isEmpty) _errors['name'] = 'Nome obrigatório.';
-    if (onlyDigits(_cpf.text).length < 11) _errors['cpf'] = 'CPF inválido.';
-    if (!_email.text.contains('@')) _errors['email'] = 'Email inválido.';
-    if (_password.text.length < 8) {
-      _errors['password'] = 'Senha deve ter no mínimo 8 caracteres.';
-    }
-    if (_password.text != _confirm.text) {
-      _errors['confirm'] = 'As senhas não coincidem.';
-    }
+    final validation = RegisterValidator.validate(
+      RegisterFormInput(
+        fullName: _name.text,
+        cpf: _cpf.text,
+        birthDate: _birthDate.text,
+        email: _email.text,
+        phone: _phone.text,
+        password: _password.text,
+        confirmPassword: _confirm.text,
+      ),
+    );
+    _errors.addAll(validation.errors);
 
     if (_errors.isNotEmpty) {
       setState(() {});
@@ -336,6 +342,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     try {
       final email = _email.text.trim();
       final fullName = _name.text.trim();
+      final birthDate = RegisterValidator.parseBrazilianDate(_birthDate.text)!;
       final credential = await _authService.register(
         email: email,
         password: _password.text,
@@ -355,6 +362,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         idToken: idToken,
         fullName: fullName,
         cpf: onlyDigits(_cpf.text),
+        birthDate: RegisterValidator.toApiDate(birthDate),
         email: email,
         phone: phone.isEmpty ? null : phone,
       );
@@ -433,11 +441,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       const SizedBox(height: 14),
                       PcTextField(
+                        label: 'Data de nascimento',
+                        hint: 'DD/MM/AAAA',
+                        icon: Icons.cake_outlined,
+                        controller: _birthDate,
+                        maxLength: 10,
+                        errorText: _errors['birthDate'],
+                        keyboardType: TextInputType.datetime,
+                        onChanged: (value) {
+                          final formatted = formatBrazilianDate(value);
+                          if (formatted != value) {
+                            _birthDate.value = TextEditingValue(
+                              text: formatted,
+                              selection: TextSelection.collapsed(
+                                offset: formatted.length,
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                      const SizedBox(height: 14),
+                      PcTextField(
                         label: 'Telefone',
                         hint: '(92) 99999-9999',
                         icon: Icons.phone_outlined,
                         controller: _phone,
+                        maxLength: 15,
+                        errorText: _errors['phone'],
                         keyboardType: TextInputType.phone,
+                        onChanged: (value) {
+                          final formatted = formatPhone(value);
+                          if (formatted != value) {
+                            _phone.value = TextEditingValue(
+                              text: formatted,
+                              selection: TextSelection.collapsed(
+                                offset: formatted.length,
+                              ),
+                            );
+                          }
+                        },
                       ),
                       const SizedBox(height: 14),
                       PcTextField(
@@ -456,6 +498,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         controller: _password,
                         errorText: _errors['password'],
                         obscureText: true,
+                        labelSuffix: const _PasswordHelpTooltip(),
                       ),
                       const SizedBox(height: 14),
                       PcTextField(
@@ -649,6 +692,32 @@ String _friendlyAuthMessage(Object error) {
   if (error is ApiException) return error.message;
   if (error is AuthServiceException) return error.message;
   return mapAuthError(error);
+}
+
+class _PasswordHelpTooltip extends StatelessWidget {
+  const _PasswordHelpTooltip();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
+    return Tooltip(
+      triggerMode: TooltipTriggerMode.tap,
+      message:
+          'Use no mínimo 8 caracteres, com letra maiúscula, letra minúscula, número e símbolo.',
+      child: Container(
+        width: 18,
+        height: 18,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: colors.primary.withValues(alpha: 0.12),
+          border: Border.all(color: colors.primary.withValues(alpha: 0.35)),
+        ),
+        alignment: Alignment.center,
+        child: Icon(Icons.question_mark, size: 12, color: colors.primary),
+      ),
+    );
+  }
 }
 
 class _InlineAlert extends StatelessWidget {

@@ -14,6 +14,7 @@ class PcTextField extends StatelessWidget {
     this.onTap,
     this.onChanged,
     this.suffix,
+    this.labelSuffix,
     this.maxLength,
   });
 
@@ -28,6 +29,7 @@ class PcTextField extends StatelessWidget {
   final VoidCallback? onTap;
   final ValueChanged<String>? onChanged;
   final Widget? suffix;
+  final Widget? labelSuffix;
   final int? maxLength;
 
   @override
@@ -39,14 +41,23 @@ class PcTextField extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 2, bottom: 7),
-          child: Text(
-            label.toUpperCase(),
-            style: TextStyle(
-              color: colors.onSurfaceVariant,
-              fontSize: 11,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.7,
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label.toUpperCase(),
+                style: TextStyle(
+                  color: colors.onSurfaceVariant,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.7,
+                ),
+              ),
+              if (labelSuffix != null) ...[
+                const SizedBox(width: 5),
+                labelSuffix!,
+              ],
+            ],
           ),
         ),
         TextField(
