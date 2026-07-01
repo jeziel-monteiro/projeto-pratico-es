@@ -15,9 +15,10 @@ import 'data/auth_error_mapper.dart';
 import 'data/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key, required this.nav});
+  const LoginScreen({super.key, required this.nav, this.setTravelerName});
 
   final AppNavigator nav;
+  final TravelerNameSetter? setTravelerName;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -73,13 +74,15 @@ class _LoginScreenState extends State<LoginScreen> {
         throw const AuthServiceException('Sessao de autenticacao invalida.');
       }
 
-      await _travelerRepository.fetchMe(
+      final profile = await _travelerRepository.fetchMe(
         firebaseUid: user.uid,
         idToken: idToken,
         email: user.email,
       );
 
-      if (mounted) widget.nav(AppScreen.home);
+      if (!mounted) return;
+      widget.setTravelerName?.call(profile.fullName);
+      widget.nav(AppScreen.home);
     } catch (error) {
       if (!mounted) return;
       setState(() {
@@ -92,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -104,32 +107,33 @@ class _LoginScreenState extends State<LoginScreen> {
                   colors: [AppColors.primary, AppColors.secondary],
                 ),
               ),
-              child: SafeArea(
-                bottom: false,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 20, 24, 42),
-                  child: Column(
-                    children: [
-                      Image.asset(
-                        AppAssets.logo,
-                        width: 142,
-                        height: 142,
-                        fit: BoxFit.contain,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Bem-vindo de volta',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: Colors.white,
-                          fontSize: 22,
+              child: SizedBox(
+                width: double.infinity,
+                child: SafeArea(
+                  bottom: false,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 20, 24, 42),
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          AppAssets.logo,
+                          width: 142,
+                          height: 142,
+                          fit: BoxFit.contain,
                         ),
-                      ),
-                      const SizedBox(height: 6),
-                      const Text(
-                        'Entre na sua conta para continuar',
-                        style: TextStyle(color: Colors.white70, fontSize: 13),
-                      ),
-                    ],
+                        const SizedBox(height: 8),
+                        Text(
+                          'Bem-vindo de volta',
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(color: Colors.white, fontSize: 22),
+                        ),
+                        const SizedBox(height: 6),
+                        const Text(
+                          'Entre na sua conta para continuar',
+                          style: TextStyle(color: Colors.white70, fontSize: 13),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -274,9 +278,10 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key, required this.nav});
+  const RegisterScreen({super.key, required this.nav, this.setTravelerName});
 
   final AppNavigator nav;
+  final TravelerNameSetter? setTravelerName;
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -330,6 +335,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     try {
       final email = _email.text.trim();
+      final fullName = _name.text.trim();
       final credential = await _authService.register(
         email: email,
         password: _password.text,
@@ -342,18 +348,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
         throw const AuthServiceException('Sessao de autenticacao invalida.');
       }
 
-      await user.updateDisplayName(_name.text.trim());
+      await user.updateDisplayName(fullName);
       final phone = onlyDigits(_phone.text);
       await _travelerRepository.createProfile(
         firebaseUid: user.uid,
         idToken: idToken,
-        fullName: _name.text.trim(),
+        fullName: fullName,
         cpf: onlyDigits(_cpf.text),
         email: email,
         phone: phone.isEmpty ? null : phone,
       );
 
-      if (mounted) widget.nav(AppScreen.home);
+      if (!mounted) return;
+      widget.setTravelerName?.call(fullName);
+      widget.nav(AppScreen.home);
     } catch (error) {
       if (createdFirebaseUser) {
         try {
@@ -373,7 +381,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -512,7 +520,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(

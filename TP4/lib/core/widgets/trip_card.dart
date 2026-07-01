@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../models/trip.dart';
-import '../theme/app_colors.dart';
 import 'network_image_box.dart';
 import 'pc_badge.dart';
 import 'pc_button.dart';
@@ -24,18 +23,26 @@ class TripCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    final highContrast = theme.brightness == Brightness.dark;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colors.surfaceContainer,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFF3F4F6)),
+        border: Border.all(
+          color: highContrast ? colors.outline : const Color(0xFFF3F4F6),
+          width: highContrast ? 2 : 1,
+        ),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 16,
-            offset: const Offset(0, 8),
-          ),
+          if (!highContrast)
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 16,
+              offset: const Offset(0, 8),
+            ),
         ],
       ),
       clipBehavior: Clip.antiAlias,
@@ -67,7 +74,9 @@ class TripCard extends StatelessWidget {
                 top: 12,
                 right: 12,
                 child: Material(
-                  color: Colors.white.withValues(alpha: 0.92),
+                  color: highContrast
+                      ? colors.surfaceContainerHighest
+                      : Colors.white.withValues(alpha: 0.92),
                   shape: const CircleBorder(),
                   child: InkWell(
                     onTap: onFavorite,
@@ -76,7 +85,9 @@ class TripCard extends StatelessWidget {
                       padding: const EdgeInsets.all(8),
                       child: Icon(
                         isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: isFavorite ? Colors.redAccent : AppColors.muted,
+                        color: isFavorite
+                            ? (highContrast ? colors.primary : Colors.redAccent)
+                            : colors.onSurfaceVariant,
                         size: 18,
                       ),
                     ),
@@ -122,27 +133,27 @@ class TripCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.place_outlined,
-                      color: AppColors.muted,
+                      color: colors.onSurfaceVariant,
                       size: 15,
                     ),
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(
                         '${trip.origin} -> ${trip.destination}',
-                        style: const TextStyle(
-                          color: AppColors.muted,
+                        style: TextStyle(
+                          color: colors.onSurfaceVariant,
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
-                    const Icon(Icons.star, color: AppColors.accent, size: 15),
+                    Icon(Icons.star, color: colors.primary, size: 15),
                     Text(
                       '${trip.rating}',
-                      style: const TextStyle(
-                        color: Color(0xFFB77900),
+                      style: TextStyle(
+                        color: colors.primary,
                         fontSize: 12,
                         fontWeight: FontWeight.w900,
                       ),
@@ -176,14 +187,14 @@ class TripCard extends StatelessWidget {
                               text: 'R\$ ${trip.price}',
                               style: Theme.of(context).textTheme.titleMedium
                                   ?.copyWith(
-                                    color: AppColors.primary,
+                                    color: colors.primary,
                                     fontSize: 18,
                                   ),
                             ),
-                            const TextSpan(
+                            TextSpan(
                               text: '/pessoa',
                               style: TextStyle(
-                                color: AppColors.muted,
+                                color: colors.onSurfaceVariant,
                                 fontSize: 12,
                               ),
                             ),
@@ -219,17 +230,19 @@ class _Meta extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme.onSurfaceVariant;
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: AppColors.muted, size: 14),
+        Icon(icon, color: color, size: 14),
         const SizedBox(width: 4),
         Flexible(
           child: Text(
             label,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              color: AppColors.muted,
+            style: TextStyle(
+              color: color,
               fontSize: 12,
               fontWeight: FontWeight.w600,
             ),
