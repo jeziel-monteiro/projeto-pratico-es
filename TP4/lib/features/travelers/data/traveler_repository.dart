@@ -14,6 +14,7 @@ class TravelerRepository {
     required String idToken,
     required String fullName,
     required String cpf,
+    required String birthDate,
     required String email,
     String? phone,
   }) async {
@@ -25,6 +26,7 @@ class TravelerRepository {
               body: {
                 'fullName': fullName,
                 'cpf': cpf,
+                'birthDate': birthDate,
                 'email': email,
                 'phone': phone,
                 'highContrast': false,
@@ -62,9 +64,7 @@ class TravelerRepository {
               'travelers/me/preferences',
               bearerToken: _useDevAuth ? null : idToken,
               headers: _devHeaders(firebaseUid, email, null),
-              body: {
-                'highContrast': highContrast,
-              },
+              body: {'highContrast': highContrast},
             )
             as Map<String, Object?>;
 
