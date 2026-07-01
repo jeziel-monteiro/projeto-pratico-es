@@ -91,7 +91,7 @@ class _CreditCardScreenState extends State<CreditCardScreen> {
   Widget build(BuildContext context) {
     if (_processing) return const _ProcessingPaymentScreen();
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -289,22 +289,24 @@ class _ProcessingPaymentScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Colors.white,
+    final colors = Theme.of(context).colorScheme;
+
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CircularProgressIndicator(color: AppColors.primary),
-            SizedBox(height: 18),
-            Text(
+            CircularProgressIndicator(color: colors.primary),
+            const SizedBox(height: 18),
+            const Text(
               'Processando pagamento...',
               style: TextStyle(fontWeight: FontWeight.w900),
             ),
-            SizedBox(height: 6),
+            const SizedBox(height: 6),
             Text(
               'Aguarde, estamos verificando seus dados.',
-              style: TextStyle(color: AppColors.muted),
+              style: TextStyle(color: colors.onSurfaceVariant),
             ),
           ],
         ),

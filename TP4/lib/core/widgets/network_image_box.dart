@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../theme/app_colors.dart';
-
 class NetworkImageBox extends StatelessWidget {
   const NetworkImageBox({
     super.key,
@@ -20,25 +18,43 @@ class NetworkImageBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(borderRadius),
-      child: Image.network(
-        url,
-        height: height,
-        width: width,
-        fit: fit,
-        errorBuilder: (context, error, stackTrace) {
-          return Container(
+    final image = url.startsWith('assets/')
+        ? Image.asset(
+            url,
             height: height,
             width: width,
-            color: AppColors.primary.withValues(alpha: 0.10),
-            child: const Icon(
-              Icons.directions_boat_filled_outlined,
-              color: AppColors.primary,
-              size: 34,
-            ),
+            fit: fit,
+            errorBuilder: _buildError,
+          )
+        : Image.network(
+            url,
+            height: height,
+            width: width,
+            fit: fit,
+            errorBuilder: _buildError,
           );
-        },
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(borderRadius),
+      child: image,
+    );
+  }
+
+  Widget _buildError(
+    BuildContext context,
+    Object error,
+    StackTrace? stackTrace,
+  ) {
+    final colors = Theme.of(context).colorScheme;
+
+    return Container(
+      height: height,
+      width: width,
+      color: colors.primary.withValues(alpha: 0.10),
+      child: Icon(
+        Icons.directions_boat_filled_outlined,
+        color: colors.primary,
+        size: 34,
       ),
     );
   }

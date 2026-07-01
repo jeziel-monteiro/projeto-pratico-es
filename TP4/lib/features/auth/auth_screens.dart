@@ -13,11 +13,13 @@ import '../../core/widgets/pc_text_field.dart';
 import '../travelers/data/traveler_repository.dart';
 import 'data/auth_error_mapper.dart';
 import 'data/auth_service.dart';
+import 'validation/register_validator.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key, required this.nav});
+  const LoginScreen({super.key, required this.nav, this.setTravelerName});
 
   final AppNavigator nav;
+  final TravelerNameSetter? setTravelerName;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -73,13 +75,15 @@ class _LoginScreenState extends State<LoginScreen> {
         throw const AuthServiceException('Sessao de autenticacao invalida.');
       }
 
-      await _travelerRepository.fetchMe(
+      final profile = await _travelerRepository.fetchMe(
         firebaseUid: user.uid,
         idToken: idToken,
         email: user.email,
       );
 
-      if (mounted) widget.nav(AppScreen.home);
+      if (!mounted) return;
+      widget.setTravelerName?.call(profile.fullName);
+      widget.nav(AppScreen.home);
     } catch (error) {
       if (!mounted) return;
       setState(() {
@@ -92,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -104,32 +108,33 @@ class _LoginScreenState extends State<LoginScreen> {
                   colors: [AppColors.primary, AppColors.secondary],
                 ),
               ),
-              child: SafeArea(
-                bottom: false,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 20, 24, 42),
-                  child: Column(
-                    children: [
-                      Image.asset(
-                        AppAssets.logo,
-                        width: 142,
-                        height: 142,
-                        fit: BoxFit.contain,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Bem-vindo de volta',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: Colors.white,
-                          fontSize: 22,
+              child: SizedBox(
+                width: double.infinity,
+                child: SafeArea(
+                  bottom: false,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 20, 24, 42),
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          AppAssets.logo,
+                          width: 142,
+                          height: 142,
+                          fit: BoxFit.contain,
                         ),
-                      ),
-                      const SizedBox(height: 6),
-                      const Text(
-                        'Entre na sua conta para continuar',
-                        style: TextStyle(color: Colors.white70, fontSize: 13),
-                      ),
-                    ],
+                        const SizedBox(height: 8),
+                        Text(
+                          'Bem-vindo de volta',
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(color: Colors.white, fontSize: 22),
+                        ),
+                        const SizedBox(height: 6),
+                        const Text(
+                          'Entre na sua conta para continuar',
+                          style: TextStyle(color: Colors.white70, fontSize: 13),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -274,9 +279,10 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key, required this.nav});
+  const RegisterScreen({super.key, required this.nav, this.setTravelerName});
 
   final AppNavigator nav;
+  final TravelerNameSetter? setTravelerName;
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -285,6 +291,7 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final _name = TextEditingController();
   final _cpf = TextEditingController();
+  final _birthDate = TextEditingController();
   final _phone = TextEditingController();
   final _email = TextEditingController();
   final _password = TextEditingController();
@@ -299,6 +306,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void dispose() {
     _name.dispose();
     _cpf.dispose();
+    _birthDate.dispose();
     _phone.dispose();
     _email.dispose();
     _password.dispose();
@@ -310,15 +318,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Future<void> _submit() async {
     _errors.clear();
     _generalError = null;
-    if (_name.text.trim().isEmpty) _errors['name'] = 'Nome obrigatório.';
-    if (onlyDigits(_cpf.text).length < 11) _errors['cpf'] = 'CPF inválido.';
-    if (!_email.text.contains('@')) _errors['email'] = 'Email inválido.';
-    if (_password.text.length < 8) {
-      _errors['password'] = 'Senha deve ter no mínimo 8 caracteres.';
-    }
-    if (_password.text != _confirm.text) {
-      _errors['confirm'] = 'As senhas não coincidem.';
-    }
+    final validation = RegisterValidator.validate(
+      RegisterFormInput(
+        fullName: _name.text,
+        cpf: _cpf.text,
+        birthDate: _birthDate.text,
+        email: _email.text,
+        phone: _phone.text,
+        password: _password.text,
+        confirmPassword: _confirm.text,
+      ),
+    );
+    _errors.addAll(validation.errors);
 
     if (_errors.isNotEmpty) {
       setState(() {});
@@ -330,6 +341,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     try {
       final email = _email.text.trim();
+      final fullName = _name.text.trim();
+      final birthDate = RegisterValidator.parseBrazilianDate(_birthDate.text)!;
       final credential = await _authService.register(
         email: email,
         password: _password.text,
@@ -342,18 +355,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
         throw const AuthServiceException('Sessao de autenticacao invalida.');
       }
 
-      await user.updateDisplayName(_name.text.trim());
+      await user.updateDisplayName(fullName);
       final phone = onlyDigits(_phone.text);
       await _travelerRepository.createProfile(
         firebaseUid: user.uid,
         idToken: idToken,
-        fullName: _name.text.trim(),
+        fullName: fullName,
         cpf: onlyDigits(_cpf.text),
+        birthDate: RegisterValidator.toApiDate(birthDate),
         email: email,
         phone: phone.isEmpty ? null : phone,
       );
 
-      if (mounted) widget.nav(AppScreen.home);
+      if (!mounted) return;
+      widget.setTravelerName?.call(fullName);
+      widget.nav(AppScreen.home);
     } catch (error) {
       if (createdFirebaseUser) {
         try {
@@ -373,7 +389,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -425,11 +441,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       const SizedBox(height: 14),
                       PcTextField(
+                        label: 'Data de nascimento',
+                        hint: 'DD/MM/AAAA',
+                        icon: Icons.cake_outlined,
+                        controller: _birthDate,
+                        maxLength: 10,
+                        errorText: _errors['birthDate'],
+                        keyboardType: TextInputType.datetime,
+                        onChanged: (value) {
+                          final formatted = formatBrazilianDate(value);
+                          if (formatted != value) {
+                            _birthDate.value = TextEditingValue(
+                              text: formatted,
+                              selection: TextSelection.collapsed(
+                                offset: formatted.length,
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                      const SizedBox(height: 14),
+                      PcTextField(
                         label: 'Telefone',
                         hint: '(92) 99999-9999',
                         icon: Icons.phone_outlined,
                         controller: _phone,
+                        maxLength: 15,
+                        errorText: _errors['phone'],
                         keyboardType: TextInputType.phone,
+                        onChanged: (value) {
+                          final formatted = formatPhone(value);
+                          if (formatted != value) {
+                            _phone.value = TextEditingValue(
+                              text: formatted,
+                              selection: TextSelection.collapsed(
+                                offset: formatted.length,
+                              ),
+                            );
+                          }
+                        },
                       ),
                       const SizedBox(height: 14),
                       PcTextField(
@@ -448,6 +498,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         controller: _password,
                         errorText: _errors['password'],
                         obscureText: true,
+                        labelSuffix: const _PasswordHelpTooltip(),
                       ),
                       const SizedBox(height: 14),
                       PcTextField(
@@ -512,7 +563,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -641,6 +692,32 @@ String _friendlyAuthMessage(Object error) {
   if (error is ApiException) return error.message;
   if (error is AuthServiceException) return error.message;
   return mapAuthError(error);
+}
+
+class _PasswordHelpTooltip extends StatelessWidget {
+  const _PasswordHelpTooltip();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
+    return Tooltip(
+      triggerMode: TooltipTriggerMode.tap,
+      message:
+          'Use no mínimo 8 caracteres, com letra maiúscula, letra minúscula, número e símbolo.',
+      child: Container(
+        width: 18,
+        height: 18,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: colors.primary.withValues(alpha: 0.12),
+          border: Border.all(color: colors.primary.withValues(alpha: 0.35)),
+        ),
+        alignment: Alignment.center,
+        child: Icon(Icons.question_mark, size: 12, color: colors.primary),
+      ),
+    );
+  }
 }
 
 class _InlineAlert extends StatelessWidget {

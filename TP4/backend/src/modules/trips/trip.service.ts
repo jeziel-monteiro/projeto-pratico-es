@@ -3,6 +3,7 @@ import { Prisma, TripStatus } from '@prisma/client';
 import { prisma } from '../../database/prisma.js';
 import { HttpError } from '../../http/http-error.js';
 import type { TripSearchInput } from './trip.schemas.js';
+import { parseTripSearchDate } from './trip.validation.js';
 
 const tripInclude = {
   originPort: true,
@@ -213,14 +214,14 @@ function dateRange(date?: string) {
     };
   }
 
-  const [year, month, day] = date.includes('-')
-    ? date.split('-').map(Number)
-    : date.split('/').reverse().map(Number);
-
-  if (!year || !month || !day) {
+  const parsedDate = parseTripSearchDate(date);
+  if (!parsedDate) {
     throw new HttpError(400, 'Data invalida. Use YYYY-MM-DD ou DD/MM/AAAA.');
   }
 
+  const year = parsedDate.getUTCFullYear();
+  const month = parsedDate.getUTCMonth() + 1;
+  const day = parsedDate.getUTCDate();
   const start = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
   const end = new Date(Date.UTC(year, month - 1, day + 1, 0, 0, 0));
 

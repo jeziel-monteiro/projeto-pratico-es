@@ -10,6 +10,7 @@ export function presentTraveler(user: TravelerWithUser) {
     firebaseUid: user.firebaseUid,
     fullName: user.fullName,
     cpf: user.cpf,
+    birthDate: user.birthDate?.toISOString().slice(0, 10) ?? null,
     email: user.email,
     phone: user.phone,
     role: user.role,

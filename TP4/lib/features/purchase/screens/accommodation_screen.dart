@@ -49,7 +49,7 @@ class _AccommodationScreenState extends State<AccommodationScreen> {
     final total = widget.draft.fare + selected.price + widget.draft.serviceFee;
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(

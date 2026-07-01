@@ -92,7 +92,7 @@ class _PixScreenState extends State<PixScreen> {
     final ss = (_seconds % 60).toString().padLeft(2, '0');
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(

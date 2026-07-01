@@ -20,6 +20,7 @@ export async function upsertTravelerProfile(
         phone: input.phone,
         fullName: input.fullName,
         cpf: input.cpf,
+        birthDate: input.birthDate,
         role: UserRole.TRAVELER,
       },
       create: {
@@ -28,6 +29,7 @@ export async function upsertTravelerProfile(
         phone: input.phone,
         fullName: input.fullName,
         cpf: input.cpf,
+        birthDate: input.birthDate,
         role: UserRole.TRAVELER,
       },
     });

@@ -52,7 +52,7 @@ class _TicketScreenState extends State<TicketScreen> {
 
     if (_cancelled) {
       return Scaffold(
-        backgroundColor: AppColors.surface,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: Column(
           children: [
             AppHeader(
@@ -147,7 +147,7 @@ class _TicketScreenState extends State<TicketScreen> {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -282,7 +282,7 @@ class _TicketScreenState extends State<TicketScreen> {
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
@@ -445,7 +445,7 @@ class _BookingTicketScreenState extends State<_BookingTicketScreen> {
     final confirmed = booking.status == 'confirmada';
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(

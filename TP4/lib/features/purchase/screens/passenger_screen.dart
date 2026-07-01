@@ -146,7 +146,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
     final arr = stops[_arrivalIndex];
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(

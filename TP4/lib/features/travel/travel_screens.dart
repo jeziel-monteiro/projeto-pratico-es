@@ -25,11 +25,13 @@ import 'data/my_trips_repository.dart';
 import 'data/notifications_repository.dart';
 import 'data/reviews_repository.dart';
 import 'data/travel_repository.dart';
+import 'validation/trip_search_validator.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
     super.key,
     required this.nav,
+    required this.travelerName,
     required this.favoriteIds,
     required this.toggleFavorite,
     required this.onTripSelected,
@@ -37,6 +39,7 @@ class HomeScreen extends StatefulWidget {
   });
 
   final AppNavigator nav;
+  final String? travelerName;
   final List<String> favoriteIds;
   final FavoriteToggle toggleFavorite;
   final TripSelector onTripSelected;
@@ -51,6 +54,15 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Trip> _featuredTrips = const [];
   bool _loadingFeaturedTrips = true;
   String? _featuredTripsError;
+
+  String _buildGreetingName(String? fullName) {
+    final normalizedName = fullName?.trim();
+    if (normalizedName == null || normalizedName.isEmpty) {
+      return 'Viajante Porto Certo';
+    }
+
+    return normalizedName.split(RegExp(r'\s+')).first;
+  }
 
   @override
   void initState() {
@@ -96,8 +108,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final highContrast = Theme.of(context).brightness == Brightness.dark;
+    final greetingName = _buildGreetingName(widget.travelerName);
+
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       bottomNavigationBar: PortoBottomNav(
         active: AppScreen.home,
         nav: widget.nav,
@@ -105,11 +121,13 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           DecoratedBox(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [AppColors.navy, AppColors.primary],
+                colors: highContrast
+                    ? [Colors.black, Colors.black]
+                    : [AppColors.navy, AppColors.primary],
               ),
             ),
             child: SafeArea(
@@ -132,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                               Text(
-                                'Ana Carolina',
+                                greetingName,
                                 style: Theme.of(context).textTheme.titleMedium
                                     ?.copyWith(
                                       color: Colors.white,
@@ -156,26 +174,31 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 18),
                     Material(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(18),
-                      elevation: 8,
-                      shadowColor: AppColors.primary.withValues(alpha: 0.25),
+                      color: colors.surfaceContainer,
+                      elevation: highContrast ? 0 : 8,
+                      shadowColor: colors.primary.withValues(alpha: 0.25),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
+                        side: highContrast
+                            ? BorderSide(color: colors.outline, width: 2)
+                            : BorderSide.none,
+                      ),
                       child: InkWell(
                         onTap: () => widget.nav(AppScreen.search),
                         borderRadius: BorderRadius.circular(18),
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
                             horizontal: 16,
                             vertical: 14,
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.search, color: AppColors.muted),
-                              SizedBox(width: 12),
+                              Icon(Icons.search, color: colors.primary),
+                              const SizedBox(width: 12),
                               Text(
                                 'Para onde você vai?',
                                 style: TextStyle(
-                                  color: AppColors.muted,
+                                  color: colors.onSurfaceVariant,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -409,35 +432,24 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void _submit() {
-    if (_origin.text.isEmpty ||
-        _destination.text.isEmpty ||
-        _date.text.isEmpty) {
-      setState(() => _error = 'Preencha todos os campos para buscar viagens.');
+    final validation = TripSearchValidator.validate(
+      origin: _origin.text,
+      destination: _destination.text,
+      date: _date.text,
+    );
+    if (!validation.isValid) {
+      setState(() => _error = validation.message);
       return;
     }
-    final parsedDate = _parseDate(_date.text);
-    if (parsedDate == null) {
-      setState(() => _error = 'Informe uma data válida.');
-      return;
-    }
+    setState(() => _error = null);
     widget.onSearch(
       TripSearchCriteria(
         origin: _origin.text.trim(),
         destination: _destination.text.trim(),
-        date: parsedDate,
+        date: validation.date!,
       ),
     );
     widget.nav(AppScreen.results);
-  }
-
-  DateTime? _parseDate(String value) {
-    final parts = value.split('/');
-    if (parts.length != 3) return null;
-    final day = int.tryParse(parts[0]);
-    final month = int.tryParse(parts[1]);
-    final year = int.tryParse(parts[2]);
-    if (day == null || month == null || year == null) return null;
-    return DateTime(year, month, day);
   }
 
   void _quickSearch(String origin, String destination, DateTime date) {
@@ -464,7 +476,7 @@ class _SearchScreenState extends State<SearchScreen> {
         : _ports.map((port) => port.city).toSet().toList();
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       bottomNavigationBar: PortoBottomNav(
         active: AppScreen.search,
         nav: widget.nav,
@@ -488,17 +500,30 @@ class _SearchScreenState extends State<SearchScreen> {
                         const SizedBox(height: 14),
                       ],
                       Stack(
+                        clipBehavior: Clip.none,
                         children: [
-                          PcTextField(
-                            label: 'Origem',
-                            hint: 'De onde você sai?',
-                            icon: Icons.place_outlined,
-                            controller: _origin,
+                          Column(
+                            children: [
+                              PcTextField(
+                                label: 'Origem',
+                                hint: 'De onde você sai?',
+                                icon: Icons.place_outlined,
+                                controller: _origin,
+                              ),
+                              const SizedBox(height: 14),
+                              PcTextField(
+                                label: 'Destino',
+                                hint: 'Para onde vai?',
+                                icon: Icons.location_on_outlined,
+                                controller: _destination,
+                              ),
+                            ],
                           ),
                           Positioned(
-                            right: 10,
-                            top: 38,
+                            right: -24,
+                            top: 73,
                             child: IconButton.filledTonal(
+                              tooltip: 'Inverter origem e destino',
                               onPressed: () {
                                 final temp = _origin.text;
                                 _origin.text = _destination.text;
@@ -508,13 +533,6 @@ class _SearchScreenState extends State<SearchScreen> {
                             ),
                           ),
                         ],
-                      ),
-                      const SizedBox(height: 14),
-                      PcTextField(
-                        label: 'Destino',
-                        hint: 'Para onde vai?',
-                        icon: Icons.location_on_outlined,
-                        controller: _destination,
                       ),
                       const SizedBox(height: 14),
                       PcTextField(
@@ -687,7 +705,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
     }).toList();
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -964,7 +982,7 @@ class _VesselScreenState extends State<VesselScreen> {
   Widget build(BuildContext context) {
     final trip = _trip;
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -1313,7 +1331,7 @@ class _VesselTripsScreenState extends State<VesselTripsScreen> {
   Widget build(BuildContext context) {
     final selectedTrip = widget.selectedTrip;
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -1522,7 +1540,7 @@ class _VesselReviewsScreenState extends State<VesselReviewsScreen> {
   Widget build(BuildContext context) {
     final selectedTrip = widget.selectedTrip;
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -1700,7 +1718,7 @@ class FavoritesScreen extends StatelessWidget {
         .where((trip) => favoriteIds.contains(trip.id))
         .toList();
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       bottomNavigationBar: PortoBottomNav(
         active: AppScreen.favorites,
         nav: nav,
@@ -1843,7 +1861,7 @@ class _TrackingScreenState extends State<TrackingScreen> {
     final tracking = _tracking;
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -2162,7 +2180,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(
@@ -2352,7 +2370,7 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
     final list = _active ? activeTrips : history;
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           AppHeader(

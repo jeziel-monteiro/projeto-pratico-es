@@ -58,6 +58,7 @@ model User {
   phone           String?          @unique
   fullName        String
   cpf             String?          @unique
+  birthDate       DateTime?
   role            UserRole
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
@@ -154,6 +155,7 @@ model Trip {
   basePrice         Decimal        @db.Decimal(10, 2)
   seatsTotal        Int
   seatsAvailable    Int
+  imageUrl          String?
   status            TripStatus     @default(SCHEDULED)
   vessel            Vessel         @relation(fields: [vesselId], references: [id])
   originPort        Port           @relation("TripOrigin", fields: [originPortId], references: [id])

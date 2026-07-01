@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../theme/app_colors.dart';
-
 class PcTextField extends StatelessWidget {
   const PcTextField({
     super.key,
@@ -16,6 +14,7 @@ class PcTextField extends StatelessWidget {
     this.onTap,
     this.onChanged,
     this.suffix,
+    this.labelSuffix,
     this.maxLength,
   });
 
@@ -30,23 +29,35 @@ class PcTextField extends StatelessWidget {
   final VoidCallback? onTap;
   final ValueChanged<String>? onChanged;
   final Widget? suffix;
+  final Widget? labelSuffix;
   final int? maxLength;
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 2, bottom: 7),
-          child: Text(
-            label.toUpperCase(),
-            style: const TextStyle(
-              color: AppColors.muted,
-              fontSize: 11,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.7,
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label.toUpperCase(),
+                style: TextStyle(
+                  color: colors.onSurfaceVariant,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.7,
+                ),
+              ),
+              if (labelSuffix != null) ...[
+                const SizedBox(width: 5),
+                labelSuffix!,
+              ],
+            ],
           ),
         ),
         TextField(
@@ -63,7 +74,7 @@ class PcTextField extends StatelessWidget {
             errorText: errorText,
             prefixIcon: icon == null
                 ? null
-                : Icon(icon, color: AppColors.muted, size: 19),
+                : Icon(icon, color: colors.onSurfaceVariant, size: 19),
             suffixIcon: suffix,
           ),
         ),
