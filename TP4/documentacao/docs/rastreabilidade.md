@@ -1,6 +1,6 @@
 # Rastreabilidade
 
-<div style="text-align: justify;">
+<div align="justify">
 
 ## O que é Rastreabilidade?
 A rastreabilidade de requisitos é um conceito fundamental na engenharia de software que consiste na capacidade de associar, acompanhar e mapear o ciclo de vida de um requisito desde a sua concepção original até a sua entrega final no sistema. No contexto do desenvolvimento ágil, ela estabelece um vínculo claro e transparente entre as necessidades expressas pelos usuário e os elementos reais construídos no produto.
@@ -50,3 +50,5 @@ A rastreabilidade de requisitos é um conceito fundamental na engenharia de soft
 ### US16 — Cadastro do Viajante
 * **História de Usuário:** Como viajante, desejo me cadastrar na plataforma informando meus dados, para que eu possa ter acesso às funcionalidades do aplicativo.
 * **Implementação no MVP:** O cadastro foi implementado na [Tela de Cadastro](https://private-user-images.githubusercontent.com/210701134/615453776-3504ba25-e510-4573-ba48-7625bdc95ef1.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3ODI4NzUwNzgsIm5iZiI6MTc4Mjg3NDc3OCwicGF0aCI6Ii8yMTA3MDExMzQvNjE1NDUzNzc2LTM1MDRiYTI1LWU1MTAtNDU3My1iYTQ4LTc2MjViZGM5NWVmMS5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjYwNzAxJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI2MDcwMVQwMjU5MzhaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT00MTM0N2MyYWVhN2Y3MGFiNTE4MzYyNmQ5NmFjYTM5ZGFkZTQyNmU5NDA3ZTliYjdkOGRjMjEwMGE5ZjYzNzJiJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZyZXNwb25zZS1jb250ZW50LXR5cGU9aW1hZ2UlMkZwbmcifQ.E0AlqpRrGFwDA2jDaNarneZ5iC_NDzkr4CfBjdf2aQw), com formulário contendo os campos de nome completo, CPF, telefone, e-mail, senha e confirmação de senha. A validação em tempo real exibe mensagens de erro específicas por campo, incluindo verificação de formato de CPF e e-mail e conferência de correspondência entre as senhas. O campo de senha conta com toggle de visibilidade e um indicador de força com barra de progresso colorida, que avalia em tempo real o comprimento, a presença de letra maiúscula, número e caractere especial. Os termos de uso e a política de privacidade são acessíveis por links na parte inferior da tela.
+
+</div>
